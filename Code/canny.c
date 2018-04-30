@@ -189,7 +189,10 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	    }
 	}
 
-	// Hysterese
+    // TODO: optimize Hysteresis to not scan every pixel multiple times
+    // mark pixels as checked -> e.g. set g to 0 
+
+	// Hysteresis
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
 			// Follow strong edges
