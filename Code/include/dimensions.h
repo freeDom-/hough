@@ -1,0 +1,4 @@
+#define WIDTH 1272
+#define HEIGHT 832
+#define SIZE WIDTH * HEIGHT
+#define THRESHOLD 170
