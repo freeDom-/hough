@@ -21,7 +21,6 @@
 #include "grayscaler.h"
 #include "gauss.h"
 #include "canny.h"
-#include "binary.h"
 
 /*
 ** Creates a grayscale palette with 256 colors
@@ -78,7 +77,7 @@ int main(int argc, char **argv) {
 	uint8_t threshold = 0;
     uint8_t kernelSize = 5;
     uint8_t offset = 2;
-    uint8_t highThreshold = 150;
+    uint8_t highThreshold = 90;
     uint8_t lowThreshold = 70;
     clock_t startTime, endTime;
 

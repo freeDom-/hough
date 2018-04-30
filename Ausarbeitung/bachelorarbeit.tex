@@ -1,0 +1,296 @@
+\documentclass[11pt, a4paper, german, twoside, cleardoubleempty, openright, pointlessnumbers]{scrreprt} %draft
+\usepackage[ngerman]{babel}
+\usepackage{setspace}
+\usepackage{amsmath} 
+\usepackage[utf8]{inputenc} %tex file input incoding für UTF-8
+\usepackage[T1]{fontenc}	
+\usepackage{geometry}
+\usepackage{subfigure}
+\usepackage{listings}
+%\usepackage{algorithmic}
+\usepackage{placeins}
+\usepackage{threeparttable}
+\usepackage{courier}
+%\usepackage{siunitx} wäre für Einheiten sinnvoll, aber nicht gefunden
+
+\usepackage{epsfig}
+
+\usepackage{booktabs}
+
+%\usepackage{bytefield}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{fit}
+\usetikzlibrary{calc,intersections}
+\usetikzlibrary{circuits.logic}
+
+
+\usepackage[automark,headsepline]{scrpage2}
+\pagestyle{scrheadings}
+
+\clearscrheadfoot
+\automark[section]{chapter}
+\lehead[]{\leftmark}
+\rohead[]{\rightmark}
+\ofoot[\pagemark]{\pagemark}
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[right]{eurosym}%Fuer Euro-Symbol
+\geometry{left=25mm,right=25mm,top=30mm,bottom=3cm}
+\setlength{\parindent}{0pt}
+\parskip 6pt
+\usepackage{lscape}
+\usepackage[footnote, printonlyused]{acronym}
+\usepackage{ccaption}
+\captionstyle{\centerlastline}
+\usepackage{hyperref}
+
+\hypersetup{
+    bookmarks=true,         			% show bookmarks bar?
+    unicode=false,          			% non-Latin characters in Acrobat?s bookmarks
+    pdftoolbar=true,        			% show Acrobat?s toolbar?
+    pdfmenubar=true,        			% show Acrobat?s menu?
+    pdffitwindow=false,     			% window fit to page when opened
+    pdfstartview={FitH},    			% fits the width of the page to the window
+    pdftitle={Titel},                   % title
+    pdfauthor={},     	                % author
+    pdfsubject={},   				    % subject of the document
+    pdfcreator={},   		            % creator of the document
+    pdfproducer={}, 	                % producer of the document
+    pdfkeywords={}, 				    % list of keywords
+    pdfnewwindow=true,     			    % links in new window
+    colorlinks=true,       			    % false: boxed links; true: colored links
+    linkcolor=black,          			% color of internal links
+    citecolor=black,        			% color of links to bibliography
+    filecolor=black,      				% color of file links
+    urlcolor=black,           			% color of external links
+    pdfstartpage=1
+}
+
+%------------------Anfang Nummerierung Anhang-----------------
+ \renewcommand\appendix{\par 
+   \setcounter{section}{0}% 
+   \setcounter{subsection}{0}% 
+   \setcounter{figure}{0}%s
+   \renewcommand\thesection{\Alph{section}}% 
+   \renewcommand\thefigure{\Alph{section}.\arabic{figure}}} 
+%------------------Ende Nummerierung Anhang-----------------
+
+\begin{document}
+	\bibliographystyle{alphadin}
+		
+	\begin{center}
+	\thispagestyle{empty}
+	\mbox{}
+	\vspace{3\baselineskip}
+	
+	\textsc{\Large Technische Universität Dresden\\
+		Fakultät Informatik\\
+		Institut für Technische Informatik\\
+		Professur für VLSI-Entwurfssysteme, Diagnostik und Architektur\\ \vspace{2\baselineskip} }
+		
+	\vspace{2\baselineskip}
+		
+	\textbf{\LARGE Bachelorarbeit \vspace{\baselineskip}}
+	
+	\vspace{2\baselineskip}
+	
+	\Large Evaluation einer modernen Zynq-Plattform am Beispiel der
+	Implementierung einer Hough Transformation
+
+	\vspace{2\baselineskip}
+		
+	\large Dominik Weinrich\\
+	\small geboren am 11.08.1990 in Kassel\\
+	\small (Mat.-Nr.: 3914410)\\
+	\vspace{2\baselineskip}
+
+
+	\end{center}
+
+	\vspace{6\baselineskip}
+	
+	\begin{minipage}[t]{8cm}
+		{\small Betreuender Hochschullehrer:}\\\large Prof. Dr.-Ing. habil. Rainer G. Spallek\\
+	\end{minipage}
+	
+	\begin{minipage}[t]{8cm}
+	{\small Betreuer:}\\\large Oliver Knodel\\
+	\end{minipage}
+
+	\vspace{2\baselineskip}
+
+
+	Dresden, Datum
+	
+	
+	\newpage
+	
+	\setstretch{1,5}
+	
+	%---Leerseite--------->
+	\newpage
+	\mbox{}
+	\thispagestyle{empty}
+	\newpage
+	%--------------------->
+	
+	
+\setcounter{page}{1}
+\pagenumbering{Roman}
+
+\chapter*{Aufgabenstellung}
+%\input{Inhalt/Aufgabenstellung}
+%UT Aufgabenstellung einfügen
+
+	%---Leerseite--------->
+	\newpage
+	\mbox{}
+	\thispagestyle{empty}
+	\newpage
+	%--------------------->
+
+\setstretch{1,2}	
+\begin{minipage}[t]{16cm}
+\chapter*{Selbstständigkeitserklärung}	
+Ich versichere, dass ich die vorliegende Studienarbeit zum Thema 
+
+\begin{center}
+	\bf{Evaluation einer modernen Zynq-Plattform am Beispiel der
+		Implementierung einer Hough Transformation} 
+\end{center}
+
+selbstständig verfasst und
+ohne Benutzung anderer 
+als der angegebenen Hilfsmittel angefertigt, nur die angegebenen Quellen benutzt
+und die in den benutzten Quellen wörtlich oder inhaltlich entnommenen Stellen
+als solche kenntlich gemacht habe. Die Arbeit wurde in gleicher oder ähnlicher
+Form noch keiner anderen Prüfungsbehörde vorgelegt.
+
+\vspace{3\baselineskip}
+
+Name, Dresden, Datum
+\end{minipage}
+
+\vspace{5\baselineskip}
+
+\begin{minipage}[t]{16cm}
+\chapter*{Wettbewerbsrechtlicher Hinweis}
+Die bloße Nennung von Namen, Produkten, Herstellern und Firmennamen dient 
+lediglich als Information und stellt keine Verwendung des Warenzeichens sowie
+keine Empfehlung des Produktes oder der Firma dar. 
+\end{minipage}
+
+%\include{Inhalt/Kurzfassung}
+
+%\include{Inhalt/Abstract}
+
+	\newpage
+	\markboth{}{}
+	\setcounter{tocdepth}{3} %gliederung inhaltsverzeichnis
+	\setcounter{secnumdepth}{3} %nummerierung tiefe
+	\setstretch{1,3}% damit es genau auf die Seite passt
+	 \tableofcontents
+
+	\markboth{}{}
+
+	%---Leerseite--------->
+	\newpage
+	\mbox{}
+	\thispagestyle{empty}
+	\newpage
+	%--------------------->
+	
+	\setstretch{1,2}
+	
+	\listoffigures
+	\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+
+	\newpage
+	
+	%\begin{minipage}[t]{16cm}
+		\listoftables
+	%\end{minipage}
+	\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+	
+	\newpage
+	
+	%\begin{minipage}[t]{16cm}
+		\lstlistoflistings
+	%\end{minipage}
+	\addcontentsline{toc}{chapter}{Listings}
+	
+	%-------------Abkuerzungen
+	\setstretch{1,2}
+	\chapter*{Abkürzungsverzeichnis}
+	\addcontentsline{toc}{chapter}{Abkürzungsverzeichnis}
+	\input{Inhalt/abkv}
+	
+	\clearscrheadfoot
+	\automark[section]{chapter}
+	\lehead[]{\leftmark}
+	\rohead[]{\rightmark}
+	\ofoot[\pagemark]{\pagemark}
+	
+	%---Leerseite--------->
+	\newpage
+	\mbox{}
+	\thispagestyle{empty}
+	\newpage
+	%--------------------->
+	
+	
+	%---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	\pagenumbering{arabic}
+	\setcounter{page}{1}%Am Ende noch mal Kontrollieren!!!!
+	\setstretch{1,2}
+	
+	\chapter{Einleitung und Motivation}
+	\input{Inhalt/Einleitung_Und_Motivation}
+	\chapter{Grundlagen}
+	%\input{Inhalt/Grundlagen/Grundlagen}
+	\section{Zielarchitektur - Zynq Systemarchitektur}
+	%\input{Inhalt/Grundlagen/Zielarchitektur}
+	\section{Hardware/Software Codesign}
+	%\input{Inhalt/Grundlagen/Hardware_Software_Codesign}
+	\section{High Level Synthese}
+	%\input{Inhalt/Grundlagen/High_Level_Synthese}
+	\section{Hough Transformation}
+	%\input{Inhalt/Grundlagen/Hough_Transformation}
+	\subsection{Umwandlung von RGB zu Grayscale}
+	%\input{Inhalt/Grundlagen/Umwandlung_von_RGB_zu_Grayscale}
+	\subsection{Gauss Filter}
+	%\input{Inhalt/Grundlagen/Gauss_Filter}
+	\subsection{Canny Edge Detection}
+	%\input{Inhalt/Grundlagen/Canny_Edge_Detection}
+	\subsection{Circle Hough Transformation}
+	%\input{Inhalt/Grundlagen/Circle_Hough_Transformation}
+	\subsection{Optimierungen}
+	%\input{Inhalt/Grundlagen/Optimierungen}
+	\chapter{Hardware/Software Codesign am Beispiel einer Hough Transformation}
+	\section{Softwareimplementierung}
+	\section{Iterative Auslagerung einzelner Komponenten auf den FPGA}
+	\chapter{Evaluation}
+	\chapter{Fazit und Ausblick}
+	
+	%---Leerseite--------->
+	\newpage
+	\mbox{}
+	\thispagestyle{empty}
+	\newpage
+	%--------------------->	
+	
+	\setstretch{1,1}
+	
+	\pagenumbering{roman}
+	%\setcounter{page}{1}
+	\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+	\bibliography{Inhalt/Literatur}
+	
+	%\include{Inhalt/Anhang/Anhang}
+
+\end{document}

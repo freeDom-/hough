@@ -152,8 +152,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 			// Calculate gradients direction
 			delta[y][x] = abs(atan2(g_y[y][x], g_x[y][x]) * 180 / PI);
 			delta[y][x] = roundAngle(delta[y][x]);
-			// Calculate gradients intensity
+			// Calculate gradients intensity - approximation
 			g[y][x] = abs(g_x[y][x]) + abs(g_y[y][x]);
+            // Exact formula
 			//g[y][x] = sqrt(g_x[y][x]*g_x[y][x] + g_y[y][x]*g_y[y][x]);
 			g[y][x] = fmax(g[y][x], threshold);
 			if(g[y][x] == threshold) g[y][x] = 0;
@@ -168,15 +169,19 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
     	for(int x = 0; x < width-1; x++) {
 	    	// Compare neighbour pixel in gradient direction and delete all but the maximum
 	    	switch(delta[y][x]) {
+                // Edge is in east-west direction
 	    		case 0:
-	    			if(g[y][x] < g[y-1][x] || g[y][x] < g[y+1][x]) g[y][x] = 0;
+                    if(g[y][x] < g[y][x-1] || g[y][x] < g[y][x+1]) g[y][x] = 0;
 	    			break;
+                // Edge is in northeast-southwest direction
 	    		case 45:
-	    			if(g[y][x] < g[y+1][x-1] || g[y][x] < g[y-1][x+1]) g[y][x] = 0;
+	    			if(g[y][x] < g[y-1][x+1] || g[y][x] < g[y+1][x-1]) g[y][x] = 0;
 	    			break;
+                // Edge is in north-south direction
 	    		case 90:
-	    			if(g[y][x] < g[y][x-1] || g[y][x] < g[y][x+1]) g[y][x] = 0;
+                    if(g[y][x] < g[y-1][x] || g[y][x] < g[y+1][x]) g[y][x] = 0;
 	    			break;
+                // Edge is in northwest-southeast direction
 	    		case 135:
 	    			if(g[y][x] < g[y-1][x-1] || g[y][x] < g[y+1][x+1]) g[y][x] = 0;
 	    			break;
@@ -191,45 +196,45 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 			if(g[y][x] > highThreshold) {
 				int i = y;
 				int j = x;
-				// Follow in positive gradients direction
+				// Follow edge in positive direction
 				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i][j] > lowThreshold) {
-					output[i][j] = 255;
+                    output[i][j] = 255;
 					switch(delta[i][j]) {
 						case 0:
-							i += 1;
+							i -= 1;
 							break;
 						case 45:
 							i -= 1;
-							j += 1;
+							j -= 1;
 							break;
 						case 90:
-							j += 1;
+							j -= 1;
 							break;
 						case 135:
 							i += 1;
-							j += 1;
+							j -= 1;
 							break;
 					}
 				}
 				i = y;
 				j = x;
-				// Follow in positive gradients direction
+				// Follow edge in negative direction
 				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i][j] > lowThreshold) {
 					output[i][j] = 255;
 					switch(delta[y][x]) {
 						case 0:
-							i -= 1;
+							i += 1;
 							break;
 						case 45:
 							i += 1;
-							j -= 1;
+							j += 1;
 							break;
 						case 90:
-							j -= 1;
+							j += 1;
 							break;
 						case 135:
 							i -= 1;
-							j -= 1;
+							j += 1;
 							break;
 					}
 				}
