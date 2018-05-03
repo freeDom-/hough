@@ -21,6 +21,7 @@
 #include "grayscaler.h"
 #include "gauss.h"
 #include "canny.h"
+#include "hough.h"
 
 /*
 ** Creates a grayscale palette with 256 colors
@@ -136,7 +137,6 @@ int main(int argc, char **argv) {
     newImg->pixels = grayscaler(img->pixels, img->w, img->h);
     endTime = clock();
     printf("%i clock ticks needed for grayscaler.\n", (int)(endTime-startTime));
-
     IMG_SavePNG(newImg, "../img/grayscale.png");
     SDL_FreeSurface(img);
 
@@ -147,13 +147,19 @@ int main(int argc, char **argv) {
     printf("%i clock ticks needed for gauss filter.\n", (int)(endTime-startTime));
     IMG_SavePNG(newImg, "../img/gauss.png");
 
-    startTime = clock();
     // Apply canny edge detector
+    startTime = clock();
     newImg->pixels = canny(newImg->pixels, newImg->w, newImg->h, threshold, lowThreshold, highThreshold);
     endTime = clock();
     printf("%i clock ticks needed for canny edge detector.\n", (int)(endTime-startTime));
-
     IMG_SavePNG(newImg, "../img/sobel.png");
+
+    // Perform hough transform
+    startTime = clock();
+    hough(newImg->pixels, newImg->w, newImg->h, 70, 10);
+    endTime = clock();
+    printf("%i clock ticks needed for hough transform.\n", (int)(endTime-startTime));
+
     SDL_FreeSurface(newImg);
     IMG_Quit();
     SDL_Quit();
