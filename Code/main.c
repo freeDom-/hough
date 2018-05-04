@@ -77,7 +77,6 @@ SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint3
 int main(int argc, char **argv) {
 	uint8_t threshold = 0;
     uint8_t kernelSize = 5;
-    uint8_t offset = 2;
     uint8_t highThreshold = 90;
     uint8_t lowThreshold = 70;
     clock_t startTime, endTime;
@@ -112,7 +111,6 @@ int main(int argc, char **argv) {
         }
         else if(strcmp(argv[i-2],"-k") == 0) {
             kernelSize = atoi(argv[i-1]);
-            offset = kernelSize >> 1;
         }
         else if(strcmp(argv[i-2],"-ht") == 0) {
             highThreshold = atoi(argv[i-1]);

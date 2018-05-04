@@ -15,7 +15,7 @@ uint8_t roundAngle(uint8_t angle) {
 }
 
 uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold) {
-    uint8_t (*output)[width] = malloc(width * height * sizeof(uint8_t));
+    uint8_t (*output)[width] = calloc(width * height, sizeof(uint8_t));	// allocate memory and initialize to 0
     uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
 	int8_t g_x[height][width];
 	int8_t g_y[height][width];
@@ -158,7 +158,6 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 			//g[y][x] = sqrt(g_x[y][x]*g_x[y][x] + g_y[y][x]*g_y[y][x]);
 			g[y][x] = fmax(g[y][x], threshold);
 			if(g[y][x] == threshold) g[y][x] = 0;
-			output[y][x] = 0;
     	}
     }
 
@@ -245,5 +244,6 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 		}
 	}
 
+	free(pixels);
 	return *output;
 }

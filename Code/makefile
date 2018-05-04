@@ -11,10 +11,10 @@ _OBJ=main.o grayscaler.o gauss.o canny.o hough.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -Wall -c -o $@ $< $(CFLAGS)
 
 hough: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -Wall -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 

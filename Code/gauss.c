@@ -34,7 +34,7 @@ unsigned long* pascal(unsigned long n) {
 ** Creates a gaussian kernel
 */
 unsigned long* kernelGenerator(unsigned long kernelSize) {
-    unsigned long* kernel = malloc(sizeof(unsigned long) *(kernelSize));
+    unsigned long* kernel = malloc(sizeof(unsigned long) * kernelSize);
     unsigned long* pascalRow = pascal(kernelSize-1);
 
     for(int i = 0; i < kernelSize; i++) {
@@ -50,9 +50,9 @@ unsigned long* kernelGenerator(unsigned long kernelSize) {
 uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
     unsigned long* filter;
     uint8_t offset = kernelSize >> 1;
-    uint8_t (*output)[width] = malloc(width * height * sizeof(uint8_t));
+    uint8_t temp[height][width];
     uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
-    unsigned long temp, temp2;
+    unsigned long temp1, temp2;
     unsigned long sum = 0;
 
     if(kernelSize > 29) {
@@ -66,64 +66,64 @@ uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
         sum += filter[i];
     }
 
-    // Apply horizontal filter on pixels and save in output
+    // Apply horizontal filter on pixels and save in temp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
             // Apply filter on borders
             if(x < offset) {
-                temp = 0;
+                temp1 = 0;
                 temp2 = 0;
                 // Filter pixels on edges (offset-x) times
                 for(int i = 0; i < offset-x; i++) {
-                    temp += filter[i] * pixels[y][0];
+                    temp1 += filter[i] * pixels[y][0];
                     temp2 += filter[i] * pixels[y][width-1];
                 }
                 // Apply rest of the filter normally
                 for(int i = offset-x; i < kernelSize; i++) {
-                    temp += filter[i] * pixels[y][x+i-offset];
+                    temp1 += filter[i] * pixels[y][x+i-offset];
                     temp2 += filter[i] * pixels[y][width-1-x-i+offset];
                 }
-                output[y][x] = temp / sum;
-                output[y][width-1-x] = temp2 / sum;
+                temp[y][x] = temp1 / sum;
+                temp[y][width-1-x] = temp2 / sum;
             }
             // Apply filter on rest
             else {
-                temp = 0;
+                temp1 = 0;
                 for(int i = 0; i < kernelSize; i++) {
-                    temp += filter[i] * pixels[y][x+i-offset];
+                    temp1 += filter[i] * pixels[y][x+i-offset];
                 }
-                output[y][x] = temp / sum;
+                temp[y][x] = temp1 / sum;
             }
         }
     }
 
-    // Apply vertical filter on output and save in pixels
+    // Apply vertical filter on temp and save in pixels
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
             // Apply filter on borders
             if(y < offset) {
-                temp = 0;
+                temp1 = 0;
                 temp2 = 0;
                 // Filter pixels on edges (offset-x) times
                 for(int i = 0; i < offset-y; i++) {
-                    temp += filter[i] * output[0][x];
-                    temp2 += filter[i] * output[height-1][x];
+                    temp1 += filter[i] * temp[0][x];
+                    temp2 += filter[i] * temp[height-1][x];
                 }
                 // Apply rest of the filter normally
                 for(int i = offset-y; i < kernelSize; i++) {
-                    temp += filter[i] * output[y+i-offset][x];
-                    temp2 += filter[i] * output[height-1-y-i+offset][x];
+                    temp1 += filter[i] * temp[y+i-offset][x];
+                    temp2 += filter[i] * temp[height-1-y-i+offset][x];
                 }
-                pixels[y][x] = temp / sum;
+                pixels[y][x] = temp1 / sum;
                 pixels[height-1-y][x] = temp2 / sum;
             }
             // Apply filter on rest
             else {
-                temp = 0;
+                temp1 = 0;
                 for(int i = 0; i < kernelSize; i++) {
-                    temp += filter[i] * output[y+i-offset][x];
+                    temp1 += filter[i] * temp[y+i-offset][x];
                 }
-                pixels[y][x] = temp / sum;
+                pixels[y][x] = temp1 / sum;
             }
         }
     }
