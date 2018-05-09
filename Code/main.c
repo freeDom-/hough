@@ -79,6 +79,8 @@ int main(int argc, char **argv) {
     uint8_t kernelSize = 5;
     uint8_t highThreshold = 90;
     uint8_t lowThreshold = 70;
+    uint8_t radius = 70;
+    uint8_t radiusRange = 10;
     clock_t startTime, endTime;
 
     // Set default path for images
@@ -118,12 +120,23 @@ int main(int argc, char **argv) {
         else if(strcmp(argv[i-2],"-lt") == 0) {
             lowThreshold = atoi(argv[i-1]);
         }
+        else if(strcmp(argv[i-2], "-r") == 0) {
+            radius = atoi(argv[i-1]);
+        }
+        else if(strcmp(argv[i-2], "-rr") == 0) {
+            radiusRange = atoi(argv[i-1]);
+        }
     }
 
     // Load test image
     img = loadImage(path);
     if(img == NULL)
         return 1;
+
+    // DEBUG INFORMATION
+    /*printf("pixelformat: %i\n", img->format->format);
+    printf("bits per pixel: %i\n", img->format->BitsPerPixel);
+    printf("pitch, width: %i, %i\n", img->pitch, img->w);*/
 
     // Prepare image and create a big Surface with 8 Bit depth
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
@@ -154,7 +167,7 @@ int main(int argc, char **argv) {
 
     // Perform hough transform
     startTime = clock();
-    hough(newImg->pixels, newImg->w, newImg->h, 70, 10);
+    hough(newImg->pixels, newImg->w, newImg->h, radius, radiusRange);
     endTime = clock();
     printf("%i clock ticks needed for hough transform.\n", (int)(endTime-startTime));
 
