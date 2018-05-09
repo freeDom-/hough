@@ -17,7 +17,7 @@ int hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t radiu
         for(int x = 0; x < width; x++) {
             if(pixels[y][x] != 0) {
                 for(int r = radius-range; r <= radius+range; r++) {
-                    for(int t = 0; t <= 180; t++) {      // 180 degrees enough?
+                    for(int t = 0; t <= 360; t++) {
                         w = x - r * cos(t * PI / 180);   // Polar coordinates of circles center
                         h = y - r * sin(t * PI / 180);   // Polar coordinates of circles center
                         if(w >= 0 && w < width && h >= 0 && h < height) {
