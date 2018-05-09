@@ -17,12 +17,13 @@ uint8_t roundAngle(uint8_t angle) {
 uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold) {
     uint8_t (*output)[width] = calloc(width * height, sizeof(uint8_t));	// allocate memory and initialize to 0
     uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
-	int8_t g_x[height][width];
-	int8_t g_y[height][width];
-	uint8_t g[height][width];
+	int16_t g_x[height][width];
+	int16_t g_y[height][width];
+	int16_t tmp[height][width];
+	uint16_t g[height][width];
 	uint8_t delta[height][width];
-	uint8_t h_filter[3] = {1, 0, -1};
-	uint8_t v_filter[3] = {1, 2, 1};
+	int8_t h_filter[3] = {1, 0, -1};
+	int8_t v_filter[3] = {1, 2, 1};
 	const uint8_t offset = 1;
 	const uint8_t kernelSize = 3;
 
@@ -35,24 +36,24 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
         for(int x = 0; x < width-offset; x++) {
         	// Apply Sobeloperator on borders
         	if(x < offset) {
-	            g[y][x] = 0;
-	            g[y][width-1-x] = 0;
+	            tmp[y][x] = 0;
+	            tmp[y][width-1-x] = 0;
 	            // Filter pixels on edges (offset-x) times
 	            for(int i = 0; i < offset-x; i++) {
-	                g[y][x] += h_filter[i] * pixels[y][0];
-	                g[y][width-1-x] += h_filter[i] * pixels[y][width-1];
+	                tmp[y][x] += h_filter[i] * pixels[y][0];
+	                tmp[y][width-1-x] += h_filter[i] * pixels[y][width-1];
 	            }
 	            // Apply rest of the filter normally
 	            for(int i = offset-x; i < kernelSize; i++) {
-	                g[y][x] += h_filter[i] * pixels[y][x+i-offset];
-	                g[y][width-1-x] += h_filter[i] * pixels[y][width-1-x-i+offset];
+	                tmp[y][x] += h_filter[i] * pixels[y][x+i-offset];
+	                tmp[y][width-1-x] += h_filter[i] * pixels[y][width-1-x-i+offset];
 	            }
         	}
         	// Apply Sobeloperator on rest
         	else {
-	            g[y][x] = 0;
+	            tmp[y][x] = 0;
 	            for(int i = 0; i < kernelSize; i++) {
-	                g[y][x] += h_filter[i] * pixels[y][x+i-offset];
+	                tmp[y][x] += h_filter[i] * pixels[y][x+i-offset];
 	            }
 	        }
         }
@@ -67,20 +68,20 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	            g_x[height-1-y][x] = 0;
 	            // Filter pixels on edges (offset-x) times
 	            for(int i = 0; i < offset-y; i++) {
-	                g_x[y][x] += v_filter[i] * g[0][x];
-	                g_x[height-1-y][x] += v_filter[i] * g[height-1][x];
+	                g_x[y][x] += v_filter[i] * tmp[0][x];
+	                g_x[height-1-y][x] += v_filter[i] * tmp[height-1][x];
 	            }
 	            // Apply rest of the filter normally
 	            for(int i = offset-y; i < kernelSize; i++) {
-	                g_x[y][x] += v_filter[i] * g[y+i-offset][x];
-	                g_x[height-1-y][x] += v_filter[i] * g[height-1-y-i+offset][x];
+	                g_x[y][x] += v_filter[i] * tmp[y+i-offset][x];
+	                g_x[height-1-y][x] += v_filter[i] * tmp[height-1-y-i+offset][x];
 	            }
         	}
         	// Apply Sobelfilter on rest
         	else {
 	            g_x[y][x] = 0;
 	            for(int i = 0; i < kernelSize; i++) {
-	                g_x[y][x] += v_filter[i] * g[y+i-offset][x];
+	                g_x[y][x] += v_filter[i] * tmp[y+i-offset][x];
 	            }
         	}
         }
@@ -95,24 +96,24 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
         for(int x = 0; x < width-offset; x++) {
         	// Apply Sobeloperator on borders
         	if(x < offset) {
-	            g[y][x] = 0;
-            	g[y][width-1-x] = 0;
+	            tmp[y][x] = 0;
+            	tmp[y][width-1-x] = 0;
 	            // Filter pixels on edges (offset-x) times
 	            for(int i = 0; i < offset-x; i++) {
-	                g[y][x] += v_filter[i] * pixels[y][0];
-	                g[y][width-1-x] += v_filter[i] * pixels[y][width-1];
+	                tmp[y][x] += v_filter[i] * pixels[y][0];
+	                tmp[y][width-1-x] += v_filter[i] * pixels[y][width-1];
 	            }
 	            // Apply rest of the filter normally
 	            for(int i = offset-x; i < kernelSize; i++) {
-	                g[y][x] += v_filter[i] * pixels[y][x+i-offset];
-	                g[y][width-1-x] += v_filter[i] * pixels[y][width-1-x-i+offset];
+	                tmp[y][x] += v_filter[i] * pixels[y][x+i-offset];
+	                tmp[y][width-1-x] += v_filter[i] * pixels[y][width-1-x-i+offset];
 	            }
         	}
         	// Apply Sobeloperator on rest
         	else {
-	            g[y][x] = 0;
+	            tmp[y][x] = 0;
 	            for(int i = 0; i < kernelSize; i++) {
-	                g[y][x] += v_filter[i] * pixels[y][x+i-offset];
+	                tmp[y][x] += v_filter[i] * pixels[y][x+i-offset];
 	            }
 	        }
         }
@@ -127,20 +128,20 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	            g_y[height-1-y][x] = 0;
 	            // Filter pixels on edges (offset-x) times
 	            for(int i = 0; i < offset-y; i++) {
-	                g_y[y][x] += h_filter[i] * g[0][x];
-	                g_y[height-1-y][x] += h_filter[i] * g[height-1][x];
+	                g_y[y][x] += h_filter[i] * tmp[0][x];
+	                g_y[height-1-y][x] += h_filter[i] * tmp[height-1][x];
 	            }
 	            // Apply rest of the filter normally
 	            for(int i = offset-y; i < kernelSize; i++) {
-	                g_y[y][x] += h_filter[i] * g[y+i-offset][x];
-	                g_y[height-1-y][x] += h_filter[i] * g[height-1-y-i+offset][x];
+	                g_y[y][x] += h_filter[i] * tmp[y+i-offset][x];
+	                g_y[height-1-y][x] += h_filter[i] * tmp[height-1-y-i+offset][x];
 	            }
 			}
 			// Apply Sobeloperator on rest
 			else {
 	            g_y[y][x] = 0;
 	            for(int i = 0; i < kernelSize; i++) {
-	                g_y[y][x] += h_filter[i] * g[y+i-offset][x];
+	                g_y[y][x] += h_filter[i] * tmp[y+i-offset][x];
 	            }
         	}
         }
@@ -188,14 +189,11 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	    }
 	}
 
-    // TODO: optimize Hysteresis to not scan every pixel multiple times
-    // mark pixels as checked -> e.g. set g to 0 
-
 	// Hysteresis
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
-			// Follow strong edges
-			if(g[y][x] > highThreshold) {
+			// Follow strong edges if not already performed
+			if(g[y][x] > highThreshold && output[y][x] != 255) {
 				int i = y;
 				int j = x;
 				// Follow edge in positive direction

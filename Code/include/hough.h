@@ -16,4 +16,12 @@
 #define PI 3.14159265
 #endif /*MATH_H_INCLUDED*/
 
-int hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t radius, uint8_t range);
+extern int circleCount;
+
+typedef struct{
+	unsigned int x;
+	unsigned int y;
+	uint8_t r;
+} circle;
+
+circle* hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t radius, uint8_t range, unsigned int threshold);

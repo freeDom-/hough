@@ -24,9 +24,9 @@
 #include "hough.h"
 
 /*
-** Creates a grayscale palette with 256 colors
+** Creates a (grayscale) palette with 256 colors
 */
-SDL_Palette* createPalette() {
+SDL_Palette* createPalette(uint8_t mode) {
     SDL_Palette* p = SDL_AllocPalette(256);
     SDL_Color* tmp;
 
@@ -35,6 +35,13 @@ SDL_Palette* createPalette() {
         tmp->r = i;
         tmp->g = i;
         tmp->b = i;
+    }
+
+    if(mode == 1) {
+        tmp = &p->colors[127];
+        tmp->r = 255;
+        tmp->g = 0;
+        tmp->b = 0;
     }
 
     return p;
@@ -70,7 +77,7 @@ SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint3
 
 /*
 ** Finding circles in a 32 bit color image by
-** 1) Transforming the image to a greyscale image
+** 1) Transforming the image to a grayscale image
 ** 2) Applying a Gaussian filter
 ** 3) Converting the image to a binary image 
 */
@@ -81,7 +88,9 @@ int main(int argc, char **argv) {
     uint8_t lowThreshold = 70;
     uint8_t radius = 70;
     uint8_t radiusRange = 10;
+    unsigned int houghThreshold = 300;
     clock_t startTime, endTime;
+    circle* circles = NULL;
 
     // Set default path for images
     char* dir = "../img/";
@@ -98,7 +107,7 @@ int main(int argc, char **argv) {
 
     // Evaluate arguments
     if(argc % 2 == 0) {
-        printf("Wrong number of arguments.\nUsage: ./hough -k 'kernelSize' -i 'imagename' -t 'threshold' -lt 'lowThreshold' -ht 'highThreshold'\n");
+        printf("Wrong number of arguments.\nUsage: ./hough -k 'kernelSize' -i 'imagename' -t 'threshold' -lt 'lowThreshold' -ht 'highThreshold -r 'radius' -rr 'radiusRange' -htr 'houghThreshold'\n");
         return 1;
     }
     for(int i = 3; i <= argc; i += 2) {
@@ -113,6 +122,10 @@ int main(int argc, char **argv) {
         }
         else if(strcmp(argv[i-2],"-k") == 0) {
             kernelSize = atoi(argv[i-1]);
+            if(kernelSize != 0 && kernelSize % 2 == 0) {
+                printf("kernelSize must be uneven.\n");
+                return 1;
+            }
         }
         else if(strcmp(argv[i-2],"-ht") == 0) {
             highThreshold = atoi(argv[i-1]);
@@ -126,6 +139,9 @@ int main(int argc, char **argv) {
         else if(strcmp(argv[i-2], "-rr") == 0) {
             radiusRange = atoi(argv[i-1]);
         }
+        else if(strcmp(argv[i-2], "-htr") == 0) {
+            houghThreshold = atoi(argv[i-1]);
+        }
     }
 
     // Load test image
@@ -133,15 +149,10 @@ int main(int argc, char **argv) {
     if(img == NULL)
         return 1;
 
-    // DEBUG INFORMATION
-    /*printf("pixelformat: %i\n", img->format->format);
-    printf("bits per pixel: %i\n", img->format->BitsPerPixel);
-    printf("pitch, width: %i, %i\n", img->pitch, img->w);*/
-
     // Prepare image and create a big Surface with 8 Bit depth
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
     newImg = createSurface(img->w, img->h, 8, 0, 0, 0, 0);
-    SDL_SetSurfacePalette(newImg, createPalette());
+    SDL_SetSurfacePalette(newImg, createPalette(0));
 
     // Convert pixels to grayscale
     startTime = clock();
@@ -152,11 +163,13 @@ int main(int argc, char **argv) {
     SDL_FreeSurface(img);
 
     // Apply gauss filter
-    startTime = clock();
-    newImg->pixels = gauss(newImg->pixels, newImg->w, newImg->h, kernelSize);
-    endTime = clock();
-    printf("%i clock ticks needed for gauss filter.\n", (int)(endTime-startTime));
-    IMG_SavePNG(newImg, "../img/gauss.png");
+    if(kernelSize != 0) {
+        startTime = clock();
+        newImg->pixels = gauss(newImg->pixels, newImg->w, newImg->h, kernelSize);
+        endTime = clock();
+        printf("%i clock ticks needed for gauss filter.\n", (int)(endTime-startTime));
+        IMG_SavePNG(newImg, "../img/gauss.png");
+    }
 
     // Apply canny edge detector
     startTime = clock();
@@ -167,9 +180,18 @@ int main(int argc, char **argv) {
 
     // Perform hough transform
     startTime = clock();
-    hough(newImg->pixels, newImg->w, newImg->h, radius, radiusRange);
+    circles = hough(newImg->pixels, newImg->w, newImg->h, radius, radiusRange, houghThreshold);
     endTime = clock();
     printf("%i clock ticks needed for hough transform.\n", (int)(endTime-startTime));
+
+    // Draw found circles in red
+    SDL_SetSurfacePalette(newImg, createPalette(1));
+    for(int i = 0; i < circleCount; i++) {
+        ((uint8_t*) newImg->pixels)[circles[i].y * newImg->w + circles[i].x] = 127;
+    }
+    IMG_SavePNG(newImg, "../img/hough.png");
+    // Free memory for circles
+    free(circles);
 
     SDL_FreeSurface(newImg);
     IMG_Quit();

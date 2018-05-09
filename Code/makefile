@@ -19,4 +19,4 @@ hough: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o hough ../img/grayscale.png ../img/gauss.png ../img/sobel.png
+	rm -f $(ODIR)/*.o hough ../img/grayscale.png ../img/gauss.png ../img/sobel.png ../img/hough.png
