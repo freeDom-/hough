@@ -23,6 +23,59 @@
 #include "canny.h"
 #include "hough.h"
 
+// Midpoint circle algorithm from Wikipedia
+uint8_t* drawCircle(uint8_t* input, unsigned int width, unsigned int height, unsigned int x0, unsigned int y0, uint8_t r) {
+    uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
+    int x = r-1;
+    int y = 0;
+    int dx = 1;
+    int dy = 1;
+    int err = dx - (r << 1);
+
+    while(x >= y) {
+        if(x0 + x < width && y0 + y < height) {
+            pixels[y0 + y][x0 + x] = 127;
+        }
+        if(x0 + y < width && y0 + x < height) {
+            pixels[y0 + x][x0 + y] = 127;
+        }
+        if(x0 - y >= 0 && y0 + x < height) {
+            pixels[y0 + x][x0 - y] = 127;
+        }
+        if(x0 - x >= 0 && y0 + y < height) {
+            pixels[y0 + y][x0 - x] = 127;
+        }
+        if(x0 - x >= 0 && y0 - y >= 0) {
+            //pixels[y0 - y][x0 - x] = 127;
+        }
+        else printf("%i, %i\n", x0-x, y0-y);
+        if(x0 - y >= 0 && y0 - x >= 0) {
+            //pixels[y0 - x][x0 - y] = 127;
+        }
+        if(x0 + y < width && y0 - x >= 0) {
+            //pixels[y0 - x][x0 + y] = 127;
+        }
+        if(x0 + x < width && y0 - y >= 0) {
+            //pixels[y0 - y][x0 + x] = 127;
+        }
+
+        if(err <= 0) {
+            y++;
+            err += dy;
+            dy += 2;
+        }
+
+        if(err > 0) {
+            x--;
+            dx += 2;
+            err += dx - (r << 1);
+        }
+    }
+    pixels[y0][x0] = 127;
+
+    return *pixels;
+}
+
 /*
 ** Creates a (grayscale) palette with 256 colors
 */
@@ -187,7 +240,7 @@ int main(int argc, char **argv) {
     // Draw found circles in red
     SDL_SetSurfacePalette(newImg, createPalette(1));
     for(int i = 0; i < circleCount; i++) {
-        ((uint8_t*) newImg->pixels)[circles[i].y * newImg->w + circles[i].x] = 127;
+        newImg->pixels = drawCircle(newImg->pixels, newImg->w, newImg->h, circles[i].x, circles[i].y, circles[i].r);
     }
     IMG_SavePNG(newImg, "../img/hough.png");
     // Free memory for circles
