@@ -167,6 +167,106 @@ void printUsage() {
 }
 
 /*
+** Evaluates arguments and checks if they are correct
+*/
+void evaluateArguments(int argc, char** argv, char* path, char* dir, uint8_t* kernelSize, uint8_t* threshold, uint8_t* lowThreshold, uint8_t* highThreshold, uint8_t* radius, uint8_t* radiusUpperBounds, unsigned int* houghThreshold) {
+    if(argc % 2 == 0) { // as long as each optional argument takes exactly one additional argument this is ok
+        fprintf(stderr, "Wrong number of arguments.\n");
+        printUsage();
+        exit(EXIT_FAILURE);
+    }
+
+    // Loop through arguments
+    char* end;
+    for(int i = 3; i <= argc; i += 2) { // as long as each optional argument takes exactly one additional argument this is ok
+        if(strcmp(argv[i-2],"-i") == 0) {
+            free(path);
+            path = malloc(sizeof(dir) + sizeof(argv[i-1]) + 1);
+            strcpy(path, dir);
+            strcat(path, argv[i-1]);
+        }
+        else if(strcmp(argv[i-2],"-k") == 0) {
+            *kernelSize = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -k\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+            if(*kernelSize != 0 && *kernelSize % 2 == 0) {
+                fprintf(stderr, "ERROR: Wrong argument for -k\nkernel_size must be uneven.\n");
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2],"-ct") == 0) {
+            *threshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -ct\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2],"-lt") == 0) {
+            *lowThreshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -lt\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2],"-ht") == 0) {
+            *highThreshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -ht\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2], "-r") == 0) {
+            *radius = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -r\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2], "-rub") == 0) {
+            *radiusUpperBounds = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -rub\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2], "-hot") == 0) {
+            *houghThreshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -hot\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else {
+            fprintf(stderr, "ERROR: Wrong argument %s\n", argv[i-2]);
+            printUsage();
+            exit(EXIT_FAILURE);
+        }
+    }
+    if(*highThreshold < *lowThreshold) {
+        fprintf(stderr, "ERROR: high_threshold (%i) must not be smaller than low_threshold (%i)\n", *highThreshold, *lowThreshold);
+        exit(EXIT_FAILURE);
+    }
+    if(*radiusUpperBounds < *radius) {
+        fprintf(stderr, "ERROR: radius_upper_bounds (%i) must not be smaller than radius (%i)\n", *radiusUpperBounds, *radius);
+        exit(EXIT_FAILURE);
+    }
+    if(*kernelSize > 29) {
+        fprintf(stderr, "ERROR: kernel_size (%i) is too big. Only kernel_size's up to 29 are supported\n", *kernelSize);
+        exit(EXIT_FAILURE);
+    }
+}
+
+/*
 ** Finding circles in a 32 bit color image by
 ** 1) Transforming the image to a grayscale image
 ** 2) Applying a Gaussian filter
@@ -177,8 +277,8 @@ void printUsage() {
 */
 int main(int argc, char **argv) {
     // Default parameters
-	uint8_t threshold = 0;
     uint8_t kernelSize = 5;
+	uint8_t threshold = 0;
     uint8_t lowThreshold = 100;
     uint8_t highThreshold = 200;
     uint8_t radius = 15;
@@ -202,100 +302,7 @@ int main(int argc, char **argv) {
     IMG_Init(IMG_INIT_PNG);
 
     // Evaluate arguments
-    if(argc % 2 == 0) { // as long as each optional argument takes exactly one additional argument this is ok
-        fprintf(stderr, "Wrong number of arguments.\n");
-        printUsage();
-        exit(EXIT_FAILURE);
-    }
-
-    // Loop through arguments
-    char* end;
-    for(int i = 3; i <= argc; i += 2) { // as long as each optional argument takes exactly one additional argument this is ok
-        if(strcmp(argv[i-2],"-i") == 0) {
-            free(path);
-            path = malloc(sizeof(dir) + sizeof(argv[i-1]) + 1);
-            strcpy(path, dir);
-            strcat(path, argv[i-1]);
-        }
-        else if(strcmp(argv[i-2],"-k") == 0) {
-            kernelSize = strtol(argv[i-1], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -k\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-            if(kernelSize != 0 && kernelSize % 2 == 0) {
-                fprintf(stderr, "ERROR: Wrong argument for -k\nkernel_size must be uneven.\n");
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if(strcmp(argv[i-2],"-ct") == 0) {
-            threshold = strtol(argv[i-1], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -ct\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if(strcmp(argv[i-2],"-lt") == 0) {
-            lowThreshold = strtol(argv[i-1], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -lt\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if(strcmp(argv[i-2],"-ht") == 0) {
-            highThreshold = strtol(argv[i-1], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -ht\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if(strcmp(argv[i-2], "-r") == 0) {
-            radius = strtol(argv[i-1], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -r\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if(strcmp(argv[i-2], "-rub") == 0) {
-            radiusUpperBounds = strtol(argv[i-1], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -rub\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if(strcmp(argv[i-2], "-hot") == 0) {
-            houghThreshold = strtol(argv[i-1], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -hot\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-        }
-        else {
-            fprintf(stderr, "ERROR: Wrong argument %s\n", argv[i-2]);
-            printUsage();
-            exit(EXIT_FAILURE);
-        }
-    }
-    if(highThreshold < lowThreshold) {
-        fprintf(stderr, "ERROR: high_threshold (%i) must not be smaller than low_threshold (%i)\n", highThreshold, lowThreshold);
-        exit(EXIT_FAILURE);
-    }
-    if(radiusUpperBounds < radius) {
-        fprintf(stderr, "ERROR: radius_upper_bounds (%i) must not be smaller than radius (%i)\n", radiusUpperBounds, radius);
-        exit(EXIT_FAILURE);
-    }
-    if(kernelSize > 29) {
-        fprintf(stderr, "ERROR: kernel_size (%i) is too big. Only kernel_size's up to 29 are supported\n", kernelSize);
-        exit(EXIT_FAILURE);
-    }
+    evaluateArguments(argc, argv, path, dir, &kernelSize, &threshold, &lowThreshold, &highThreshold, &radius, &radiusUpperBounds, &houghThreshold);
 
     // Load test image
     img = loadImage(path);
