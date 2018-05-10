@@ -343,6 +343,7 @@ int main(int argc, char **argv) {
     circles = hough(grayImg->pixels, grayImg->w, grayImg->h, radius, radiusUpperBounds, houghThreshold);
     endTime = clock();
     printf("%i clock ticks needed for hough transform.\n", (int)(endTime-startTime));
+    printf("%i circles found.\n", circleCount);
 
     // Draw found circles in red
     SDL_SetSurfacePalette(grayImg, createPalette(1));
