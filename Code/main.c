@@ -46,16 +46,16 @@ uint8_t* drawCircle(uint8_t* input, unsigned int width, unsigned int height, uns
 
     while(x >= y) {
         if(x0 + x < width && y0 + y < height) {
-            //pixels[y0 + y][x0 + x] = 127;
+            pixels[y0 + y][x0 + x] = 127;
         }
         if(x0 + y < width && y0 + x < height) {
-            //pixels[y0 + x][x0 + y] = 127;
+            pixels[y0 + x][x0 + y] = 127;
         }
         if(x0 - y >= 0 && y0 + x < height) {
-            //pixels[y0 + x][x0 - y] = 127;
+            pixels[y0 + x][x0 - y] = 127;
         }
         if(x0 - x >= 0 && y0 + y < height) {
-            //pixels[y0 + y][x0 - x] = 127;
+            pixels[y0 + y][x0 - x] = 127;
         }
         if(x0 - x >= 0 && y0 - y >= 0) {
             //pixels[y0 - y][x0 - x] = 127;
@@ -292,6 +292,10 @@ int main(int argc, char **argv) {
         fprintf(stderr, "ERROR: radius_upper_bounds (%i) must not be smaller than radius (%i)\n", radiusUpperBounds, radius);
         exit(EXIT_FAILURE);
     }
+    if(kernelSize > 29) {
+        fprintf(stderr, "ERROR: kernel_size (%i) is too big. Only kernel_size's up to 29 are supported\n", kernelSize);
+        exit(EXIT_FAILURE);
+    }
 
     // Load test image
     img = loadImage(path);
@@ -336,6 +340,7 @@ int main(int argc, char **argv) {
     // Draw found circles in red
     SDL_SetSurfacePalette(grayImg, createPalette(1));
     for(int i = 0; i < circleCount; i++) {
+        printf("%i\n", circles[i].r);
         grayImg->pixels = drawCircle(grayImg->pixels, grayImg->w, grayImg->h, circles[i].x, circles[i].y, circles[i].r);
     }
     IMG_SavePNG(grayImg, "../img/hough.png");

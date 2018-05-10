@@ -6,7 +6,7 @@
 
 #include "gauss.h"
 
-// KERNELS
+// KERNELS - hardcode Kernels for speed improvements?
 // 1/16 = 2^4
 int filter3[3] = {4, 8, 4};
 int sum3 = 16;
@@ -54,11 +54,6 @@ uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
     unsigned long* filter;
     unsigned long temp1, temp2;
     unsigned long sum = 0;
-
-    if(kernelSize > 29) {
-        printf("Kernel size is not supported.\n");
-        return NULL;
-    }
 
     // Setup kernel
     filter = kernelGenerator(kernelSize);

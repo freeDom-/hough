@@ -63,7 +63,7 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t r
                current > acc[(y+1) * width * radiiCount + (x-1) * radiiCount] &&
                current > acc[(y+1) * width * radiiCount +   x   * radiiCount] &&
                current > acc[(y+1) * width * radiiCount + (x+1) * radiiCount]) {
-                circle tmp = {x, y, (radius-radiusUpperBounds) + maxRadius[y][x]};
+                circle tmp = {x, y, radius + maxRadius[y][x]};
                 if(circleCount == maxCircles) {
                     maxCircles = maxCircles << 2;
                     circles = (circle*) realloc(circles, maxCircles * sizeof(circle));
