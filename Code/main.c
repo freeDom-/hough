@@ -38,36 +38,36 @@
 */
 uint8_t* drawCircle(uint8_t* input, unsigned int width, unsigned int height, unsigned int x0, unsigned int y0, uint8_t r) {
     uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
-    int x = r-1;
-    int y = 0;
-    int dx = 1;
-    int dy = 1;
+    unsigned int x = r-1;
+    unsigned int y = 0;
+    unsigned int dx = 1;
+    unsigned int dy = 1;
     int err = dx - (r << 1);
 
     while(x >= y) {
-        if(x0 + x < width && y0 + y < height) {
+        if((int)(x0 + x) < width && (int)(y0 + y) < height) {
             pixels[y0 + y][x0 + x] = 127;
         }
-        if(x0 + y < width && y0 + x < height) {
+        if((int)(x0 + y) < width && (int)(y0 + x) < height) {
             pixels[y0 + x][x0 + y] = 127;
         }
-        if(x0 - y >= 0 && y0 + x < height) {
+        if((int)(x0 - y) >= 0 && (int)(y0 + x) < height) {
             pixels[y0 + x][x0 - y] = 127;
         }
-        if(x0 - x >= 0 && y0 + y < height) {
+        if((int)(x0 - x) >= 0 && (int)(y0 + y) < height) {
             pixels[y0 + y][x0 - x] = 127;
         }
-        if(x0 - x >= 0 && y0 - y >= 0) {
-            //pixels[y0 - y][x0 - x] = 127;
+        if((int)(x0 - x) >= 0 && (int)(y0 - y) >= 0) {
+            pixels[y0 - y][x0 - x] = 127;
         }
-        if(x0 - y >= 0 && y0 - x >= 0) {
-            //pixels[y0 - x][x0 - y] = 127;
+        if((int)(x0 - y) >= 0 && (int)(y0 - x) >= 0) {
+            pixels[y0 - x][x0 - y] = 127;
         }
-        if(x0 + y < width && y0 - x >= 0) {
-            //pixels[y0 - x][x0 + y] = 127;
+        if((int)(x0 + y) < width && (int)(y0 - x) >= 0) {
+            pixels[y0 - x][x0 + y] = 127;
         }
-        if(x0 + x < width && y0 - y >= 0) {
-            //pixels[y0 - y][x0 + x] = 127;
+        if((int)(x0 + x) < width && (int)(y0 - y) >= 0) {
+            pixels[y0 - y][x0 + x] = 127;
         }
 
         if(err <= 0) {
@@ -340,7 +340,6 @@ int main(int argc, char **argv) {
     // Draw found circles in red
     SDL_SetSurfacePalette(grayImg, createPalette(1));
     for(int i = 0; i < circleCount; i++) {
-        printf("%i\n", circles[i].r);
         grayImg->pixels = drawCircle(grayImg->pixels, grayImg->w, grayImg->h, circles[i].x, circles[i].y, circles[i].r);
     }
     IMG_SavePNG(grayImg, "../img/hough.png");
