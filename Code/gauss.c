@@ -48,10 +48,10 @@ unsigned long* kernelGenerator(unsigned long kernelSize) {
 }
 
 uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
-    unsigned long* filter;
+    uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
     uint8_t offset = kernelSize >> 1;
     uint8_t temp[height][width];
-    uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
+    unsigned long* filter;
     unsigned long temp1, temp2;
     unsigned long sum = 0;
 

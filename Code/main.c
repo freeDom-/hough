@@ -1,14 +1,15 @@
 /*
 ** Finds circles in a 32 bit color image
-** usage: ./hough imagename threshold
 */
 
-#ifndef SDL2_H_INCLUDED
-#define SDL2_H_INCLUDED
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#endif /*SDL2_H_INCLUDED*/
-
+#ifndef STDIO_H_INCLUDED
+#define STIDO_H_INCLUDED
+#include <stdio.h>
+#endif /*STDIO_H_INCLUDED*/
+#ifndef STDLIB_H_INCLUDED
+#define STDLIB_H_INCLUDED
+#include <stdlib.h>
+#endif /*STDLIB_H_INCLUDED*/
 #ifndef STRING_H_INCLUDED
 #define STRING_H_INCLUDED
 #include <string.h>
@@ -18,12 +19,23 @@
 #include <time.h>
 #endif /*TIME_H_INCLUDED*/
 
+#ifndef SDL2_H_INCLUDED
+#define SDL2_H_INCLUDED
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#endif /*SDL2_H_INCLUDED*/
+
 #include "grayscaler.h"
 #include "gauss.h"
 #include "canny.h"
 #include "hough.h"
 
-// Midpoint circle algorithm from Wikipedia
+/*
+** Midpoint circle algorithm from Wikipedia
+** Draws circles with a radius of r at position (x0, y0)
+** Takes the pixel data of the image, its width and height as additional input
+** Returns the updated pixel data
+*/
 uint8_t* drawCircle(uint8_t* input, unsigned int width, unsigned int height, unsigned int x0, unsigned int y0, uint8_t r) {
     uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
     int x = r-1;
@@ -34,21 +46,20 @@ uint8_t* drawCircle(uint8_t* input, unsigned int width, unsigned int height, uns
 
     while(x >= y) {
         if(x0 + x < width && y0 + y < height) {
-            pixels[y0 + y][x0 + x] = 127;
+            //pixels[y0 + y][x0 + x] = 127;
         }
         if(x0 + y < width && y0 + x < height) {
-            pixels[y0 + x][x0 + y] = 127;
+            //pixels[y0 + x][x0 + y] = 127;
         }
         if(x0 - y >= 0 && y0 + x < height) {
-            pixels[y0 + x][x0 - y] = 127;
+            //pixels[y0 + x][x0 - y] = 127;
         }
         if(x0 - x >= 0 && y0 + y < height) {
-            pixels[y0 + y][x0 - x] = 127;
+            //pixels[y0 + y][x0 - x] = 127;
         }
         if(x0 - x >= 0 && y0 - y >= 0) {
             //pixels[y0 - y][x0 - x] = 127;
         }
-        else printf("%i, %i\n", x0-x, y0-y);
         if(x0 - y >= 0 && y0 - x >= 0) {
             //pixels[y0 - x][x0 - y] = 127;
         }
@@ -78,11 +89,13 @@ uint8_t* drawCircle(uint8_t* input, unsigned int width, unsigned int height, uns
 
 /*
 ** Creates a (grayscale) palette with 256 colors
+** When mode = 1 red is added to the palette
 */
 SDL_Palette* createPalette(uint8_t mode) {
     SDL_Palette* p = SDL_AllocPalette(256);
     SDL_Color* tmp;
 
+    // Create grayscale-colors
     for(int i = 0; i < 256; i++) {
         tmp = &p->colors[i];
         tmp->r = i;
@@ -90,6 +103,7 @@ SDL_Palette* createPalette(uint8_t mode) {
         tmp->b = i;
     }
 
+    // Add red to the palette on position 127
     if(mode == 1) {
         tmp = &p->colors[127];
         tmp->r = 255;
@@ -129,72 +143,154 @@ SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint3
 }
 
 /*
+** Prints usage information to stderr
+*/
+void printUsage() {
+    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-ct threshold] [-lt low_threshold] [-ht high_threshold] [-r radius] [-rub radius_upper_bounds] [-ht threshold]\n"
+                "\t-i image_name: path to the image to process\n"
+                "\t\t(default is test.png)\n"
+                "\t-k kernel_size: filtersize for the gaussian kernel\n"
+                "\t\t(default is 5)\n"
+                "\t-ct threshold: threshold for the canny edge detector when calculating the gradient\n"
+                "\t\t(default is 0)\n"
+                "\t-lt low_threshold: lower threshold for the canny edge detectors hysteresis\n"
+                "\t\t(default is 100)\n"
+                "\t-ht high_threshold: higher threshold for the canny edge detectors hysteresis\n"
+                "\t\t(default is 200)\n"
+                "\t-r radius: radius for the size of the circles searched in the hough transform\n"
+                "\t\t(default is 15)\n"
+                "\t-rub radius_upper_bounds: upper bounds radius for the sizes of the circles searched in the hough transform\n"
+                "\t\tIf this argument is given to the program, a range of radii from radius to radius_upper_bounds is searched in the hough transform\n"
+                "\t\t(default is 25)\n"
+                "\t-hot threshold: threshold for the hough transform when calculating local maxima\n"
+                "\t\t(default is 100)\n");
+}
+
+/*
 ** Finding circles in a 32 bit color image by
 ** 1) Transforming the image to a grayscale image
 ** 2) Applying a Gaussian filter
-** 3) Converting the image to a binary image 
+** 3) Converting the image to a binary image
+** 4) Applying canny edge detector
+** 5) Performing hough transform
+** 6) Drawing found circles
 */
 int main(int argc, char **argv) {
+    // Default parameters
 	uint8_t threshold = 0;
     uint8_t kernelSize = 5;
-    uint8_t highThreshold = 90;
-    uint8_t lowThreshold = 70;
-    uint8_t radius = 70;
-    uint8_t radiusRange = 10;
-    unsigned int houghThreshold = 300;
+    uint8_t lowThreshold = 100;
+    uint8_t highThreshold = 200;
+    uint8_t radius = 15;
+    uint8_t radiusUpperBounds = 25;
+    unsigned int houghThreshold = 100;
+
     clock_t startTime, endTime;
     circle* circles = NULL;
 
-    // Set default path for images
+    // Set dir and default path for images
     char* dir = "../img/";
-    char* path = malloc(sizeof(dir) + sizeof("../img/test.png") + 1);
+    char* path = malloc(sizeof(dir) + sizeof("test.png") + 1);
     strcpy(path, dir);
     strcat(path, "../img/test.png");
 
     SDL_Surface* img;
-    SDL_Surface* newImg;
+    SDL_Surface* grayImg;
 
     // Initialize SDL and SDL Image
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
 
     // Evaluate arguments
-    if(argc % 2 == 0) {
-        printf("Wrong number of arguments.\nUsage: ./hough -k 'kernelSize' -i 'imagename' -t 'threshold' -lt 'lowThreshold' -ht 'highThreshold -r 'radius' -rr 'radiusRange' -htr 'houghThreshold'\n");
-        return 1;
+    if(argc % 2 == 0) { // as long as each optional argument takes exactly one additional argument this is ok
+        fprintf(stderr, "Wrong number of arguments.\n");
+        printUsage();
+        exit(EXIT_FAILURE);
     }
-    for(int i = 3; i <= argc; i += 2) {
+
+    // Loop through arguments
+    char* end;
+    for(int i = 3; i <= argc; i += 2) { // as long as each optional argument takes exactly one additional argument this is ok
         if(strcmp(argv[i-2],"-i") == 0) {
             free(path);
             path = malloc(sizeof(dir) + sizeof(argv[i-1]) + 1);
             strcpy(path, dir);
             strcat(path, argv[i-1]);
         }
-        else if(strcmp(argv[i-2],"-t") == 0) {
-            threshold = atoi(argv[i-1]);
-        }
         else if(strcmp(argv[i-2],"-k") == 0) {
-            kernelSize = atoi(argv[i-1]);
+            kernelSize = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -k\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
             if(kernelSize != 0 && kernelSize % 2 == 0) {
-                printf("kernelSize must be uneven.\n");
-                return 1;
+                fprintf(stderr, "ERROR: Wrong argument for -k\nkernel_size must be uneven.\n");
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2],"-ct") == 0) {
+            threshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -ct\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(strcmp(argv[i-2],"-lt") == 0) {
+            lowThreshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -lt\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
             }
         }
         else if(strcmp(argv[i-2],"-ht") == 0) {
-            highThreshold = atoi(argv[i-1]);
-        }
-        else if(strcmp(argv[i-2],"-lt") == 0) {
-            lowThreshold = atoi(argv[i-1]);
+            highThreshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -ht\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
         }
         else if(strcmp(argv[i-2], "-r") == 0) {
-            radius = atoi(argv[i-1]);
+            radius = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -r\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
         }
-        else if(strcmp(argv[i-2], "-rr") == 0) {
-            radiusRange = atoi(argv[i-1]);
+        else if(strcmp(argv[i-2], "-rub") == 0) {
+            radiusUpperBounds = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -rub\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
         }
-        else if(strcmp(argv[i-2], "-htr") == 0) {
-            houghThreshold = atoi(argv[i-1]);
+        else if(strcmp(argv[i-2], "-hot") == 0) {
+            houghThreshold = strtol(argv[i-1], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -hot\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
         }
+        else {
+            fprintf(stderr, "ERROR: Wrong argument %s\n", argv[i-2]);
+            printUsage();
+            exit(EXIT_FAILURE);
+        }
+    }
+    if(highThreshold < lowThreshold) {
+        fprintf(stderr, "ERROR: high_threshold (%i) must not be smaller than low_threshold (%i)\n", highThreshold, lowThreshold);
+        exit(EXIT_FAILURE);
+    }
+    if(radiusUpperBounds < radius) {
+        fprintf(stderr, "ERROR: radius_upper_bounds (%i) must not be smaller than radius (%i)\n", radiusUpperBounds, radius);
+        exit(EXIT_FAILURE);
     }
 
     // Load test image
@@ -204,49 +300,49 @@ int main(int argc, char **argv) {
 
     // Prepare image and create a big Surface with 8 Bit depth
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
-    newImg = createSurface(img->w, img->h, 8, 0, 0, 0, 0);
-    SDL_SetSurfacePalette(newImg, createPalette(0));
+    grayImg = createSurface(img->w, img->h, 8, 0, 0, 0, 0);
+    SDL_SetSurfacePalette(grayImg, createPalette(0));
 
     // Convert pixels to grayscale
     startTime = clock();
-    newImg->pixels = grayscaler(img->pixels, img->w, img->h);
+    grayImg->pixels = grayscaler(img->pixels, img->w, img->h);
     endTime = clock();
     printf("%i clock ticks needed for grayscaler.\n", (int)(endTime-startTime));
-    IMG_SavePNG(newImg, "../img/grayscale.png");
+    IMG_SavePNG(grayImg, "../img/grayscale.png");
     SDL_FreeSurface(img);
 
     // Apply gauss filter
     if(kernelSize != 0) {
         startTime = clock();
-        newImg->pixels = gauss(newImg->pixels, newImg->w, newImg->h, kernelSize);
+        grayImg->pixels = gauss(grayImg->pixels, grayImg->w, grayImg->h, kernelSize);
         endTime = clock();
         printf("%i clock ticks needed for gauss filter.\n", (int)(endTime-startTime));
-        IMG_SavePNG(newImg, "../img/gauss.png");
+        IMG_SavePNG(grayImg, "../img/gauss.png");
     }
 
     // Apply canny edge detector
     startTime = clock();
-    newImg->pixels = canny(newImg->pixels, newImg->w, newImg->h, threshold, lowThreshold, highThreshold);
+    grayImg->pixels = canny(grayImg->pixels, grayImg->w, grayImg->h, threshold, lowThreshold, highThreshold);
     endTime = clock();
     printf("%i clock ticks needed for canny edge detector.\n", (int)(endTime-startTime));
-    IMG_SavePNG(newImg, "../img/sobel.png");
+    IMG_SavePNG(grayImg, "../img/sobel.png");
 
     // Perform hough transform
     startTime = clock();
-    circles = hough(newImg->pixels, newImg->w, newImg->h, radius, radiusRange, houghThreshold);
+    circles = hough(grayImg->pixels, grayImg->w, grayImg->h, radius, radiusUpperBounds, houghThreshold);
     endTime = clock();
     printf("%i clock ticks needed for hough transform.\n", (int)(endTime-startTime));
 
     // Draw found circles in red
-    SDL_SetSurfacePalette(newImg, createPalette(1));
+    SDL_SetSurfacePalette(grayImg, createPalette(1));
     for(int i = 0; i < circleCount; i++) {
-        newImg->pixels = drawCircle(newImg->pixels, newImg->w, newImg->h, circles[i].x, circles[i].y, circles[i].r);
+        grayImg->pixels = drawCircle(grayImg->pixels, grayImg->w, grayImg->h, circles[i].x, circles[i].y, circles[i].r);
     }
-    IMG_SavePNG(newImg, "../img/hough.png");
+    IMG_SavePNG(grayImg, "../img/hough.png");
     // Free memory for circles
     free(circles);
 
-    SDL_FreeSurface(newImg);
+    SDL_FreeSurface(grayImg);
     IMG_Quit();
     SDL_Quit();
     return 0;

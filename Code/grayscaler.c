@@ -1,7 +1,6 @@
 /*
 ** Converts 32-Bit colored image data to 8-Bit grayscale image data
-** The function needs and returns only pixel data without any kind of
-** compression.
+** The function needs and returns only pixel data without any kind of compression.
 */
 
 #include "grayscaler.h"

@@ -15,17 +15,17 @@ uint8_t roundAngle(uint8_t angle) {
 }
 
 uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold) {
+    const uint8_t offset = 1;
+	const uint8_t kernelSize = 3;
     uint8_t (*output)[width] = calloc(width * height, sizeof(uint8_t));	// allocate memory and initialize to 0
     uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
-	int16_t g_x[height][width];
-	int16_t g_y[height][width];
-	int16_t tmp[height][width];
-	uint16_t g[height][width];
 	uint8_t delta[height][width];
 	int8_t h_filter[3] = {1, 0, -1};
 	int8_t v_filter[3] = {1, 2, 1};
-	const uint8_t offset = 1;
-	const uint8_t kernelSize = 3;
+	uint16_t g[height][width];
+	int16_t g_x[height][width];
+	int16_t g_y[height][width];
+	int16_t tmp[height][width];
 
 	/*
 	** Calculate g_x
