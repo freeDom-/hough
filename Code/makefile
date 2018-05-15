@@ -1,7 +1,7 @@
 IDIR=include
 ODIR=obj
 CC=gcc
-CFLAGS=-I$(IDIR) -std=c11 -fopenmp
+CFLAGS=-I$(IDIR) -std=c11 -fopenmp -g
 LIBS=-lSDL2 -lSDL2_image -lm
 
 _DEPS=grayscaler.h gauss.h canny.h hough.h dimensions.h

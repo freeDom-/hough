@@ -135,7 +135,7 @@ SDL_Surface* loadImage(char* path) {
     SDL_Surface* img = IMG_Load(path);
 
     if(!img) {
-        printf("Could not load image: %s\n", IMG_GetError());
+        fprintf(stderr, "ERROR: Could not load image: %s\n", IMG_GetError());
         return NULL;
     }
     return img;
@@ -149,7 +149,7 @@ SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint3
     SDL_Surface* img = SDL_CreateRGBSurface(0, width, height, depth, Rmask, Gmask, Bmask, Amask);
     
     if(img == NULL) {
-        printf("SDL_CreateRGBSurface() failed: %s\n", SDL_GetError());
+        fprintf(stderr, "ERROR: SDL_CreateRGBSurface() failed: %s\n", SDL_GetError());
         return NULL;
     }
     return img;
@@ -182,7 +182,7 @@ void printUsage() {
 /*
 ** Evaluates arguments and checks if they are correct
 */
-void evaluateArguments(int argc, char** argv, char* path, char* dir, uint8_t* kernelSize, uint8_t* threshold, uint8_t* lowThreshold, uint8_t* highThreshold, uint8_t* radius, uint8_t* radiusUpperBounds, unsigned int* houghThreshold) {
+void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8_t* kernelSize, uint8_t* threshold, uint8_t* lowThreshold, uint8_t* highThreshold, uint8_t* radius, uint8_t* radiusUpperBounds, unsigned int* houghThreshold) {
     if(argc % 2 == 0) { // as long as each optional argument takes exactly one additional argument this is ok
         fprintf(stderr, "Wrong number of arguments.\n");
         printUsage();
@@ -193,8 +193,7 @@ void evaluateArguments(int argc, char** argv, char* path, char* dir, uint8_t* ke
     char* end;
     for(int i = 3; i <= argc; i += 2) { // as long as each optional argument takes exactly one additional argument this is ok
         if(strcmp(argv[i-2],"-i") == 0) {
-            free(path);
-            path = malloc(sizeof(dir) + sizeof(argv[i-1]) + 1);
+            path = realloc(path, strlen(dir) + strlen(argv[i-1]) + 1);
             strcpy(path, dir);
             strcat(path, argv[i-1]);
         }
@@ -302,10 +301,10 @@ int main(int argc, char **argv) {
     circle* circles = NULL;
 
     // Set dir and default path for images
-    char* dir = "../img/";
-    char* path = malloc(sizeof(dir) + sizeof("test.png") + 1);
+    const char* dir = "../img/";
+    char* path = malloc(strlen(dir) + strlen("test.png") + 1);
     strcpy(path, dir);
-    strcat(path, "../img/test.png");
+    strcat(path, "test.png");
 
     SDL_Surface* img;
     SDL_Surface* grayImg;
@@ -319,12 +318,17 @@ int main(int argc, char **argv) {
 
     // Load test image
     img = loadImage(path);
-    if(img == NULL)
-        return 1;
+    free(path);
+    if(img == NULL) {
+        exit(EXIT_FAILURE);
+    }
 
     // Prepare image and create a big Surface with 8 Bit depth
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
     grayImg = createSurface(img->w, img->h, 8, 0, 0, 0, 0);
+    if(grayImg == NULL) {
+        exit(EXIT_FAILURE);
+    }
     SDL_SetSurfacePalette(grayImg, createPalette(0));
 
     // Convert pixels to grayscale
@@ -364,9 +368,10 @@ int main(int argc, char **argv) {
         grayImg->pixels = drawCircle(grayImg->pixels, grayImg->w, grayImg->h, circles[i].x, circles[i].y, circles[i].r);
     }
     IMG_SavePNG(grayImg, "../img/hough.png");
-    // Free memory for circles
+    
+    // Free allocated memory and exit
     free(circles);
-
+    SDL_FreePalette(grayImg->format->palette);
     SDL_FreeSurface(grayImg);
     IMG_Quit();
     SDL_Quit();

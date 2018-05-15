@@ -79,6 +79,5 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t r
     }
 
     free(acc);
-
     return circles;
 }

@@ -1,0 +1,114 @@
+{
+   <SDL2_>
+   Memcheck:Param
+   writev(vector[...])
+   fun:__writev_nocancel
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+   fun:xcb_writev
+   fun:_XSend
+   fun:_XReply
+   fun:XInternAtom
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+}
+{
+   <SDL2_glXCreateContext_1>
+   Memcheck:Addr4
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0
+   fun:glXCreateContext
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+}
+{
+   <SDL2_glXCreateContext_2>
+   Memcheck:Addr4
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0
+   fun:glXCreateContext
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+}
+{
+   <SDL2_glXCreateContext_3>
+   Memcheck:Addr4
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0
+   obj:/usr/lib/x86_64-linux-gnu/mesa/libGL.so.1.2.0
+   fun:glXCreateContext
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+}
+{
+   <SDL2_glXMakeContextCurrent_1>
+   Memcheck:Addr4
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   fun:glXMakeContextCurrent
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+}
+{
+   <glXMakeContextCurrent_2>
+   Memcheck:Addr4
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   fun:glXMakeContextCurrent
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   fun:main
+}
+{
+   <glXMakeContextCurrent_3>
+   Memcheck:Addr4
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   obj:/usr/lib/x86_64-linux-gnu/dri/i965_dri.so
+   fun:glXMakeContextCurrent
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.4.0
+   fun:main
+}
