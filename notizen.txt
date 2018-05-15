@@ -42,3 +42,4 @@ Quellenverwaltung:
 
 High — Level Synthesis: Introduction to Chip and System Design (Daniel D. Gajski,Nikil D. Dutt,Allen C-H)V
 Digital Image Processing (Rafael C. Gonzales, Richard E. Woods) -> Hough Transformation
+

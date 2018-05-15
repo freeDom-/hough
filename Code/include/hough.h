@@ -15,6 +15,10 @@
 #include <math.h>
 #define PI 3.14159265
 #endif /*MATH_H_INCLUDED*/
+#ifndef OMP_H_INCLUDED
+#define OMP_H_INCLUDED
+#include <omp.h>
+#endif /*OMP_H_INCLUDED*/
 
 extern int circleCount;
 

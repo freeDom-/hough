@@ -5,7 +5,7 @@
 #include "canny.h"
 
 /*
-** Rounds an angle to -180, -90, 0, 90 or 180 degrees
+** Rounds an angle to 0, 45, 90 or 135 degrees
 */
 uint8_t roundAngle(uint8_t angle) {
 	if(angle <= 22) return 0;
@@ -31,7 +31,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	** Calculate g_x
 	*/
 
-	// Apply horizontal Sobeloperator
+	// Apply horizontal Sobeloperator and store in tmp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
         	// Apply Sobeloperator on borders
@@ -59,7 +59,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
         }
     }
 
-	// Apply vertical Sobeloperator
+	// Apply vertical Sobeloperator and store in g_x
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
         	// Apply Sobelfilter on borders
@@ -91,7 +91,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	** Calculate g_y
 	*/
 
-	// Apply horizontal Sobeloperator
+	// Apply horizontal Sobeloperator and store in tmp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
         	// Apply Sobeloperator on borders
@@ -119,7 +119,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
         }
     }
 
-	// Apply vertical Sobeloperator
+	// Apply vertical Sobeloperator and store in g_y
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
         	// Apply Sobeloperator on borders

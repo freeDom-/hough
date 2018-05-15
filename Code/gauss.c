@@ -6,7 +6,7 @@
 
 #include "gauss.h"
 
-// KERNELS - hardcode Kernels for speed improvements?
+// KERNELS - hardcoded Kernels for speed improvements?
 // 1/16 = 2^4
 int filter3[3] = {4, 8, 4};
 int sum3 = 16;

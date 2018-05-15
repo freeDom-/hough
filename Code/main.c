@@ -14,10 +14,14 @@
 #define STRING_H_INCLUDED
 #include <string.h>
 #endif /*STRING_H_INCLUDED*/
-#ifndef TIME_H_INCLUDED
-#define TIME_H_INCLUDED
-#include <time.h>
-#endif /*TIME_H_INCLUDED*/
+#ifndef SYSTIME_H_INCLUDED
+#define SYSTIME_H_INCLUDED
+#include <sys/time.h>
+#endif /*SYSTIME_H_INCLUDED*/
+#ifndef UNISTD_H_INCLUDED
+#define UNISTD_H_INCLUDED
+#include <unistd.h>
+#endif /*UNISTD_H_INCLUDED*/
 
 #ifndef SDL2_H_INCLUDED
 #define SDL2_H_INCLUDED
@@ -29,6 +33,15 @@
 #include "gauss.h"
 #include "canny.h"
 #include "hough.h"
+
+/*
+** Returns time in microseconds
+*/
+long getTime() {
+    struct timeval timecheck;
+    gettimeofday(&timecheck, NULL);
+    return (long)timecheck.tv_sec * 1000 + (long)timecheck.tv_usec / 1000;
+}
 
 /*
 ** Midpoint circle algorithm from Wikipedia
@@ -146,7 +159,7 @@ SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint3
 ** Prints usage information to stderr
 */
 void printUsage() {
-    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-ct threshold] [-lt low_threshold] [-ht high_threshold] [-r radius] [-rub radius_upper_bounds] [-ht threshold]\n"
+    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-ct threshold] [-lt low_threshold] [-ht high_threshold] [-r radius] [-rub radius_upper_bounds] [-hot threshold]\n"
                 "\t-i image_name: path to the image to process\n"
                 "\t\t(default is test.png)\n"
                 "\t-k kernel_size: filtersize for the gaussian kernel\n"
@@ -285,7 +298,7 @@ int main(int argc, char **argv) {
     uint8_t radiusUpperBounds = 25;
     unsigned int houghThreshold = 100;
 
-    clock_t startTime, endTime;
+    long startTime, endTime;
     circle* circles = NULL;
 
     // Set dir and default path for images
@@ -315,34 +328,34 @@ int main(int argc, char **argv) {
     SDL_SetSurfacePalette(grayImg, createPalette(0));
 
     // Convert pixels to grayscale
-    startTime = clock();
+    startTime = getTime();
     grayImg->pixels = grayscaler(img->pixels, img->w, img->h);
-    endTime = clock();
-    printf("%i clock ticks needed for grayscaler.\n", (int)(endTime-startTime));
+    endTime = getTime();
+    printf("%li ms needed for grayscaler.\n", endTime-startTime);
     IMG_SavePNG(grayImg, "../img/grayscale.png");
     SDL_FreeSurface(img);
 
     // Apply gauss filter
     if(kernelSize != 0) {
-        startTime = clock();
+        startTime = getTime();
         grayImg->pixels = gauss(grayImg->pixels, grayImg->w, grayImg->h, kernelSize);
-        endTime = clock();
-        printf("%i clock ticks needed for gauss filter.\n", (int)(endTime-startTime));
+        endTime = getTime();
+        printf("%li ms needed for gauss filter.\n", endTime-startTime);
         IMG_SavePNG(grayImg, "../img/gauss.png");
     }
 
     // Apply canny edge detector
-    startTime = clock();
+    startTime = getTime();
     grayImg->pixels = canny(grayImg->pixels, grayImg->w, grayImg->h, threshold, lowThreshold, highThreshold);
-    endTime = clock();
-    printf("%i clock ticks needed for canny edge detector.\n", (int)(endTime-startTime));
+    endTime = getTime();
+    printf("%li ms needed for canny edge detector.\n", endTime-startTime);
     IMG_SavePNG(grayImg, "../img/sobel.png");
 
     // Perform hough transform
-    startTime = clock();
+    startTime = getTime();
     circles = hough(grayImg->pixels, grayImg->w, grayImg->h, radius, radiusUpperBounds, houghThreshold);
-    endTime = clock();
-    printf("%i clock ticks needed for hough transform.\n", (int)(endTime-startTime));
+    endTime = getTime();
+    printf("%li ms needed for hough transform.\n", endTime-startTime);
     printf("%i circles found.\n", circleCount);
 
     // Draw found circles in red

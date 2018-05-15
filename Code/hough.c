@@ -16,17 +16,21 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t r
     int maxCircles = 8;
     circle* circles = (circle*) malloc(maxCircles * sizeof(circle));
 
-    // Vote accumulator matrix
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
-            if(pixels[y][x] != 0) {
-                for(int r = radius; r <= radiusUpperBounds; r++) {
-                    for(int t = 0; t <= 180; t++) {
-                        int h, w;
-                        w = x - r * cos(t * PI / 180);   // Polar coordinates of circles center
-                        h = y - r * sin(t * PI / 180);   // Polar coordinates of circles center
-                        if(w >= 0 && w < width && h >= 0 && h < height) {
-                            acc[h * width * radiiCount + w * radiiCount + r-radius] += 1;
+#pragma omp parallel
+    {
+#pragma omp for
+        // Vote accumulator matrix
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                if(pixels[y][x] != 0) {
+                    for(int r = radius; r <= radiusUpperBounds; r++) {
+                        for(int t = 0; t <= 180; t++) {
+                            int h, w;
+                            w = x - r * cos(t * PI / 180);   // Polar coordinates of circles center
+                            h = y - r * sin(t * PI / 180);   // Polar coordinates of circles center
+                            if(w >= 0 && w < width && h >= 0 && h < height) {
+                                acc[h * width * radiiCount + w * radiiCount + r-radius] += 1;
+                            }
                         }
                     }
                 }
