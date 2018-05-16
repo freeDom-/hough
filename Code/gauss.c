@@ -21,7 +21,7 @@ int sum7 = 4096;
 ** Calculates (n+1)th row of pascals triangle
 */
 unsigned long* pascal(unsigned long n) {
-    unsigned long* line = malloc(sizeof(unsigned long) * (n+1));
+    unsigned long* line = malloc((n+1) * sizeof(unsigned long));
     line[0] = 1;
 
     for(int i = 0; i < n; i++) {
@@ -34,11 +34,10 @@ unsigned long* pascal(unsigned long n) {
 ** Creates a gaussian kernel
 */
 unsigned long* kernelGenerator(unsigned long kernelSize) {
-    unsigned long* kernel = malloc(sizeof(unsigned long) * kernelSize);
+    unsigned long* kernel = calloc(kernelSize, sizeof(unsigned long)); // reserve memory and initialize with 0
     unsigned long* pascalRow = pascal(kernelSize-1);
 
     for(int i = 0; i < kernelSize; i++) {
-        kernel[i] = 0;
         for(int j = 0; j < kernelSize; j++) {
             kernel[i] += pascalRow[i] * pascalRow[j];
         }

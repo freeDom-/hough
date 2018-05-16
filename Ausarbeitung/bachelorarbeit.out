@@ -8,8 +8,8 @@
 \BOOKMARK [1][-]{section.2.2}{Hardware/Software Codesign}{chapter.2}% 8
 \BOOKMARK [1][-]{section.2.3}{High Level Synthese}{chapter.2}% 9
 \BOOKMARK [1][-]{section.2.4}{Hough Transformation}{chapter.2}% 10
-\BOOKMARK [2][-]{subsection.2.4.1}{Umwandlung von RGB zu Grayscale}{section.2.4}% 11
-\BOOKMARK [2][-]{subsection.2.4.2}{Gauss Filter}{section.2.4}% 12
+\BOOKMARK [2][-]{subsection.2.4.1}{Umwandlung eines RGB Bildes in Graustufen}{section.2.4}% 11
+\BOOKMARK [2][-]{subsection.2.4.2}{Gau\337-Filter}{section.2.4}% 12
 \BOOKMARK [2][-]{subsection.2.4.3}{Canny Edge Detection}{section.2.4}% 13
 \BOOKMARK [2][-]{subsection.2.4.4}{Circle Hough Transformation}{section.2.4}% 14
 \BOOKMARK [2][-]{subsection.2.4.5}{Optimierungen}{section.2.4}% 15

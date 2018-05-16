@@ -1,0 +1,6 @@
+Damit eine Kantenextraktion mit dem Canny-Algorithmus durchgeführt und somit ein binäres Gradientenbild erzeugt werden kann, muss vorher eine Umwandlung eines Farbbildes in ein Graustufenbild erfolgen. Damit wird außerdem die Größe des Bildes und damit die Größe, der zu verarbeitenden Daten deutlich reduziert. Anstatt drei Farbkanäle (R, G, B) mit je 8 Bit pro Pixel verarbeiten zu müssen, muss in den nachfolgenden Schritten nur noch ein Kanal mit 8 Bit pro Pixel verarbeitet werden.
+\\
+Für jedes Pixel werden die drei Farbkomponenten rot, grün und blau (R, G, B) in einen Intensitätswert I umgerechnet, welcher die Helligkeit des Pixels beschreibt. Es gibt eine Vielzahl verschiedener Ansätze, die sich unterschiedlich gut zur Kantenextraktion eignen. An dieser Stelle soll nicht genauer auf die Unterschiede eingegangen werden. Zwei detaillierte Vergleiche zu dem Thema finden sich in \cite{kanan2012grayscale} und \cite{ahmad2018grayscale}. Ein hinreichend guter und einfacher Algorithmus ist GLuminance, welcher die Intensität wie folgt berechnet:
+\begin{equation}
+I = 0.3 * R + 0.59 * G + 0.11 * B
+\end{equation}

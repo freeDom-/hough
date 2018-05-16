@@ -1,0 +1,26 @@
+Einige Bilder enthalten ein Bildrauschen, welches bei einer späteren Kantenextraktion zu fehlerhaften Kanten führen kann. Um dieses Rauschen zu verringern wird zur Glättung des Bildes ein Gauß-Filter angewandt. Dieses addiert, abhängig von seiner Größe, benachbarte Pixel gewichtet auf. Das zu filternde Pixel hat hierbei die höchste Gewichtung. Umso weiter ein Pixel von diesem entfernt ist, desto kleiner wird dessen Gewichtung. Anschließend wird der Wert normiert, indem er durch die Summe aller Gewichtungen geteilt wird.
+\begin{align}
+h(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{x^2}{2 \sigma^2}}
+&&
+h(x,y) = \frac{1}{2 \pi \sigma^2} e^{-\frac{x^2+y^2}{2 \sigma^2}}
+\end{align}
+Die eindimensionale Impulsantwort $h(x)$ entspricht der Funktion der Normalverteilung. Die zweidimensionale Impulsantwort $h(x,y)$ des Gauß-Filters ergibt sich aus dem Produkt der Impulsantworten in x- und y-Richtung. Die Argumente x und y bezeichnen jeweils die Entfernungen in horizontaler und vertikaler Richtung zum Ursprung und $\sigma$ bezeichnet die Standardabweichung der Normalverteilung.
+\\
+Ein Filterkernel für einen Gauß-Filter lässt sich nun über die zweidimensionale Impulsantwort berechnen. Ein Kernel der Größe $N \times N$ mit $N\in\{3, 5, ...\}$ berechnet sich wie folgt:
+\begin{align*}
+&A = \sum_{x=-B}^{B} \sum_{y=-B}^{B} h(x,y) \\
+&B = (N-1)/2
+\end{align*}
+\begin{equation}
+\frac{1}{A}
+\begin{pmatrix}
+h(-B,-B) & ... & ... & h(0,-B) & ... & ... & h(B,-B) \\
+h(-B,-1) & ... & h(-1,-1) & h(0,-1) & h(1, -1) & ... & h(B,-1) \\
+h(-B,0) & ... & h(-1,0) & h(0,0) & h(1,0) & ... & h(B,0) \\
+h(-B,1) & ... & h(-1,1) & h(0,1) & h(1,1) & ... & h(B,1) \\
+h(-B,B) & ... & ... & h(0,B) & ... & ... & h(B,B)
+\end{pmatrix}
+\end{equation}
+In der Bildverarbeitung wird häufig nur eine Approximation eines Gaußkernels verwendet, die auf dem Pascalschen Dreieck beruht. Diese bietet den Vorteil, dass der Kernel aus ganzen Zahlen aufgebaut ist und zur Normierung durch eine Zweierpotenz geteilt werden kann. Für einen Kernel der Größe $N$ wird die $N$-te Zeile des Pascalschen Dreiecks in ein Feld mit $N$ Elementen geladen. Anschließend wird der Kernel wie folgt aufgebaut: Die $i$-te Zeile des Kernels entsteht durch Multiplikation des Feldes mit dem $i$-ten Element des Feldes. Der Faktor zur Normierung ist dann $A=2^N$.
+\\
+Durch Ausnutzen der Separierbarkeit des Gauß-Filters kann die Rechenzeit weiter reduziert werden.....

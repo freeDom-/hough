@@ -17,7 +17,6 @@ uint8_t* grayscaler(void* input, int width, int height) {
                 r = pixels[y][x] >> 16 & 0xFF;
                 g = pixels[y][x] >> 8 & 0xFF;
                 b = pixels[y][x] & 0xFF;
-
                 output[y][x] = 0.3*r + 0.59*g + 0.11*b;
         }
     }
