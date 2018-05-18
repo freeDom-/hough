@@ -1,6 +1,10 @@
-Damit eine Kantenextraktion mit dem Canny-Algorithmus durchgeführt und somit ein binäres Gradientenbild erzeugt werden kann, muss vorher eine Umwandlung eines Farbbildes in ein Graustufenbild erfolgen. Damit wird außerdem die Größe des Bildes und damit die Größe, der zu verarbeitenden Daten deutlich reduziert. Anstatt drei Farbkanäle (R, G, B) mit je 8 Bit pro Pixel verarbeiten zu müssen, muss in den nachfolgenden Schritten nur noch ein Kanal mit 8 Bit pro Pixel verarbeitet werden.
+Damit eine Kantenextraktion mit dem Canny-Algorithmus durchgeführt und somit ein binäres Gradientenbild erzeugt werden kann, muss zuvor eine Umwandlung eines Farbbildes in ein Graustufenbild erfolgen. Ein Bild ist grau, wenn die rot, grün und blau $(R, G, B)$ Komponenten den selben Wert haben. Dann kann allerdings auch anstatt der zuvor benötigten drei Farbkanäle $(R, G, B)$ mit je 8 Bit pro Pixel nur noch ein Farbkanal mit 8 Bit pro Pixel verwendet werden. Damit wird zusätzlich die Größe des Bildes und damit die Größe, der zu verarbeitenden Daten deutlich reduziert.
 \\
-Für jedes Pixel werden die drei Farbkomponenten rot, grün und blau (R, G, B) in einen Intensitätswert I umgerechnet, welcher die Helligkeit des Pixels beschreibt. Es gibt eine Vielzahl verschiedener Ansätze, die sich unterschiedlich gut zur Kantenextraktion eignen. An dieser Stelle soll nicht genauer auf die Unterschiede eingegangen werden. Zwei detaillierte Vergleiche zu dem Thema finden sich in \cite{kanan2012grayscale} und \cite{ahmad2018grayscale}. Ein hinreichend guter und einfacher Algorithmus ist GLuminance, welcher die Intensität wie folgt berechnet:
+\\
+Für jedes Pixel werden die drei Farbkomponenten $(R, G, B)$ in einen Intensitätswert $Y$ umgerechnet, welcher die Helligkeit des Pixels beschreibt. Es gibt eine Vielzahl verschiedener Ansätze, die sich unterschiedlich gut zur Kantenextraktion eignen. An dieser Stelle soll nicht näher auf die Unterschiede eingegangen werden. Zwei detaillierte Vergleiche zu dem Thema finden sich in \cite{kanan2012grayscale} und \cite{ahmad2018grayscale}. Daraus geht hervor, dass GLuminance als Standardalgorithmus zur Bildverarbeitung gilt. Die Intensität berechnet sich nach GLuminance gewichtet, da wir rot und grün deutlich heller als blau wahrnehmen.
+\\
 \begin{equation}
-I = 0.3 * R + 0.59 * G + 0.11 * B
+Y = 0.3 * R + 0.59 * G + 0.11 * B
 \end{equation}
+\\
+Die Umwandlung eines Bildes der Größe $M \times N$ benötigt $5(M \cdot N)$ Operationen. Unter der vereinfachten Annahme, dass die Bildgröße $N \times N$ ist folgt damit eine Komplexität von $O(N^2)$.

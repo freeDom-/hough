@@ -9,46 +9,47 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: Inhalt/Literatur.bib
 Warning--empty pages in ahmad2018grayscale
+Warning--there's an address but no publisher in burger2009podip_1
 Warning--there's no year in kanan2012grayscale
-You've used 2 entries,
+You've used 3 entries,
             4793 wiz_defined-function locations,
-            897 strings with 6634 characters,
-and the built_in function-call counts, 1372 in all, are:
-= -- 139
-> -- 47
-< -- 50
-+ -- 60
-- -- 18
-* -- 85
-:= -- 266
-add.period$ -- 2
-call.type$ -- 2
-change.case$ -- 11
-chr.to.int$ -- 2
-cite$ -- 4
-duplicate$ -- 34
-empty$ -- 75
-format.name$ -- 30
-if$ -- 243
+            902 strings with 6733 characters,
+and the built_in function-call counts, 1928 in all, are:
+= -- 192
+> -- 66
+< -- 68
++ -- 82
+- -- 25
+* -- 118
+:= -- 365
+add.period$ -- 3
+call.type$ -- 3
+change.case$ -- 16
+chr.to.int$ -- 3
+cite$ -- 6
+duplicate$ -- 51
+empty$ -- 114
+format.name$ -- 41
+if$ -- 349
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 4
-newline$ -- 20
-num.names$ -- 7
-pop$ -- 22
+missing$ -- 8
+newline$ -- 25
+num.names$ -- 10
+pop$ -- 30
 preamble$ -- 1
-purify$ -- 15
+purify$ -- 22
 quote$ -- 0
-skip$ -- 79
+skip$ -- 115
 stack$ -- 0
-substring$ -- 72
-swap$ -- 7
-text.length$ -- 6
+substring$ -- 102
+swap$ -- 10
+text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 21
-warning$ -- 2
-while$ -- 13
-width$ -- 4
-write$ -- 30
-(There were 2 warnings)
+type$ -- 27
+warning$ -- 3
+while$ -- 18
+width$ -- 5
+write$ -- 41
+(There were 3 warnings)
