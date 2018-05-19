@@ -1,0 +1,31 @@
+Die Canny Edge Detection Methode ist eine der am meisten verbreiteten Kantenerkennungsalgorithmen. Er erzielt eine gute Lokalisierung von Kanten, minimiert die Erkennung von falschen Kanten und beschränkt die Kantenbreite auf ein Pixel.
+\cite[S.132]{burger_2016dip_java}
+\\
+\\
+Kanten sind Stellen in Bildern, an denen sich die Intensität zu einer Richtung hin stark verändert. Je größer die Veränderung ist, desto wahrscheinlicher befindet sich eine Kante an der Position. Um die Kanten in Bildern zu finden muss nach großen Differenzen zwischen den Intensitäten benachbarter Pixel gesucht werden. Dies entspricht großen Werten in der ersten Ableitung, welche über ein Gradientenfilter berechnet werden kann. Der Sobeloperator (\ref{sobel}) ist das gängigste Filter.
+\cite[S.122-125]{burger_2016dip_java}
+\\
+\begin{align}\label{sobel}
+S_x =
+\begin{bmatrix}
+-1 & 0 & 1 \\
+-2 & 0 & 2 \\
+-1 & 0 & 1
+\end{bmatrix}
+\qquad
+S_y =
+\begin{bmatrix}
+-1 & -2 & -1 \\
+ 0 &  0 &  0 \\
+ 1 &  2 &  1
+\end{bmatrix}
+\end{align}
+\\
+Der Sobeloperator wird auf jedes Pixel in x- und y-Richtung angewandt. Anschließend berechnet sich die Kantenstärke über den euklidschen Betrag der partiellen Ableitungen $g_x(x,y)$ und $g_y(x,y)$.
+\cite[S.134]{burger_2016dip_java}
+\\
+\begin{equation}
+G(x,y) = \sqrt{g_x(x,y)^2 + g_y(x,y)^2}
+\end{equation}
+\\
+Edge Localization (Non Maximum Suppression)
