@@ -26,5 +26,4 @@ typedef struct{
 	uint8_t r;
 } circle;
 
-circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned int radius, unsigned int radiusUpperBounds, unsigned int threshold);
-unsigned int getCircleCount();
+circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned int radius, unsigned int radiusUpperBounds, unsigned int threshold, unsigned int* getCircleCount);
