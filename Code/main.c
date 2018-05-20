@@ -320,9 +320,6 @@ int main(int argc, char **argv) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
 
-    #ifdef _OPENMP
-    omp_set_num_threads(1);
-    #endif
     // Evaluate arguments
     evaluateArguments(argc, argv, path, dir, &kernelSize, &threshold, &lowThreshold, &highThreshold, &radius, &radiusUpperBounds, &houghThreshold);
 
