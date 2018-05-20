@@ -10,9 +10,11 @@
 #define INTTYPES_H_INCLUDED
 #include <inttypes.h>
 #endif /*INTTYPES_H_INCLUDED*/
+#ifdef _OPENMP
 #ifndef OMP_H_INCLUDED
 #define OMP_H_INCLUDED
 #include <omp.h>
 #endif /*OMP_H_INCLUDED*/
+#endif /*_OPENMP*/
 
 uint8_t* grayscaler(void* input, int width, int height);

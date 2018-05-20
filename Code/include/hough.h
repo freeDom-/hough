@@ -15,10 +15,12 @@
 #include <math.h>
 #define PI 3.14159265
 #endif /*MATH_H_INCLUDED*/
+#ifdef _OPENMP
 #ifndef OMP_H_INCLUDED
 #define OMP_H_INCLUDED
 #include <omp.h>
 #endif /*OMP_H_INCLUDED*/
+#endif /*_OPENMP*/
 
 typedef struct{
 	unsigned int x;

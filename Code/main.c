@@ -30,10 +30,12 @@
 #include <SDL2/SDL_image.h>
 #endif /*SDL2_H_INCLUDED*/
 
+#ifdef _OPENMP
 #ifndef OMP_H_INCLUDED
 #define OMP_H_INCLUDED
 #include <omp.h>
 #endif /*OMP_H_INCLUDED*/
+#endif /*_OPENMP*/
 
 #include "grayscaler.h"
 #include "gauss.h"
