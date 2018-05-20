@@ -20,12 +20,11 @@
 #include <omp.h>
 #endif /*OMP_H_INCLUDED*/
 
-extern int circleCount;
-
 typedef struct{
 	unsigned int x;
 	unsigned int y;
 	uint8_t r;
 } circle;
 
-circle* hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t radius, uint8_t radiusUpperBounds, unsigned int threshold);
+circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned int radius, unsigned int radiusUpperBounds, unsigned int threshold);
+unsigned int getCircleCount();

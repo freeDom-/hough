@@ -60,6 +60,7 @@ uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
         sum += filter[i];
     }
 
+#pragma omp parallel for private(temp1, temp2)
     // Apply horizontal filter on pixels and save in temp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
@@ -91,6 +92,7 @@ uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
         }
     }
 
+#pragma omp parallel for private(temp1, temp2)
     // Apply vertical filter on temp and save in pixels
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {

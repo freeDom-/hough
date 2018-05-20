@@ -15,5 +15,9 @@
 #include <math.h>
 #define PI 3.14159265
 #endif /*MATH_H_INCLUDED*/
+#ifndef OMP_H_INCLUDED
+#define OMP_H_INCLUDED
+#include <omp.h>
+#endif /*OMP_H_INCLUDED*/
 
 uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold);

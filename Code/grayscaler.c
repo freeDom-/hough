@@ -9,6 +9,7 @@ uint8_t* grayscaler(void* input, int width, int height) {
     uint8_t (*output)[width] = malloc(width * height * sizeof(uint8_t));
     uint32_t (*pixels)[width] = (uint32_t(*)[width]) input;
 
+#pragma omp parallel for
     // Convert image to grayscale
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {

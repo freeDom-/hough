@@ -25,7 +25,14 @@ Der Sobeloperator wird auf jedes Pixel in x- und y-Richtung angewandt. Anschlie�
 \cite[S.134]{burger_2016dip_java}
 \\
 \begin{equation}
-G(x,y) = \sqrt{g_x(x,y)^2 + g_y(x,y)^2}
+g(x,y) = \sqrt{g_x(x,y)^2 + g_y(x,y)^2}
+\end{equation}
+\\
+Als Approximation werden auch häufig nur die Beträge der partiellen Ableitungen addiert.
+\cite{QUELLE FEHLT}
+\\
+\begin{equation}
+g(x,y) = |g_x(x,y)| + |g_y(x,y)|
 \end{equation}
 \\
 Edge Localization (Non Maximum Suppression)

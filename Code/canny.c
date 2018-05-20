@@ -30,7 +30,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	/*
 	** Calculate g_x
 	*/
-
+#pragma omp parallel for
 	// Apply horizontal Sobeloperator and store in tmp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
@@ -58,7 +58,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	        }
         }
     }
-
+#pragma omp parallel for
 	// Apply vertical Sobeloperator and store in g_x
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
@@ -90,7 +90,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	/*
 	** Calculate g_y
 	*/
-
+#pragma omp parallel for
 	// Apply horizontal Sobeloperator and store in tmp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
@@ -118,7 +118,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	        }
         }
     }
-
+#pragma omp parallel for
 	// Apply vertical Sobeloperator and store in g_y
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
@@ -147,6 +147,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
         }
     }
 
+#pragma omp parallel for
     // Calculate gradient
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
@@ -154,14 +155,15 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 			delta[y][x] = abs(atan2(g_y[y][x], g_x[y][x]) * 180 / PI);
 			delta[y][x] = roundAngle(delta[y][x]);
 			// Calculate gradients intensity - approximation
-			g[y][x] = abs(g_x[y][x]) + abs(g_y[y][x]);
+			//g[y][x] = abs(g_x[y][x]) + abs(g_y[y][x]);
             // Exact formula
-			//g[y][x] = sqrt(g_x[y][x]*g_x[y][x] + g_y[y][x]*g_y[y][x]);
+			g[y][x] = sqrt(g_x[y][x]*g_x[y][x] + g_y[y][x]*g_y[y][x]);
 			g[y][x] = fmax(g[y][x], threshold);
 			if(g[y][x] == threshold) g[y][x] = 0;
     	}
     }
 
+#pragma omp parallel for
     // Non-maximum suppression
     //for(int y = 1; y < height-1; y++){
     for(int y = 0; y < height-1; y++){
@@ -189,6 +191,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	    }
 	}
 
+#pragma omp parallel for
 	// Hysteresis
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {

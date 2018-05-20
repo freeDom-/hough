@@ -159,7 +159,7 @@ SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint3
 ** Prints usage information to stderr
 */
 void printUsage() {
-    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-ct threshold] [-lt low_threshold] [-ht high_threshold] [-r radius] [-rub radius_upper_bounds] [-hot threshold]\n"
+    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-ct threshold] [-lt low_threshold] [-ht high_threshold] [-r radius] [-rub radius_upper_bounds] [-hot threshold] [-omp number_of_threads]\n"
                 "\t-i image_name: path to the image to process\n"
                 "\t\t(default is test.png)\n"
                 "\t-k kernel_size: filtersize for the gaussian kernel\n"
@@ -176,29 +176,35 @@ void printUsage() {
                 "\t\tIf this argument is given to the program, a range of radii from radius to radius_upper_bounds is searched in the hough transform\n"
                 "\t\t(default is 25)\n"
                 "\t-hot threshold: threshold for the hough transform when calculating local maxima\n"
-                "\t\t(default is 100)\n");
+                "\t\t(default is 100)\n"
+                "\t-omp number_of_threads: use openMP with a certain number of threads\n");
 }
 
 /*
 ** Evaluates arguments and checks if they are correct
 */
-void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8_t* kernelSize, uint8_t* threshold, uint8_t* lowThreshold, uint8_t* highThreshold, uint8_t* radius, uint8_t* radiusUpperBounds, unsigned int* houghThreshold) {
-    if(argc % 2 == 0) { // as long as each optional argument takes exactly one additional argument this is ok
-        fprintf(stderr, "Wrong number of arguments.\n");
-        printUsage();
-        exit(EXIT_FAILURE);
-    }
-
+void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8_t* kernelSize, uint8_t* threshold, uint8_t* lowThreshold, uint8_t* highThreshold, unsigned int* radius, unsigned int* radiusUpperBounds, unsigned int* houghThreshold) {
     // Loop through arguments
     char* end;
-    for(int i = 3; i <= argc; i += 2) { // as long as each optional argument takes exactly one additional argument this is ok
-        if(strcmp(argv[i-2],"-i") == 0) {
-            path = realloc(path, strlen(dir) + strlen(argv[i-1]) + 1);
-            strcpy(path, dir);
-            strcat(path, argv[i-1]);
+    for(int i = argc-1; i > 0;) {
+        if(strcmp(argv[i-1],"-omp") == 0) {
+            unsigned int threads = strtol(argv[i], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -k\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+            omp_set_num_threads(threads);
+            i -= 2;
         }
-        else if(strcmp(argv[i-2],"-k") == 0) {
-            *kernelSize = strtol(argv[i-1], &end, 0);
+        else if(strcmp(argv[i-1],"-i") == 0) {
+            path = realloc(path, strlen(dir) + strlen(argv[i]) + 1);
+            strcpy(path, dir);
+            strcat(path, argv[i]);
+            i -= 2;
+        }
+        else if(strcmp(argv[i-1],"-k") == 0) {
+            *kernelSize = strtol(argv[i], &end, 0);
             if(*end) {
                 fprintf(stderr, "ERROR: Wrong argument for -k\nInteger expected but was: %s\n", end);
                 printUsage();
@@ -209,57 +215,64 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
                 printUsage();
                 exit(EXIT_FAILURE);
             }
+            i -= 2;
         }
-        else if(strcmp(argv[i-2],"-ct") == 0) {
-            *threshold = strtol(argv[i-1], &end, 0);
+        else if(strcmp(argv[i-1],"-ct") == 0) {
+            *threshold = strtol(argv[i], &end, 0);
             if(*end) {
                 fprintf(stderr, "ERROR: Wrong argument for -ct\nInteger expected but was: %s\n", end);
                 printUsage();
                 exit(EXIT_FAILURE);
             }
+            i -= 2;
         }
-        else if(strcmp(argv[i-2],"-lt") == 0) {
-            *lowThreshold = strtol(argv[i-1], &end, 0);
+        else if(strcmp(argv[i-1],"-lt") == 0) {
+            *lowThreshold = strtol(argv[i], &end, 0);
             if(*end) {
                 fprintf(stderr, "ERROR: Wrong argument for -lt\nInteger expected but was: %s\n", end);
                 printUsage();
                 exit(EXIT_FAILURE);
             }
+            i -= 2;
         }
-        else if(strcmp(argv[i-2],"-ht") == 0) {
-            *highThreshold = strtol(argv[i-1], &end, 0);
+        else if(strcmp(argv[i-1],"-ht") == 0) {
+            *highThreshold = strtol(argv[i], &end, 0);
             if(*end) {
                 fprintf(stderr, "ERROR: Wrong argument for -ht\nInteger expected but was: %s\n", end);
                 printUsage();
                 exit(EXIT_FAILURE);
             }
+            i -= 2;
         }
-        else if(strcmp(argv[i-2], "-r") == 0) {
-            *radius = strtol(argv[i-1], &end, 0);
+        else if(strcmp(argv[i-1], "-r") == 0) {
+            *radius = strtol(argv[i], &end, 0);
             if(*end) {
                 fprintf(stderr, "ERROR: Wrong argument for -r\nInteger expected but was: %s\n", end);
                 printUsage();
                 exit(EXIT_FAILURE);
             }
+            i -= 2;
         }
-        else if(strcmp(argv[i-2], "-rub") == 0) {
-            *radiusUpperBounds = strtol(argv[i-1], &end, 0);
+        else if(strcmp(argv[i-1], "-rub") == 0) {
+            *radiusUpperBounds = strtol(argv[i], &end, 0);
             if(*end) {
                 fprintf(stderr, "ERROR: Wrong argument for -rub\nInteger expected but was: %s\n", end);
                 printUsage();
                 exit(EXIT_FAILURE);
             }
+            i -= 2;
         }
-        else if(strcmp(argv[i-2], "-hot") == 0) {
-            *houghThreshold = strtol(argv[i-1], &end, 0);
+        else if(strcmp(argv[i-1], "-hot") == 0) {
+            *houghThreshold = strtol(argv[i], &end, 0);
             if(*end) {
                 fprintf(stderr, "ERROR: Wrong argument for -hot\nInteger expected but was: %s\n", end);
                 printUsage();
                 exit(EXIT_FAILURE);
             }
+            i -= 2;
         }
         else {
-            fprintf(stderr, "ERROR: Wrong argument %s\n", argv[i-2]);
+            fprintf(stderr, "ERROR: Wrong argument %s\n", argv[i-1]);
             printUsage();
             exit(EXIT_FAILURE);
         }
@@ -293,11 +306,16 @@ int main(int argc, char **argv) {
 	uint8_t threshold = 0;
     uint8_t lowThreshold = 100;
     uint8_t highThreshold = 200;
-    uint8_t radius = 15;
-    uint8_t radiusUpperBounds = 25;
-    unsigned int houghThreshold = 100;
+    unsigned int radius = 15;
+    unsigned int radiusUpperBounds = 25;
+    unsigned int houghThreshold = 130;
 
     long startTime, endTime;
+    long grayscalerTime;
+    long gaussTime;
+    long cannyTime;
+    long houghTime;
+    long totalTime = 0;
     circle* circles = NULL;
 
     // Set dir and default path for images
@@ -313,6 +331,7 @@ int main(int argc, char **argv) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
 
+    omp_set_num_threads(1);
     // Evaluate arguments
     evaluateArguments(argc, argv, path, dir, &kernelSize, &threshold, &lowThreshold, &highThreshold, &radius, &radiusUpperBounds, &houghThreshold);
 
@@ -335,7 +354,9 @@ int main(int argc, char **argv) {
     startTime = getTime();
     grayImg->pixels = grayscaler(img->pixels, img->w, img->h);
     endTime = getTime();
-    printf("%li ms needed for grayscaler.\n", endTime-startTime);
+    grayscalerTime = endTime-startTime;
+    totalTime += grayscalerTime;
+    printf("%li ms needed for grayscaler.\n", grayscalerTime);
     IMG_SavePNG(grayImg, "../img/grayscale.png");
     SDL_FreeSurface(img);
 
@@ -344,7 +365,9 @@ int main(int argc, char **argv) {
         startTime = getTime();
         grayImg->pixels = gauss(grayImg->pixels, grayImg->w, grayImg->h, kernelSize);
         endTime = getTime();
-        printf("%li ms needed for gauss filter.\n", endTime-startTime);
+        gaussTime = endTime-startTime;
+        totalTime += gaussTime;
+        printf("%li ms needed for gauss filter.\n", gaussTime);
         IMG_SavePNG(grayImg, "../img/gauss.png");
     }
 
@@ -352,19 +375,25 @@ int main(int argc, char **argv) {
     startTime = getTime();
     grayImg->pixels = canny(grayImg->pixels, grayImg->w, grayImg->h, threshold, lowThreshold, highThreshold);
     endTime = getTime();
-    printf("%li ms needed for canny edge detector.\n", endTime-startTime);
+    cannyTime = endTime-startTime;
+    totalTime += cannyTime;
+    printf("%li ms needed for canny edge detector.\n", cannyTime);
     IMG_SavePNG(grayImg, "../img/sobel.png");
 
     // Perform hough transform
     startTime = getTime();
     circles = hough(grayImg->pixels, grayImg->w, grayImg->h, radius, radiusUpperBounds, houghThreshold);
     endTime = getTime();
-    printf("%li ms needed for hough transform.\n", endTime-startTime);
-    printf("%i circles found.\n", circleCount);
+    houghTime = endTime-startTime;
+    totalTime += houghTime;
+    printf("%li ms needed for hough transform.\n", houghTime);
+    printf("------------------------------------------\n");
+    printf("%li ms needed total.\n", totalTime);
+    printf("%i circles found.\n", getCircleCount());
 
     // Draw found circles in red
     SDL_SetSurfacePalette(grayImg, createPalette(1));
-    for(int i = 0; i < circleCount; i++) {
+    for(int i = 0; i < getCircleCount(); i++) {
         grayImg->pixels = drawCircle(grayImg->pixels, grayImg->w, grayImg->h, circles[i].x, circles[i].y, circles[i].r);
     }
     IMG_SavePNG(grayImg, "../img/hough.png");

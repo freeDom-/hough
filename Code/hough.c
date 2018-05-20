@@ -4,9 +4,23 @@
 
 #include "hough.h"
 
-int circleCount = 0;
+unsigned int circleCount = 0;
+unsigned int* a;
+unsigned int* w;
+unsigned int* h;
+unsigned int* rc;
 
-circle* hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t radius, uint8_t radiusUpperBounds, unsigned int threshold) {
+unsigned int getCircleCount() {
+    return circleCount;
+}
+
+void vote(int x, int y, unsigned int r) {
+    if(x >= 0 && x < *w && y >= 0 && y < *h && r < *rc) {
+        a[y * *w * *rc + x * *rc + r] += 1;
+    }
+}
+
+circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned int radius, unsigned int radiusUpperBounds, unsigned int threshold) {
     uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
     uint8_t maxRadius[height][width];   // storing the radius with the highest voting for each x and y
     unsigned int radiiCount = radiusUpperBounds - radius + 1;
@@ -15,29 +29,61 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, uint8_t r
     unsigned int max;
     int maxCircles = 8;
     circle* circles = (circle*) malloc(maxCircles * sizeof(circle));
+    // Set convenience pointers
+    a = &acc[0];
+    w = &width;
+    h = &height;
+    rc = &radiiCount;
 
-#pragma omp parallel
-    {
-#pragma omp for
-        // Vote accumulator matrix
-        for(int y = 0; y < height; y++) {
-            for(int x = 0; x < width; x++) {
-                if(pixels[y][x] != 0) {
-                    for(int r = radius; r <= radiusUpperBounds; r++) {
-                        for(int t = 0; t <= 180; t++) {
-                            int h, w;
-                            w = x - r * cos(t * PI / 180);   // Polar coordinates of circles center
-                            h = y - r * sin(t * PI / 180);   // Polar coordinates of circles center
-                            if(w >= 0 && w < width && h >= 0 && h < height) {
-                                acc[h * width * radiiCount + w * radiiCount + r-radius] += 1;
-                            }
+#pragma omp parallel for
+    // Vote accumulator matrix
+    for(int y0 = 0; y0 < height; y0++) {
+        for(int x0 = 0; x0 < width; x0++) {
+            if(pixels[y0][x0] != 0) {
+                for(unsigned int r = radius; r <= radiusUpperBounds; r++) {
+                    // takes 4-5 times longer than Bresenham
+                    /*for(int t = 0; t <= 180; t++) {
+                        int h, w;
+                        w = x0 - r * cos(t * PI / 180);   // Polar coordinates of circles center
+                        h = y0 - r * sin(t * PI / 180);   // Polar coordinates of circles center
+                        if(w >= 0 && w < width && h >= 0 && h < height) {
+                            acc[h * width * radiiCount + w * radiiCount + r-radius] += 1;
                         }
+                    }*/
+                    // Bresenham
+                    int dy, dx;
+                    int x = r;
+                    int y = 0;
+                    int error = r;
+                    vote(x0, y0+r, r-radius);
+                    vote(x0, y0-r, r-radius);
+                    vote(x0+r, y0, r-radius);
+                    vote(x0-r, y0, r-radius);
+
+                    while(y < x) {
+                        dy = y*2 + 1;
+                        y += 1;
+                        error -= dy;
+                        if(error < 0) {
+                            dx = 1 - x*2;
+                            x -= 1;
+                            error -= dx;
+                        }
+                        vote(x0+x, y0+y, r-radius);
+                        vote(x0-x, y0+y, r-radius);
+                        vote(x0-x, y0-y, r-radius);
+                        vote(x0+x, y0-y, r-radius);
+                        vote(x0+y, y0+x, r-radius);
+                        vote(x0-y, y0+x, r-radius);
+                        vote(x0-y, y0-x, r-radius);
+                        vote(x0+y, y0-x, r-radius);
                     }
                 }
             }
         }
     }
-
+    
+#pragma omp parallel for private(max, current)
     // Find biggest radius
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {
