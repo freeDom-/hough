@@ -29,6 +29,11 @@
 #include <SDL2/SDL_image.h>
 #endif /*SDL2_H_INCLUDED*/
 
+#ifndef OMP_H_INCLUDED
+#define OMP_H_INCLUDED
+#include <omp.h>
+#endif /*OMP_H_INCLUDED*/
+
 #include "grayscaler.h"
 #include "gauss.h"
 #include "canny.h"
@@ -159,7 +164,11 @@ SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint3
 ** Prints usage information to stderr
 */
 void printUsage() {
-    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-ct threshold] [-lt low_threshold] [-ht high_threshold] [-r radius] [-rub radius_upper_bounds] [-hot threshold] [-omp number_of_threads]\n"
+    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-ct threshold] [-lt low_threshold] [-ht high_threshold] [-r radius] [-rub radius_upper_bounds] [-hot threshold]"
+                #ifdef _OPENMP
+                " [-omp number_of_threads]"
+                #endif
+                "\n"
                 "\t-i image_name: path to the image to process\n"
                 "\t\t(default is test.png)\n"
                 "\t-k kernel_size: filtersize for the gaussian kernel\n"
@@ -177,7 +186,10 @@ void printUsage() {
                 "\t\t(default is 25)\n"
                 "\t-hot threshold: threshold for the hough transform when calculating local maxima\n"
                 "\t\t(default is 100)\n"
-                "\t-omp number_of_threads: use openMP with a certain number of threads\n");
+                #ifdef _OPENMP
+                "\t-omp number_of_threads: use openMP with a certain number of threads\n"
+                #endif
+                );
 }
 
 /*
@@ -187,17 +199,7 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
     // Loop through arguments
     char* end;
     for(int i = argc-1; i > 0;) {
-        if(strcmp(argv[i-1],"-omp") == 0) {
-            unsigned int threads = strtol(argv[i], &end, 0);
-            if(*end) {
-                fprintf(stderr, "ERROR: Wrong argument for -k\nInteger expected but was: %s\n", end);
-                printUsage();
-                exit(EXIT_FAILURE);
-            }
-            omp_set_num_threads(threads);
-            i -= 2;
-        }
-        else if(strcmp(argv[i-1],"-i") == 0) {
+        if(strcmp(argv[i-1],"-i") == 0) {
             path = realloc(path, strlen(dir) + strlen(argv[i]) + 1);
             strcpy(path, dir);
             strcat(path, argv[i]);
@@ -271,6 +273,18 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
             }
             i -= 2;
         }
+        #ifdef _OPENMP
+        else if(strcmp(argv[i-1],"-omp") == 0) {
+            unsigned int threads = strtol(argv[i], &end, 0);
+            if(*end) {
+                fprintf(stderr, "ERROR: Wrong argument for -k\nInteger expected but was: %s\n", end);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+            omp_set_num_threads(threads);
+            i -= 2;
+        }
+        #endif
         else {
             fprintf(stderr, "ERROR: Wrong argument %s\n", argv[i-1]);
             printUsage();
@@ -331,7 +345,9 @@ int main(int argc, char **argv) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
 
+    #ifdef _OPENMP
     omp_set_num_threads(1);
+    #endif
     // Evaluate arguments
     evaluateArguments(argc, argv, path, dir, &kernelSize, &threshold, &lowThreshold, &highThreshold, &radius, &radiusUpperBounds, &houghThreshold);
 

@@ -30,7 +30,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	/*
 	** Calculate g_x
 	*/
-#pragma omp parallel for
+	#ifdef _OPENMP
+	#pragma omp parallel for
+	#endif
 	// Apply horizontal Sobeloperator and store in tmp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
@@ -58,7 +60,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	        }
         }
     }
-#pragma omp parallel for
+	#ifdef _OPENMP
+	#pragma omp parallel for
+	#endif
 	// Apply vertical Sobeloperator and store in g_x
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
@@ -90,7 +94,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	/*
 	** Calculate g_y
 	*/
-#pragma omp parallel for
+	#ifdef _OPENMP
+	#pragma omp parallel for
+	#endif
 	// Apply horizontal Sobeloperator and store in tmp
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width-offset; x++) {
@@ -118,7 +124,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	        }
         }
     }
-#pragma omp parallel for
+	#ifdef _OPENMP
+	#pragma omp parallel for
+	#endif
 	// Apply vertical Sobeloperator and store in g_y
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
@@ -147,7 +155,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
         }
     }
 
-#pragma omp parallel for
+	#ifdef _OPENMP
+	#pragma omp parallel for
+	#endif
     // Calculate gradient
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
@@ -163,7 +173,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
     	}
     }
 
-#pragma omp parallel for
+	#ifdef _OPENMP
+	#pragma omp parallel for
+	#endif
     // Non-maximum suppression
     //for(int y = 1; y < height-1; y++){
     for(int y = 0; y < height-1; y++){
@@ -191,7 +203,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	    }
 	}
 
-#pragma omp parallel for
+	#ifdef _OPENMP
+	#pragma omp parallel for
+	#endif
 	// Hysteresis
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {

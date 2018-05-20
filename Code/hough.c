@@ -35,7 +35,9 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     h = &height;
     rc = &radiiCount;
 
-#pragma omp parallel for
+    #ifdef _OPENMP
+    #pragma omp parallel for
+    #endif
     // Vote accumulator matrix
     for(int y0 = 0; y0 < height; y0++) {
         for(int x0 = 0; x0 < width; x0++) {
@@ -82,8 +84,10 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
             }
         }
     }
-    
-#pragma omp parallel for private(max, current)
+
+    #ifdef _OPENMP
+    #pragma omp parallel for private(max, current)
+    #endif
     // Find biggest radius
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {
@@ -100,6 +104,9 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
         }
     }
 
+    #ifdef _OPENMP
+    #pragma omp parallel for private(current)
+    #endif
     // Find local maximum
     for(int y = 1; y < height-1; y++) {
         for(int x = 1; x < width-1; x++) {
