@@ -5,9 +5,8 @@
 
 #include "grayscaler.h"
 
-uint8_t* grayscaler(void* input, int width, int height) {
-    uint8_t (*output)[width] = malloc(width * height * sizeof(uint8_t));
-    uint32_t (*pixels)[width] = (uint32_t(*)[width]) input;
+uint8_t* grayscaler(uint32_t* input, int width, int height) {
+    uint8_t *output = malloc(width * height * sizeof(uint8_t));
 
     #ifdef _OPENMP
     #pragma omp parallel for
@@ -16,13 +15,14 @@ uint8_t* grayscaler(void* input, int width, int height) {
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {
                 uint8_t r, g, b;
+                int index = y * width + x;
 
-                r = pixels[y][x] >> 16 & 0xFF;
-                g = pixels[y][x] >> 8 & 0xFF;
-                b = pixels[y][x] & 0xFF;
-                output[y][x] = 0.3*r + 0.59*g + 0.11*b;
+                r = input[index] >> 16 & 0xFF;
+                g = input[index] >> 8 & 0xFF;
+                b = input[index] & 0xFF;
+                output[index] = 0.3*r + 0.59*g + 0.11*b;
         }
     }
 
-    return *output;
+    return output;
 }

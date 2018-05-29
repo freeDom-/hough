@@ -11,14 +11,13 @@ void vote(unsigned int* acc, unsigned int w, unsigned int h, unsigned int rc, in
 }
 
 circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned int radius, unsigned int radiusUpperBounds, unsigned int threshold, unsigned int* circleCount) {
-    uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
-    uint8_t maxRadius[height][width];   // storing the radius with the highest voting for each x and y
+    uint8_t *maxRadius = malloc(width * height * sizeof(uint8_t));   // storing the radius with the highest voting for each x and y
     unsigned int radiiCount = radiusUpperBounds - radius + 1;
-    unsigned int* acc = calloc(height * width * radiiCount, sizeof(unsigned int));
+    unsigned int *acc = calloc(height * width * radiiCount, sizeof(unsigned int));
     unsigned int current;
     unsigned int max;
     int maxCircles = 8;
-    circle* circles = (circle*) malloc(maxCircles * sizeof(circle));
+    circle *circles = malloc(maxCircles * sizeof(circle));
 
     #ifdef _OPENMP
     #pragma omp parallel for
@@ -26,7 +25,7 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     // Vote accumulator matrix
     for(int y0 = 0; y0 < height; y0++) {
         for(int x0 = 0; x0 < width; x0++) {
-            if(pixels[y0][x0] != 0) {
+            if(input[y0 * width + x0] != 0) {
                 for(unsigned int r = radius; r <= radiusUpperBounds; r++) {
                     // takes 4-5 times longer than Bresenham
                     /*for(int t = 0; t <= 180; t++) {
@@ -76,13 +75,13 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     // Find biggest radius
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {
-            maxRadius[y][x] = 0;
+            maxRadius[y * width + x] = 0;
             max = 0;
             for(int r = 0; r < radiiCount; r++) {
                 current = acc[y * width * radiiCount + x * radiiCount + r];
                 if(current > max) {
                     max = current;
-                    maxRadius[y][x] = r;
+                    maxRadius[y * width + x] = r;
                 }
             }
             acc[y * width * radiiCount + x * radiiCount] = max;
@@ -105,7 +104,7 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
                current > acc[(y+1) * width * radiiCount + (x-1) * radiiCount] &&
                current > acc[(y+1) * width * radiiCount +   x   * radiiCount] &&
                current > acc[(y+1) * width * radiiCount + (x+1) * radiiCount]) {
-                circle tmp = {x, y, radius + maxRadius[y][x]};
+                circle tmp = {x, y, radius + maxRadius[y * width + x]};
                 if(*circleCount == maxCircles) {
                     maxCircles = maxCircles << 2;
                     circles = (circle*) realloc(circles, maxCircles * sizeof(circle));
@@ -117,5 +116,6 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     }
 
     free(acc);
+    free(maxRadius);
     return circles;
 }

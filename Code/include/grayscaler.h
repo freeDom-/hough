@@ -17,4 +17,4 @@
 #endif /*OMP_H_INCLUDED*/
 #endif /*_OPENMP*/
 
-uint8_t* grayscaler(void* input, int width, int height);
+uint8_t* grayscaler(uint32_t* input, int width, int height);

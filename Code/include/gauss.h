@@ -17,4 +17,4 @@
 #endif /*OMP_H_INCLUDED*/
 #endif /*_OPENMP*/
 
-uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize);
+uint8_t* gauss(uint8_t* input, int width, int height, uint8_t kernelSize);

@@ -46,11 +46,11 @@ unsigned long* kernelGenerator(unsigned long kernelSize) {
     return kernel;
 }
 
-uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
-    uint8_t (*pixels)[width] = (uint8_t(*)[width]) input;
+uint8_t* gauss(uint8_t* input, int width, int height, uint8_t kernelSize) {
+    uint8_t *output = malloc(width * height * sizeof(uint8_t));
     uint8_t offset = kernelSize >> 1;
-    uint8_t temp[height][width];
-    unsigned long* filter;
+    uint8_t *temp = malloc(width * height * sizeof(uint8_t));
+    unsigned long *filter;
     unsigned long temp1, temp2;
     unsigned long sum = 0;
 
@@ -72,24 +72,24 @@ uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
                 temp2 = 0;
                 // Filter pixels on edges (offset-x) times
                 for(int i = 0; i < offset-x; i++) {
-                    temp1 += filter[i] * pixels[y][0];
-                    temp2 += filter[i] * pixels[y][width-1];
+                    temp1 += filter[i] * input[y * width];
+                    temp2 += filter[i] * input[y * width + (width-1)];
                 }
                 // Apply rest of the filter normally
                 for(int i = offset-x; i < kernelSize; i++) {
-                    temp1 += filter[i] * pixels[y][x+i-offset];
-                    temp2 += filter[i] * pixels[y][width-1-x-i+offset];
+                    temp1 += filter[i] * input[y * width + (x+i-offset)];
+                    temp2 += filter[i] * input[y * width + (width-1-x-i+offset)];
                 }
-                temp[y][x] = temp1 / sum;
-                temp[y][width-1-x] = temp2 / sum;
+                temp[y * width + x] = temp1 / sum;
+                temp[y * width + (width-1-x)] = temp2 / sum;
             }
             // Apply filter on rest
             else {
                 temp1 = 0;
                 for(int i = 0; i < kernelSize; i++) {
-                    temp1 += filter[i] * pixels[y][x+i-offset];
+                    temp1 += filter[i] * input[y * width + (x+i-offset)];
                 }
-                temp[y][x] = temp1 / sum;
+                temp[y * width + x] = temp1 / sum;
             }
         }
     }
@@ -97,7 +97,7 @@ uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
     #ifdef _OPENMP
     #pragma omp parallel for private(temp1, temp2)
     #endif
-    // Apply vertical filter on temp and save in pixels
+    // Apply vertical filter on temp and save in output
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
             // Apply filter on borders
@@ -106,28 +106,30 @@ uint8_t* gauss(void* input, int width, int height, uint8_t kernelSize) {
                 temp2 = 0;
                 // Filter pixels on edges (offset-x) times
                 for(int i = 0; i < offset-y; i++) {
-                    temp1 += filter[i] * temp[0][x];
-                    temp2 += filter[i] * temp[height-1][x];
+                    temp1 += filter[i] * temp[x];
+                    temp2 += filter[i] * temp[(height-1) * width + x];
                 }
                 // Apply rest of the filter normally
                 for(int i = offset-y; i < kernelSize; i++) {
-                    temp1 += filter[i] * temp[y+i-offset][x];
-                    temp2 += filter[i] * temp[height-1-y-i+offset][x];
+                    temp1 += filter[i] * temp[(y+i-offset) * width + x];
+                    temp2 += filter[i] * temp[(height-1-y-i+offset) * width + x];
                 }
-                pixels[y][x] = temp1 / sum;
-                pixels[height-1-y][x] = temp2 / sum;
+                output[y * width + x] = temp1 / sum;
+                output[(height-1-y) * width + x] = temp2 / sum;
             }
             // Apply filter on rest
             else {
                 temp1 = 0;
                 for(int i = 0; i < kernelSize; i++) {
-                    temp1 += filter[i] * temp[y+i-offset][x];
+                    temp1 += filter[i] * temp[(y+i-offset) * width + x];
                 }
-                pixels[y][x] = temp1 / sum;
+                output[y * width + x] = temp1 / sum;
             }
         }
     }
 
+    free(input);
+    free(temp);
     free(filter);
-    return *pixels;
+    return output;
 }
