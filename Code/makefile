@@ -27,4 +27,4 @@ all: hough hough_omp
 
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o hough hough_omp ../img/grayscale.png ../img/gauss.png ../img/sobel.png ../img/hough.png
+	rm -f $(ODIR)/*.o hough hough_omp ../img/gen/*.png

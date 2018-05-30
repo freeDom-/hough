@@ -308,7 +308,7 @@ int main(int argc, char **argv) {
     circle* circles = NULL;
 
     // Set dir and default path for images
-    const char* dir = "../img/";
+    const char* dir = "../img/src/";
     char* path = malloc(strlen(dir) + strlen("test.png") + 1);
     strcpy(path, dir);
     strcat(path, "test.png");
@@ -345,7 +345,7 @@ int main(int argc, char **argv) {
     grayscalerTime = endTime-startTime;
     totalTime += grayscalerTime;
     printf("%li ms needed for grayscaler.\n", grayscalerTime);
-    IMG_SavePNG(grayImg, "../img/grayscale.png");
+    IMG_SavePNG(grayImg, "../img/gen/grayscale.png");
     SDL_FreeSurface(img);
 
     // Apply gauss filter
@@ -356,7 +356,7 @@ int main(int argc, char **argv) {
         gaussTime = endTime-startTime;
         totalTime += gaussTime;
         printf("%li ms needed for gauss filter.\n", gaussTime);
-        IMG_SavePNG(grayImg, "../img/gauss.png");
+        IMG_SavePNG(grayImg, "../img/gen/gauss.png");
     }
 
     // Apply canny edge detector
@@ -366,7 +366,7 @@ int main(int argc, char **argv) {
     cannyTime = endTime-startTime;
     totalTime += cannyTime;
     printf("%li ms needed for canny edge detector.\n", cannyTime);
-    IMG_SavePNG(grayImg, "../img/sobel.png");
+    IMG_SavePNG(grayImg, "../img/gen/sobel.png");
 
     // Perform hough transform
     startTime = getTime();
@@ -384,7 +384,7 @@ int main(int argc, char **argv) {
     for(int i = 0; i < circleCount; i++) {
         grayImg->pixels = drawCircle(grayImg->pixels, grayImg->w, grayImg->h, circles[i].x, circles[i].y, circles[i].r);
     }
-    IMG_SavePNG(grayImg, "../img/hough.png");
+    IMG_SavePNG(grayImg, "../img/gen/hough.png");
     
     // Free allocated memory and exit
     free(circles);

@@ -72,7 +72,7 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     #ifdef _OPENMP
     #pragma omp parallel for private(max, current)
     #endif
-    // Find biggest radius
+    // Find biggest radius for each point
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {
             maxRadius[y * width + x] = 0;

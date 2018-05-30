@@ -5,7 +5,7 @@
 
 #include "grayscaler.h"
 
-uint8_t* grayscaler(uint32_t* input, int width, int height) {
+uint8_t* grayscaler(uint32_t* input, unsigned int width, unsigned int height) {
     uint8_t *output = malloc(width * height * sizeof(uint8_t));
 
     #ifdef _OPENMP

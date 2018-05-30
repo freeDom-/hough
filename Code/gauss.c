@@ -46,7 +46,7 @@ unsigned long* kernelGenerator(unsigned long kernelSize) {
     return kernel;
 }
 
-uint8_t* gauss(uint8_t* input, int width, int height, uint8_t kernelSize) {
+uint8_t* gauss(uint8_t* input, unsigned int width, unsigned int height, uint8_t kernelSize) {
     uint8_t *output = malloc(width * height * sizeof(uint8_t));
     uint8_t offset = kernelSize >> 1;
     uint8_t *temp = malloc(width * height * sizeof(uint8_t));
