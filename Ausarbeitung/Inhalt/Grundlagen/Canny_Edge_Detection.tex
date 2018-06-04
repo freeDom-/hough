@@ -4,7 +4,6 @@ Die Canny Edge Detection Methode ist eine der am meisten verbreiteten Kantenerke
 \\
 Kanten sind Stellen in Bildern, an denen sich die Intensität zu einer Richtung hin stark verändert. Je größer die Veränderung ist, desto wahrscheinlicher befindet sich eine Kante an der Position. Um die Kanten in Bildern zu finden muss nach großen Differenzen zwischen den Intensitäten benachbarter Pixel gesucht werden. Dies entspricht großen Werten in der ersten Ableitung, welche über ein Gradientenfilter berechnet werden kann. Der Sobeloperator \eqref{eq:sobel} ist das gängigste Filter.
 \cite[S.122-125]{burger_2016dip_java}
-\\
 \begin{align}\label{eq:sobel}
 S_x =
 \begin{bmatrix}
@@ -20,33 +19,26 @@ S_y =
  1 &  2 &  1
 \end{bmatrix}
 \end{align}
-\\
 Der Sobeloperator wird auf jedes Pixel in x- und y-Richtung angewandt. Anschließend berechnet sich die Kantenstärke über den euklidschen Betrag der partiellen Ableitungen $g_x(x,y)$ und $g_y(x,y)$.
 \cite[S.134]{burger_2016dip_java}
-\\
 \begin{equation}
 g(x,y) = \sqrt{g_x(x,y)^2 + g_y(x,y)^2}
 \end{equation}
-\\
 Als Approximation werden auch häufig nur die Beträge der partiellen Ableitungen addiert.
 \cite{QUELLE FEHLT}
-\\
 \begin{equation}
 g(x,y) = |g_x(x,y)| + |g_y(x,y)|
 \end{equation}
-\\
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\linewidth]{Bilder/Non_maximum_suppression-burger2016dip_java.png}
+	\includegraphics[width=0.8\linewidth]{Bilder/non_maximum_suppression-burger2016dip_java.png}
 	\caption[Non maximum suppression]{Non maximum suppression\\Quelle: \cite[S. 134]{burger_2016dip_java}}
 	\label{img:non maximum suppression}
 \end{figure}
 Um eine eindeutige Kante zu bekommen, welche nur ein Pixel breit ist, werden die in Frage kommenden Kantenpixel $E_{mag}$ einer \emph{non maximum suppression} unterzogen. Nur diejenigen Pixel in Richtung des Gradienten, welche das lokale Maximum sind, werden beibehalten ($E_{nms}$). Hierzu wird nach \eqref{eq:angle} der Winkel berechnet und wie in \autoref{img:non maximum suppression} zu sehen auf vier verschiedene Richtungen gerundet. Anschließend wird entlang der Richtung des Gradienten ein Pixel mit seinen Nachbarn verglichen. Falls eines der Nachbarpixel eine größere Kantenstärke hat, wird das untersuchte Pixel auf Null gesetzt.
 \cite[S. 134f]{burger_2016dip_java}
-\\
 \begin{equation}\label{eq:angle}
 \theta = \tan^{-1}\left(\frac{d_y}{d_x}\right)
 \end{equation}
-\\
 Im letzten Schritt der Kantenerkennung wird eine Hysterese durchgeführt. Hierfür werden zwei verschiedene Schwellwerte ($t_{lo} < t_{hi}$) benötigt. Das Bild wird zunächst nach Werten durchsucht für die $E_{nms}(u,v) \ge t_{hi}$ gilt. Wenn eine solche, noch nicht besuchte Kante gefunden wurde, wird das entsprechende Pixel im Ausgabebild auf weiß gesetzt und ein Suchlauf in die positive und negative Kantenrichtung gestartet. Alle verbundenen Kantenpixel $(u',v')$ werden weiß gesetzt, falls $E_{nms}(u',v') \ge t_{lo}$ gilt.
 \cite[S. 135ff]{burger_2016dip_java}

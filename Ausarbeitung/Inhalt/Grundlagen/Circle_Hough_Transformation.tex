@@ -2,11 +2,18 @@ Die \ac{CHT} ist eine Variation der \ac{HT} zur Erkennung von Kreisen in Bildern
 \\
 \\
 Ein Punkt $p = (x,y)$ liegt auf einem Kreis mit den gegebenen Parametern, wenn die folgende Gleichung erfüllt ist.
-\\
 \begin{equation}
 (x-x_0)^2+(y-y_0)^2 = r^2
 \end{equation}
-\\
-Daher benötigt die \ac{CHT} einen dreidimensionalen Parameterraum $A(x_0,y_0,r)$, um Position und Radius von Kreisen in Bildern zu finden. Es existiert keine einfache funktionale Abhängigkeit zwischen den Koordinaten im Parameterraum.
-Voting erklären usw....
+Die \ac{CHT} benötigt einen dreidimensionalen Parameterraum $A(x_0,y_0,r)$, um Position und Radius von Kreisen in Bildern zu finden. Da keine einfache funktionale Abhängigkeit zwischen den Koordinaten im Parameterraum existiert ist ein anderer Weg notwendig, um alle Parameterkombinationen $(x_0,y_0,r)$ zu finden. Eine Möglichkeit wäre es jedes Element im Parameterraum zu testen, ob es die Gleichung erfüllt. Dieser \emph{brute force} Ansatz ist jedoch sehr rechenintensiv. Es kann sich auch die Eigenschaft aus \autoref{img:circle_hough_transformation} zu nutze gemacht werden. Hier sieht man, dass die Koordinaten auch im Hough Raum einen Kreis beschreiben und jeder Kantenpunkt des Kreises $C$ einen Kreis mit dem selben Radius $\rho_i$ hat, welcher wieder durch den Kreismittelpunkt geht. Es ist daher nicht notwendig den gesamten dreidimensionalen Parameterraum für jeden Bildpunkt zu testen. Stattdessen wird für alle möglichen Radien an einer Kante mit Hilfe eines Standardalgorithmus wie dem \emph{Bresenham Algorithmus} ein Kreis mit dem Radius $r$ generiert und alle Zellen, welche auf dem Kreis liegen werden im Akkumulator $A(x,y,r)$ entsprechend inkrementiert. Zuletzt wird der Akkumulatorraum nach den höchsten Einträgen durchsucht. Dies sind die Kreise, welche die meisten Kanten enthalten.
 \cite[S. 64]{burger2009podip_2}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{Bilder/circle_hough_transform-burger2009podip_2.png}
+	\caption[Circle Hough Transformation]{Circle Hough Transformation\\Quelle: \cite[S. 65]{burger2009podip_2}}
+	\label{img:circle_hough_transformation}
+\end{figure}
+\\
+\\
+Da der Akkumulatorraum nur nach den höchsten Einträgen durchsucht wird besteht das Problem, dass kleinere Kreise nicht mehr erkannt werden, da diese kleinere Werte im Akkumulatorraum haben als große Kreise. Daher muss noch eine Biaskompensation durchgeführt werden. Hierfür wird jeder Wert im Akkumulatorraum normalisiert, indem er durch die maximal Mögliche Anzahl an Kantenpixeln geteilt wird.
+\cite[S. 171f]{burger_2016dip_java}

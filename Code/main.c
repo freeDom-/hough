@@ -178,8 +178,8 @@ void printUsage() {
                 "\t-R radius_upper_bounds: upper bounds radius for the sizes of the circles searched in the hough transform\n"
                 "\t\tIf this argument is given to the program, a range of radii from radius to radius_upper_bounds is searched in the hough transform\n"
                 "\t\t(default is 25)\n"
-                "\t-H threshold: threshold for the hough transform when calculating local maxima\n"
-                "\t\t(default is 100)\n"
+                "\t-H threshold: threshold for the hough transform in percentage\n"
+                "\t\t(default is 70)\n"
                 #ifdef _OPENMP
                 "\t-o number_of_threads: use OpenMP with a certain number of threads\n"
                 #endif
@@ -295,7 +295,7 @@ int main(int argc, char **argv) {
     uint8_t highThreshold = 200;
     unsigned int radius = 15;
     unsigned int radiusUpperBounds = 25;
-    unsigned int houghThreshold = 130;
+    unsigned int houghThreshold = 70;
 
     long startTime, endTime;
     long grayscalerTime;

@@ -14,6 +14,7 @@
 #define MATH_H_INCLUDED
 #include <math.h>
 #define PI 3.14159265
+#define SQRT2 1.414213562
 #endif /*MATH_H_INCLUDED*/
 #ifdef _OPENMP
 #ifndef OMP_H_INCLUDED
