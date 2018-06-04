@@ -4,6 +4,7 @@
 
 #include "hough.h"
 
+
 void vote(unsigned int* acc, unsigned int w, unsigned int h, unsigned int rc, int x, int y, unsigned int r) {
     if(x >= 0 && x < w && y >= 0 && y < h && r < rc) {
         acc[y * w * rc + x * rc + r] += 1;
@@ -18,6 +19,10 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     unsigned int max;
     int maxCircles = 8;
     circle *circles = malloc(maxCircles * sizeof(circle));
+    #ifdef _OPENMP
+    omp_lock_t circleCountLock;
+    omp_init_lock(&circleCountLock);
+    #endif
 
     #ifdef _OPENMP
     #pragma omp parallel for
@@ -88,9 +93,9 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
         }
     }
 
-    /*#ifdef _OPENMP
+    #ifdef _OPENMP
     #pragma omp parallel for private(current)
-    #endif*/
+    #endif
     // Find local maximum
     for(int y = 1; y < height-1; y++) {
         for(int x = 1; x < width-1; x++) {
@@ -105,16 +110,25 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
                current > acc[(y+1) * width * radiiCount +   x   * radiiCount] &&
                current > acc[(y+1) * width * radiiCount + (x+1) * radiiCount]) {
                 circle tmp = {x, y, radius + maxRadius[y * width + x]};
+                #ifdef _OPENMP
+                omp_set_lock(&circleCountLock);
+                #endif
                 if(*circleCount == maxCircles) {
                     maxCircles = maxCircles << 2;
                     circles = (circle*) realloc(circles, maxCircles * sizeof(circle));
                 }
                 circles[*circleCount] = tmp;
                 (*circleCount)++;
+                #ifdef _OPENMP
+                omp_unset_lock(&circleCountLock);
+                #endif
             }
         }
     }
 
+    #ifdef _OPENMP
+    omp_destroy_lock(&circleCountLock);
+    #endif
     free(acc);
     free(maxRadius);
     return circles;

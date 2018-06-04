@@ -1,0 +1,11 @@
+Die \ac{CHT} ist eine Variation der \ac{HT} zur Erkennung von Kreisen in Bildern. Dabei werden als Parameter zur eindeutigen Beschreibung des Kreises die Koordinaten des Mittelpunktes $(x_0,y_0)$ und der Radius $r$ verwendet. Als Eingabe benötigt der Algorithmus ein binäres Gradientenbild, welches z.B. durch eine vorherige Kantenerkennung erzeugt wurde.
+\\
+\\
+Ein Punkt $p = (x,y)$ liegt auf einem Kreis mit den gegebenen Parametern, wenn die folgende Gleichung erfüllt ist.
+\\
+\begin{equation}
+(x-x_0)^2+(y-y_0)^2 = r^2
+\end{equation}
+\\
+Daher benötigt die \ac{CHT} einen dreidimensionalen Parameterraum $A(x_0,y_0,r)$, um Position und Radius von Kreisen in Bildern zu finden. Es existiert keine einfache funktionale Abhängigkeit zwischen den Koordinaten im Parameterraum.
+\cite[S. 64f]{burger2009podip_2}

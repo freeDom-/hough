@@ -18,13 +18,13 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
     const uint8_t offset = 1;
 	const uint8_t kernelSize = 3;
     uint8_t *output = calloc(width * height, sizeof(uint8_t));	// allocate memory and initialize to 0
-	uint8_t *delta = malloc(width * height * sizeof(uint8_t)); // allocate memory on heap instead of using the stack
+	uint8_t *delta = malloc(width * height * sizeof(uint8_t));  // allocate memory on heap instead of using the stack
 	int8_t h_filter[3] = {1, 0, -1};
 	int8_t v_filter[3] = {1, 2, 1};
-	uint16_t *g = malloc(width * height * sizeof(uint16_t));   // allocate memory on heap instead of using the stack
-	int16_t *g_x = malloc(width * height * sizeof(int16_t));   // allocate memory on heap instead of using the stack
-	int16_t *g_y = malloc(width * height * sizeof(int16_t));   // allocate memory on heap instead of using the stack
-	int16_t *tmp = malloc(width * height * sizeof(int16_t));   // allocate memory on heap instead of using the stack
+	uint16_t *g = malloc(width * height * sizeof(uint16_t));    // allocate memory on heap instead of using the stack
+	int16_t *g_x = malloc(width * height * sizeof(int16_t));    // allocate memory on heap instead of using the stack
+	int16_t *g_y = malloc(width * height * sizeof(int16_t));    // allocate memory on heap instead of using the stack
+	int16_t *tmp = malloc(width * height * sizeof(int16_t));    // allocate memory on heap instead of using the stack
 
 	/*
 	** Calculate g_x
@@ -173,9 +173,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
     	}
     }
 
-	#ifdef _OPENMP
+	/*#ifdef _OPENMP
 	#pragma omp parallel for
-	#endif
+	#endif*/
     // Non-maximum suppression
     for(int y = 1; y < height-1; y++){
     //for(int y = 0; y < height-1; y++){
@@ -204,9 +204,9 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	    }
 	}
 
-	#ifdef _OPENMP
+	/*#ifdef _OPENMP
 	#pragma omp parallel for
-	#endif
+	#endif*/
 	// Hysteresis
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {

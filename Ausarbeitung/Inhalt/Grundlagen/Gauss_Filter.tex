@@ -29,10 +29,10 @@ h(-B,B) & ... & ... & h(0,B) & ... & ... & h(B,B)
 \\
 Ein Filter der Größe $(2K+1) \times (2L+1)$ angewandt auf ein Bild mit $M \times N$ Pixeln benötigt $2K \cdot 2L \cdot M \cdot N = 4 KLMN$ Operationen. Bei der vereinfachten Annahme, dass Bild und Filter die Größe $N \times N$ haben folgt daraus eine Komplexität von $O(N^4)$.
 \\
-Durch Ausnutzen der Separierbarkeit des Gauß-Filters kann die Rechenzeit allerdings deutlich reduziert werden, indem das zweidimensionale Filter in zwei eindimensionale Filter $G(x)$ und $G(y)$ aufgeteilt wird (\ref{separierbarkeit}). Diese werden dann nacheinander auf das Bild angewandt.
+Durch Ausnutzen der Separierbarkeit des Gauß-Filters kann die Rechenzeit allerdings deutlich reduziert werden, indem das zweidimensionale Filter in zwei eindimensionale Filter $G(x)$ und $G(y)$ aufgeteilt wird \eqref{eq:separierbarkeit}. Diese werden dann nacheinander auf das Bild angewandt.
 \cite[S.113f]{burger2009podip_1}
 \\
-\begin{align}\label{separierbarkeit}
+\begin{align}\label{eq:separierbarkeit}
 \frac{1}{16}
 \begin{pmatrix}
 1 & 2 & 1 \\

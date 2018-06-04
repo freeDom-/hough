@@ -213,7 +213,6 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
         )) != - 1) {
         switch(opt) {
             case 'i':
-                path = realloc(path, strlen(dir) + strlen(optarg) + 1);
                 strcpy(path, dir);
                 strcat(path, optarg);
                 break;
@@ -309,7 +308,7 @@ int main(int argc, char **argv) {
 
     // Set dir and default path for images
     const char* dir = "../img/src/";
-    char* path = malloc(strlen(dir) + strlen("test.png") + 1);
+    char* path = malloc(255);
     strcpy(path, dir);
     strcat(path, "test.png");
 
@@ -329,6 +328,8 @@ int main(int argc, char **argv) {
     if(img == NULL) {
         exit(EXIT_FAILURE);
     }
+
+    printf("Dimensions: (%ix%i)\n", img->w, img->h);
 
     // Prepare image and create a big Surface with 8 Bit depth
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
