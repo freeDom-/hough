@@ -127,34 +127,6 @@ SDL_Palette* createPalette(uint8_t mode) {
 }
 
 /*
-** Loads an image and checks if it was successfull
-** Returns a SDL_Surface or NULL
-*/
-SDL_Surface* loadImage(char* path) {
-    SDL_Surface* img = IMG_Load(path);
-
-    if(!img) {
-        fprintf(stderr, "ERROR: Could not load image: %s\n", IMG_GetError());
-        return NULL;
-    }
-    return img;
-}
-
-/*
-** Creates a surface and checks if it was successfull
-** Returns a SDL_Surface or NULL
-*/
-SDL_Surface* createSurface(int width, int height, int depth, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask) {
-    SDL_Surface* img = SDL_CreateRGBSurface(0, width, height, depth, Rmask, Gmask, Bmask, Amask);
-    
-    if(img == NULL) {
-        fprintf(stderr, "ERROR: SDL_CreateRGBSurface() failed: %s\n", SDL_GetError());
-        return NULL;
-    }
-    return img;
-}
-
-/*
 ** Prints usage information to stderr
 */
 void printUsage() {
@@ -323,9 +295,10 @@ int main(int argc, char **argv) {
     evaluateArguments(argc, argv, path, dir, &kernelSize, &threshold, &lowThreshold, &highThreshold, &radius, &radiusUpperBounds, &houghThreshold);
 
     // Load test image
-    img = loadImage(path);
+    img = IMG_Load(path);
     free(path);
-    if(img == NULL) {
+    if(!img) {
+        fprintf(stderr, "ERROR: Could not load image: %s\n", IMG_GetError());
         exit(EXIT_FAILURE);
     }
 
@@ -333,8 +306,9 @@ int main(int argc, char **argv) {
 
     // Prepare image and create a big Surface with 8 Bit depth
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
-    grayImg = createSurface(img->w, img->h, 8, 0, 0, 0, 0);
+    grayImg = SDL_CreateRGBSurface(0, img->w, img->h, 8, 0, 0, 0, 0);
     if(grayImg == NULL) {
+        fprintf(stderr, "ERROR: SDL_CreateRGBSurface() failed: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
     SDL_SetSurfacePalette(grayImg, createPalette(0));

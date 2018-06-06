@@ -37,6 +37,20 @@
 \ofoot[\pagemark]{\pagemark}
 
 \usepackage{listings}
+\lstset{
+	belowcaptionskip=1\baselineskip,
+	breaklines=true,
+	frame=L,
+	xleftmargin=\parindent,
+	language=C,
+	numbers=left,
+	showstringspaces=false,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\bfseries\color{green!40!black},
+	commentstyle=\itshape\color{purple!40!black},
+	identifierstyle=\color{blue},
+	stringstyle=\color{orange}
+}
 \usepackage{color}
 \usepackage{graphicx}
 \usepackage{float}
@@ -207,7 +221,6 @@ keine Empfehlung des Produktes oder der Firma dar.
 	%--------------------->
 	
 	\setstretch{1,2}
-	
 	\listoffigures
 	\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
 
@@ -262,11 +275,11 @@ keine Empfehlung des Produktes oder der Firma dar.
 	%\input{Inhalt/Grundlagen/High_Level_Synthese}
 	\section{Hough Transformation}
 	\input{Inhalt/Grundlagen/Hough_Transformation}
-	\subsection{Umwandlung eines RGB Bildes in Graustufen}
+	\subsection{Umwandlung eines RGB Bildes in Graustufen}\label{sec:umwandlung-eines-rgb-bildes-in-graustufen}
 	\input{Inhalt/Grundlagen/Umwandlung_eines_RGB_Bildes_in_Graustufen}
 	\subsection{Gauß-Filter}
 	\input{Inhalt/Grundlagen/Gauss_Filter}
-	\subsection{Canny Edge Detection}\label{canny}
+	\subsection{Canny Edge Detection}
 	\input{Inhalt/Grundlagen/Canny_Edge_Detection}
 	\subsection{Circle Hough Transformation}
 	\input{Inhalt/Grundlagen/Circle_Hough_Transformation}
@@ -275,8 +288,12 @@ keine Empfehlung des Produktes oder der Firma dar.
 	\chapter{Hardware/Software Codesign am Beispiel einer Hough Transformation}
 	\section{Softwareimplementierung}
 	\input{Inhalt/HWSW_Codesign/Softwareimplementierung}
+	\subsection{Main}
+	\input{Inhalt/HWSW_Codesign/Main}
 	\subsection{Grayscaler}
+	\input{Inhalt/HWSW_Codesign/Grayscaler}
 	\subsection{Gauß-Filter}
+	\input{Inhalt/HWSW_Codesign/Gauss}
 	\subsection{Canny Edge Detection}
 	\subsection{Circle Hough Transformation}
 	\section{Iterative Auslagerung einzelner Komponenten auf den FPGA}
