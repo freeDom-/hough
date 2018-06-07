@@ -47,7 +47,6 @@ unsigned long* kernelGenerator(unsigned long kernelSize) {
 }
 
 uint8_t* gauss(uint8_t* input, unsigned int width, unsigned int height, uint8_t kernelSize) {
-    uint8_t *output = malloc(width * height * sizeof(uint8_t));
     uint8_t offset = kernelSize >> 1;
     uint8_t *temp = malloc(width * height * sizeof(uint8_t));
     unsigned long *filter;
@@ -97,7 +96,7 @@ uint8_t* gauss(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
     #ifdef _OPENMP
     #pragma omp parallel for private(temp1, temp2)
     #endif
-    // Apply vertical filter on temp and save in output
+    // Apply vertical filter on temp and save in input
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height-offset; y++) {
             // Apply filter on borders
@@ -114,8 +113,8 @@ uint8_t* gauss(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
                     temp1 += filter[i] * temp[(y+i-offset) * width + x];
                     temp2 += filter[i] * temp[(height-1-y-i+offset) * width + x];
                 }
-                output[y * width + x] = temp1 / sum;
-                output[(height-1-y) * width + x] = temp2 / sum;
+                input[y * width + x] = temp1 / sum;
+                input[(height-1-y) * width + x] = temp2 / sum;
             }
             // Apply filter on rest
             else {
@@ -123,13 +122,12 @@ uint8_t* gauss(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
                 for(int i = 0; i < kernelSize; i++) {
                     temp1 += filter[i] * temp[(y+i-offset) * width + x];
                 }
-                output[y * width + x] = temp1 / sum;
+                input[y * width + x] = temp1 / sum;
             }
         }
     }
 
-    free(input);
     free(temp);
     free(filter);
-    return output;
+    return input;
 }

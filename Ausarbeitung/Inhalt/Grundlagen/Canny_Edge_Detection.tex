@@ -24,17 +24,13 @@ Der Sobeloperator wird auf jedes Pixel in x- und y-Richtung angewandt. Anschlie�
 \begin{equation}
 g(x,y) = \sqrt{g_x(x,y)^2 + g_y(x,y)^2}
 \end{equation}
-Als Approximation werden auch häufig nur die Beträge der partiellen Ableitungen addiert.
-\cite{QUELLE FEHLT}
-\begin{equation}
-g(x,y) = |g_x(x,y)| + |g_y(x,y)|
-\end{equation}
-\begin{figure}
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/non_maximum_suppression-burger2016dip_java.png}
 	\caption[Non maximum suppression]{Non maximum suppression\\Quelle: \cite[S. 134]{burger_2016dip_java}}
 	\label{img:non-maximum-suppression}
 \end{figure}
+
 Um eine eindeutige Kante zu bekommen, welche nur ein Pixel breit ist, werden die in Frage kommenden Kantenpixel $E_{mag}$ einer \emph{non maximum suppression} unterzogen. Nur diejenigen Pixel in Richtung des Gradienten, welche das lokale Maximum sind, werden beibehalten ($E_{nms}$). Hierzu wird nach \eqref{eq:angle} der Winkel berechnet und wie in \autoref{img:non-maximum-suppression} zu sehen auf vier verschiedene Richtungen gerundet. Anschließend wird entlang der Richtung des Gradienten ein Pixel mit seinen Nachbarn verglichen. Falls eines der Nachbarpixel eine größere Kantenstärke hat, wird das untersuchte Pixel auf Null gesetzt.
 \cite[S. 134f]{burger_2016dip_java}
 \begin{equation}\label{eq:angle}

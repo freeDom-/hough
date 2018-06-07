@@ -1,0 +1,4 @@
+Mit dem Gauß-Filter wird das Bild wie in \autoref{sec:gaus-filter} beschrieben zur Kantenerkennung vorbereitet. Dazu bekommt die Funktion einen Zeiger auf die 8 Bit breiten Pixeldaten, die Höhe und Breite des Bildes, so wie die Kernelgröße als Argumente übergeben.
+\\
+\\
+Mit Hilfe des Pascal'schen Dreiecks wird zunächst ein eindimensionaler Filterkernel generiert, der zuerst in horizontaler Richtung auf das Bild angewandt wird. Anschließend wird der selbe Kernel in vertikaler Richtung auf die zuvor generierten Daten angewandt. Dabei wird das Bild an den Ecken um die jeweils benötigten Pixel wie in \autoref{sec:gaus-filter} beschrieben erweitert.
