@@ -130,17 +130,15 @@ SDL_Palette* createPalette(uint8_t mode) {
 ** Prints usage information to stderr
 */
 void printUsage() {
-    fprintf(stderr, "usage: hough [-i image_name] [-k kernel_size] [-t threshold] [-l low_threshold] [-h high_threshold] [-r radius] [-R radius_upper_bounds] [-H threshold]"
+    fprintf(stderr, "usage: hough -i image_name [-k kernel_size] [-t threshold] [-l low_threshold] [-h high_threshold] [-r radius] [-R radius_upper_bounds] [-H threshold]"
                 #ifdef _OPENMP
                 " [-o number_of_threads]"
                 #endif
                 "\n"
-                "\t-i image_name: path to the image to process\n"
-                "\t\t(default is test.png)\n"
+                "\t-i image_name: name of the image to process\n"
+                "\t\t(image must be in the ../img/src/ folder)\n"
                 "\t-k kernel_size: filtersize for the gaussian kernel\n"
                 "\t\t(default is 5)\n"
-                "\t-t threshold: threshold for the canny edge detector when calculating the gradient\n"
-                "\t\t(default is 0)\n"
                 "\t-l low_threshold: lower threshold for the canny edge detectors hysteresis\n"
                 "\t\t(default is 100)\n"
                 "\t-h high_threshold: higher threshold for the canny edge detectors hysteresis\n"
@@ -170,12 +168,18 @@ void integerArgumentError(char argument, char* end) {
 /*
 ** Evaluates arguments and checks if they are correct
 */
-void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8_t* kernelSize, uint8_t* threshold, uint8_t* lowThreshold, uint8_t* highThreshold, unsigned int* radius, unsigned int* radiusUpperBounds, unsigned int* houghThreshold) {
+void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8_t* kernelSize, uint8_t* lowThreshold, uint8_t* highThreshold, unsigned int* radius, unsigned int* radiusUpperBounds, unsigned int* houghThreshold) {
     int opt;
+    uint8_t pathDefined = 0;
     char* end;
     #ifdef _OPENMP
     int threads;
     #endif
+
+    if(argc == 1) {
+        printUsage();
+        exit(0);
+    }
 
     // Loop through arguments
     while((opt = getopt(argc, argv, "i:k:t:l:h:r:R:H:"
@@ -185,18 +189,13 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
         )) != - 1) {
         switch(opt) {
             case 'i':
-                strcpy(path, dir);
+                pathDefined = 1;
                 strcat(path, optarg);
                 break;
             case 'k':
                 *kernelSize = strtol(optarg, &end, 0);
                 if(*end)
                     integerArgumentError('k', end);
-                break;
-            case 't':
-                *threshold = strtol(optarg, &end, 0);
-                if(*end)
-                    integerArgumentError('t', end);
                 break;
             case 'l':
                 *lowThreshold = strtol(optarg, &end, 0);
@@ -236,6 +235,11 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
                 exit(EXIT_FAILURE);
         }
     }
+    if(pathDefined == 0) {
+        printUsage();
+        fprintf(stderr, "ERROR: image_name must be given to the program\n");
+        exit(EXIT_FAILURE);
+    }
     if(*highThreshold < *lowThreshold) {
         fprintf(stderr, "ERROR: high_threshold (%i) must not be smaller than low_threshold (%i)\n", *highThreshold, *lowThreshold);
         exit(EXIT_FAILURE);
@@ -262,7 +266,6 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
 int main(int argc, char **argv) {
     // Default parameters
     uint8_t kernelSize = 5;
-	uint8_t threshold = 0;
     uint8_t lowThreshold = 100;
     uint8_t highThreshold = 200;
     unsigned int radius = 15;
@@ -282,7 +285,6 @@ int main(int argc, char **argv) {
     const char* dir = "../img/src/";
     char* path = malloc(255);
     strcpy(path, dir);
-    strcat(path, "test.png");
 
     SDL_Surface* img;
     SDL_Surface* grayImg;
@@ -292,7 +294,7 @@ int main(int argc, char **argv) {
     IMG_Init(IMG_INIT_PNG);
 
     // Evaluate arguments
-    evaluateArguments(argc, argv, path, dir, &kernelSize, &threshold, &lowThreshold, &highThreshold, &radius, &radiusUpperBounds, &houghThreshold);
+    evaluateArguments(argc, argv, path, dir, &kernelSize, &lowThreshold, &highThreshold, &radius, &radiusUpperBounds, &houghThreshold);
 
     // Load test image
     img = IMG_Load(path);
@@ -336,7 +338,7 @@ int main(int argc, char **argv) {
 
     // Apply canny edge detector
     startTime = getTime();
-    grayImg->pixels = canny(grayImg->pixels, grayImg->w, grayImg->h, threshold, lowThreshold, highThreshold);
+    grayImg->pixels = canny(grayImg->pixels, grayImg->w, grayImg->h, lowThreshold, highThreshold);
     endTime = getTime();
     cannyTime = endTime-startTime;
     totalTime += cannyTime;

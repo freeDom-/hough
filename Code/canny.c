@@ -14,7 +14,7 @@ uint8_t roundAngle(uint8_t angle) {
 	else return 135;
 }
 
-uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold) {
+uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint8_t lowThreshold, uint8_t highThreshold) {
     const uint8_t offset = 1;
 	const uint8_t kernelSize = 3;
 	uint8_t *delta = malloc(width * height * sizeof(uint8_t));  // allocate memory on heap instead of using the stack
@@ -167,8 +167,7 @@ uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint
 			//g[y][x] = abs(g_x[y][x]) + abs(g_y[y][x]);
             // Exact formula
 			g[index] = sqrt(g_x[index] * g_x[index] + g_y[index] * g_y[index]);
-			g[index] = fmax(g[index], threshold);
-			if(g[index] == threshold) g[index] = 0;
+			if(g[index] <= lowThreshold) g[index] = 0;
     	}
     }
 
@@ -181,25 +180,27 @@ uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint
 	    for(int x = 1; x < width-1; x++) {
     	//for(int x = 0; x < width-1; x++) {
             int index = y * width + x;
-	    	// Compare neighbour pixel in gradient direction and delete all but the maximum
-	    	switch(delta[index]) {
-                // Edge is in east-west direction
-	    		case 0:
-                    if(g[index] < g[index - 1] || g[index] < g[index + 1]) g[index] = 0;
-	    			break;
-                // Edge is in northeast-southwest direction
-	    		case 45:
-	    			if(g[index] < g[index - width + 1] || g[index] < g[index + width - 1]) g[index] = 0;
-	    			break;
-                // Edge is in north-south direction
-	    		case 90:
-                    if(g[index] < g[index - width] || g[index] < g[index + width]) g[index] = 0;
-	    			break;
-                // Edge is in northwest-southeast direction
-	    		case 135:
-	    			if(g[index] < g[index - width - 1] || g[index] < g[index + width + 1]) g[index] = 0;
-	    			break;
-	    	}
+            if(g[index] != 0) {
+                // Compare neighbour pixel in gradient direction and delete all but the maximum
+                switch(delta[index]) {
+                    // Edge is in east-west direction
+                    case 0:
+                        if(g[index] < g[index - 1] || g[index] < g[index + 1]) g[index] = 0;
+                        break;
+                    // Edge is in northeast-southwest direction
+                    case 45:
+                        if(g[index] < g[index - width + 1] || g[index] < g[index + width - 1]) g[index] = 0;
+                        break;
+                    // Edge is in north-south direction
+                    case 90:
+                        if(g[index] < g[index - width] || g[index] < g[index + width]) g[index] = 0;
+                        break;
+                    // Edge is in northwest-southeast direction
+                    case 135:
+                        if(g[index] < g[index - width - 1] || g[index] < g[index + width + 1]) g[index] = 0;
+                        break;
+                }
+            }
 	    }
 	}
 
@@ -224,7 +225,7 @@ uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint
 				int i = y;
 				int j = x;
 				// Follow edge in positive direction
-				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i * width + j] > lowThreshold) {
+				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i * width + j] != 0) {
                     pixelData[i * width + j] = 255;
 					switch(delta[i * width + j]) {
 						case 0:
@@ -246,7 +247,7 @@ uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint
 				i = y;
 				j = x;
 				// Follow edge in negative direction
-				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i * width + j] > lowThreshold) {
+				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i * width + j] != 0) {
 					pixelData[i * width + j] = 255;
 					switch(delta[i * width + j]) {
 						case 0:
