@@ -342,7 +342,7 @@ int main(int argc, char **argv) {
     cannyTime = endTime-startTime;
     totalTime += cannyTime;
     printf("%li ms needed for canny edge detector.\n", cannyTime);
-    IMG_SavePNG(grayImg, "../img/gen/sobel.png");
+    IMG_SavePNG(grayImg, "../img/gen/canny.png");
 
     // Perform hough transform
     startTime = getTime();
