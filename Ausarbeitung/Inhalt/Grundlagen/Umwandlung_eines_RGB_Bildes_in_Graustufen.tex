@@ -2,7 +2,9 @@ Damit eine Kantenextraktion mit dem Canny-Algorithmus (\ref{canny}) durchgeführ
 \\
 \\
 Für jedes Pixel werden die drei Farbkomponenten $(R, G, B)$ in einen Intensitätswert $Y$ umgerechnet, welcher die Helligkeit des Pixels beschreibt. Es gibt eine Vielzahl verschiedener Ansätze, die sich unterschiedlich gut zur Kantenextraktion eignen. An dieser Stelle soll nicht näher auf die Unterschiede eingegangen werden. Zwei detaillierte Vergleiche zu dem Thema finden sich in \cite{kanan2012grayscale} und \cite{ahmad2018grayscale}. Daraus geht hervor, dass GLuminance als Standardalgorithmus zur Bildverarbeitung gilt. Die Intensität berechnet sich nach GLuminance gewichtet, da wir rot und grün deutlich heller als blau wahrnehmen.
+
 \begin{equation}
 Y = 0.3 * R + 0.59 * G + 0.11 * B
 \end{equation}
+
 Die Umwandlung eines Bildes der Größe $M \times N$ benötigt $5(M \cdot N)$ Operationen. Unter der vereinfachten Annahme, dass die Bildgröße $N \times N$ ist folgt damit eine Komplexität von $O(N^2)$.

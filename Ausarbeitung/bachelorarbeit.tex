@@ -49,7 +49,8 @@
 	keywordstyle=\bfseries\color{green!40!black},
 	commentstyle=\itshape\color{purple!40!black},
 	identifierstyle=\color{blue},
-	stringstyle=\color{orange}
+	stringstyle=\color{orange},
+	escapeinside={(@}{@)}
 }
 \usepackage{color}
 \usepackage{graphicx}
@@ -61,9 +62,9 @@
 \usepackage{lscape}
 \usepackage[printonlyused]{acronym}
 \usepackage{caption}
-\usepackage{subcaption}
 %\usepackage{ccaption}
 %\captionstyle{\centering}
+\usepackage[labelfont=bf,textfont=normalfont,singlelinecheck=off,justification=centering]{subcaption}
 \usepackage{hyperref}
 
 \hypersetup{
@@ -281,9 +282,9 @@ keine Empfehlung des Produktes oder der Firma dar.
 	\input{Inhalt/Grundlagen/Umwandlung_eines_RGB_Bildes_in_Graustufen}
 	\subsection{Gauß-Filter}\label{sec:gaus-filter}
 	\input{Inhalt/Grundlagen/Gauss_Filter}
-	\subsection{Canny Edge Detection}
+	\subsection{Canny Edge Detection}\label{sec:canny-edge-detection}
 	\input{Inhalt/Grundlagen/Canny_Edge_Detection}
-	\subsection{Circle Hough Transformation}
+	\subsection{Circle Hough Transformation}\label{sec:circle-hough-transformation}
 	\input{Inhalt/Grundlagen/Circle_Hough_Transformation}
 	%\subsection{Optimierungen}
 	%\input{Inhalt/Grundlagen/Optimierungen}
@@ -297,7 +298,9 @@ keine Empfehlung des Produktes oder der Firma dar.
 	\subsection{Gauß-Filter}
 	\input{Inhalt/HWSW_Codesign/Gauss}
 	\subsection{Canny Edge Detection}
+	\input{Inhalt/HWSW_Codesign/Canny}
 	\subsection{Circle Hough Transformation}
+	\input{Inhalt/HWSW_Codesign/Hough}
 	\section{Iterative Auslagerung einzelner Komponenten auf den FPGA}
 	\chapter{Evaluation}
 	\chapter{Fazit und Ausblick}

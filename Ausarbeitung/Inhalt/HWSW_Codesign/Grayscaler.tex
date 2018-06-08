@@ -1,4 +1,5 @@
-Der Grayscaler wandelt ein RGB-Bild nach \autoref{sec:umwandlung-eines-rgb-bildes-in-graustufen} in ein Graustufenbild um. Dabei erhält er als Eingabe einen Zeiger auf 32 Bit breite Pixeldaten und die Höhe und Breite des Bildes. Anschließend wird jedes Pixel durchlaufen und in Z. 16 in \autoref{lst:grayscaler} der neue Intensitätswert berechnet. Die einzelnen Werte für rot, grün und blau berechnen sich in Z. 13 - 15. Als Pixelformat wurde \emph{ARGB8888} gewählt, welches in \autoref{img:argb-format} näher dargestellt ist. Die 8 höchstwertigen Bits enthalten den Alphawert des jeweiligen Pixels, die nächsten 8 Bit den Rotwert, die folgenden 8 Bit den Grünwert und die 8 niedrigsten Bits den Blauwert.
+Der Grayscaler wandelt ein RGB-Bild nach \autoref{sec:umwandlung-eines-rgb-bildes-in-graustufen} in ein Graustufenbild um. Dabei erhält er als Eingabe einen Zeiger auf 32 Bit breite Pixeldaten und die Höhe und Breite des Bildes. Anschließend wird jedes Pixel durchlaufen und in \autoref{lst:grayscaler} Z. \ref{lst:grayscaler_output} der neue Intensitätswert berechnet. Die einzelnen Werte für rot, grün und blau berechnen sich in Z. \ref{lst:grayscaler_rgb_start} - \ref{lst:grayscaler_rgb_end}. Als Pixelformat wurde \emph{ARGB8888} gewählt, welches in \autoref{img:argb-format} näher dargestellt ist. Die 8 höchstwertigen Bits enthalten den Alphawert des jeweiligen Pixels, die nächsten 8 Bit den Rotwert, die folgenden 8 Bit den Grünwert und die 8 niedrigsten Bits den Blauwert.
+
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/ARGB_format.png}
@@ -6,42 +7,45 @@ Der Grayscaler wandelt ein RGB-Bild nach \autoref{sec:umwandlung-eines-rgb-bilde
 	\label{img:argb-format}
 \end{figure}
 
-Die For-Schleifen, in welchen das gesamte Bild durchlaufen und verarbeitet wird, werden in den Z. 4 - 6, falls \ac{OMP} verwendet wird parallelisiert.
-\begin{lstlisting}[label=lst:grayscaler,caption=grayscaler]
+Die For-Schleifen, in welchen das gesamte Bild durchlaufen und verarbeitet wird, werden in den Z. \ref{lst:grayscaler_omp_start} - \ref{lst:grayscaler_omp_end} parallelisiert, falls \ac{OMP} verwendet wird.
+
+\begin{lstlisting}[label=lst:grayscaler,caption=Auszug aus grayscaler.c]
 uint8_t* grayscaler(uint32_t* input, unsigned int width, unsigned int height) {
-	uint8_t *output = malloc(width * height * sizeof(uint8_t));
-	
-	#ifdef _OPENMP
-	#pragma omp parallel for
-	#endif
-	// Convert image to grayscale
-	for(int y = 0; y < height; y++) {
-		for(int x = 0; x < width; x++) {
-			uint8_t r, g, b;
-			int index = y * width + x;
-			
-			r = input[index] >> 16 & 0xFF;
-			g = input[index] >> 8 & 0xFF;
-			b = input[index] & 0xFF;
-			output[index] = 0.3*r + 0.59*g + 0.11*b;
-		}
+uint8_t *output = malloc(width * height * sizeof(uint8_t));
+
+#ifdef _OPENMP(@\label{lst:grayscaler_omp_start}@)
+#pragma omp parallel for
+#endif(@\label{lst:grayscaler_omp_end}@)
+// Convert image to grayscale
+for(int y = 0; y < height; y++) {
+	for(int x = 0; x < width; x++) {
+		uint8_t r, g, b;
+		int index = y * width + x;
+		
+		r = input[index] >> 16 & 0xFF;(@\label{lst:grayscaler_rgb_start}@)
+		g = input[index] >> 8 & 0xFF;
+		b = input[index] & 0xFF;(@\label{lst:grayscaler_rgb_end}@)
+		output[index] = 0.3*r + 0.59*g + 0.11*b;(@\label{lst:grayscaler_output}@)
 	}
-	
+}
+
 return output;
 }
 \end{lstlisting}
+
 Als Ausgabe liefert der Grayscaler einen Zeiger auf die neu berechneten 8 Bit breiten Pixeldaten. Es muss von der Main Methode dafür gesorgt werden, dass die erzeugten Pixeldaten auch in ein geeignetes Bild geladen werden.
+
 \begin{figure}[htb]
 	\centering
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=0.5\linewidth]{Bilder/euro.png}
+		\includegraphics[width=.8\linewidth]{Bilder/euro.png}
 		\caption[Eingabebild des Grayscalers]{Eingabebild des Grayscalers\\Quelle: http://www.historia-hamburg.de/media/product/1ec/19-x-1-euro-satz-aus-19-euro-staaten-511.jpg}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=0.5\linewidth]{Bilder/grayscale.png}
-		\caption[Ausgabebild des Grayscalers]{Ausgabebild des Grayscalers}
+		\includegraphics[width=.8\linewidth]{Bilder/grayscale.png}
+		\caption[Ausgabebild des Grayscalers]{Ausgabebild des Grayscalers\newline\newline\newline}
 	\end{subfigure}
 	\caption{Ein- und Ausgabebild des Grayscalers}
 \end{figure}

@@ -4,3 +4,12 @@ In diesem Kapitel wird die Softwareimplementierung der \ac{HT} vorgestellt. Da d
 Zum Laden des zu verarbeitenden Bildes und der Pixeldaten wurde die Bibliothek \ac{SDL 2}\footnote{\url{https://www.libsdl.org/}} verwendet, welche einen leichten Zugriff auf die Pixeldaten ermöglicht und es einfach gestaltet die von den Zwischenschritten erzeugten Bilder abzuspeichern.
 \\
 Zur Parallelisierung des Programmes wurde \ac{OMP}\footnote{\url{https://www.openmp.org/}} genutzt. \ac{OMP} ermöglicht eine leichte Parallelisierung durch Präprozessoranweisungen und bietet über das Compilerflag \emph{-fopenmp}, welches das Präprozessormakro \emph{\_OPENMP} definiert, eine einfache Möglichkeit, um eine serielle und parallele Version des Programms zu kompilieren.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{Bilder/usage.png}
+	\caption{Benutzeranleitung für das Programm}
+	\label{img:usage}
+\end{figure}
+
+Das Programm wird in Unix mit \emph{./hough} (oder \emph{./hough\_omp} für die parallele Version) ausgeführt. Die möglichen Argumente sind \autoref{img:usage} zu entnehmen.
