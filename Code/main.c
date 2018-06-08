@@ -130,7 +130,7 @@ SDL_Palette* createPalette(uint8_t mode) {
 ** Prints usage information to stderr
 */
 void printUsage() {
-    fprintf(stderr, "usage: hough -i image_name [-k kernel_size] [-t threshold] [-l low_threshold] [-h high_threshold] [-r radius] [-R radius_upper_bounds] [-H threshold]"
+    fprintf(stderr, "usage: hough -i image_name [-k kernel_size] [-l low_threshold] [-h high_threshold] [-r radius] [-R radius_upper_bounds] [-H threshold]"
                 #ifdef _OPENMP
                 " [-o number_of_threads]"
                 #endif
@@ -139,14 +139,13 @@ void printUsage() {
                 "\t\t(image must be in the ../img/src/ folder)\n"
                 "\t-k kernel_size: filtersize for the gaussian kernel\n"
                 "\t\t(default is 5)\n"
-                "\t-l low_threshold: lower threshold for the canny edge detectors hysteresis\n"
+                "\t-l low_threshold: lower threshold for canny edge detectors hysteresis\n"
                 "\t\t(default is 100)\n"
-                "\t-h high_threshold: higher threshold for the canny edge detectors hysteresis\n"
+                "\t-h high_threshold: higher threshold for canny edge detectors hysteresis\n"
                 "\t\t(default is 200)\n"
-                "\t-r radius: radius for the size of the circles searched in the hough transform\n"
+                "\t-r radius: radius for the circles searched in the hough transform\n"
                 "\t\t(default is 15)\n"
-                "\t-R radius_upper_bounds: upper bounds radius for the sizes of the circles searched in the hough transform\n"
-                "\t\tIf this argument is given to the program, a range of radii from radius to radius_upper_bounds is searched in the hough transform\n"
+                "\t-R radius_upper_bounds: upper bounds radius for the circles searched in the hough transform\n"
                 "\t\t(default is 25)\n"
                 "\t-H threshold: threshold for the hough transform in percentage\n"
                 "\t\t(default is 70)\n"
