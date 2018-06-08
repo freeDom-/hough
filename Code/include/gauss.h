@@ -17,4 +17,4 @@
 #endif /*OMP_H_INCLUDED*/
 #endif /*_OPENMP*/
 
-uint8_t* gauss(uint8_t* input, unsigned int width, unsigned int height, uint8_t kernelSize);
+uint8_t* gauss(uint8_t* pixelData, unsigned int width, unsigned int height, uint8_t kernelSize);

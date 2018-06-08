@@ -14,10 +14,9 @@ uint8_t roundAngle(uint8_t angle) {
 	else return 135;
 }
 
-uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold) {
+uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold) {
     const uint8_t offset = 1;
 	const uint8_t kernelSize = 3;
-    uint8_t *output = calloc(width * height, sizeof(uint8_t));	// allocate memory and initialize to 0
 	uint8_t *delta = malloc(width * height * sizeof(uint8_t));  // allocate memory on heap instead of using the stack
 	int8_t h_filter[3] = {1, 0, -1};
 	int8_t v_filter[3] = {1, 2, 1};
@@ -41,20 +40,20 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	            tmp[y * width + (width-1-x)] = 0;
 	            // Filter pixels on edges (offset-x) times
 	            for(int i = 0; i < offset-x; i++) {
-	                tmp[y * width + x] += h_filter[i] * input[y * width];
-	                tmp[y * width + (width-1-x)] += h_filter[i] * input[y * width + (width-1)];
+	                tmp[y * width + x] += h_filter[i] * pixelData[y * width];
+	                tmp[y * width + (width-1-x)] += h_filter[i] * pixelData[y * width + (width-1)];
 	            }
 	            // Apply rest of the filter normally
 	            for(int i = offset-x; i < kernelSize; i++) {
-	                tmp[y * width + x] += h_filter[i] * input[y * width + (x+i-offset)];
-	                tmp[y * width + (width-1-x)] += h_filter[i] * input[y * width + (width-1-x-i+offset)];
+	                tmp[y * width + x] += h_filter[i] * pixelData[y * width + (x+i-offset)];
+	                tmp[y * width + (width-1-x)] += h_filter[i] * pixelData[y * width + (width-1-x-i+offset)];
 	            }
         	}
         	// Apply Sobeloperator on rest
         	else {
 	            tmp[y * width + x] = 0;
 	            for(int i = 0; i < kernelSize; i++) {
-	                tmp[y * width + x] += h_filter[i] * input[y * width + (x+i-offset)];
+	                tmp[y * width + x] += h_filter[i] * pixelData[y * width + (x+i-offset)];
 	            }
 	        }
         }
@@ -105,20 +104,20 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
             	tmp[y * width + (width-1-x)] = 0;
 	            // Filter pixels on edges (offset-x) times
 	            for(int i = 0; i < offset-x; i++) {
-	                tmp[y * width + x] += v_filter[i] * input[y * width];
-	                tmp[y * width + (width-1-x)] += v_filter[i] * input[y * width + (width-1)];
+	                tmp[y * width + x] += v_filter[i] * pixelData[y * width];
+	                tmp[y * width + (width-1-x)] += v_filter[i] * pixelData[y * width + (width-1)];
 	            }
 	            // Apply rest of the filter normally
 	            for(int i = offset-x; i < kernelSize; i++) {
-	                tmp[y * width + x] += v_filter[i] * input[y * width + (x+i-offset)];
-	                tmp[y * width + (width-1-x)] += v_filter[i] * input[y * width + (width-1-x-i+offset)];
+	                tmp[y * width + x] += v_filter[i] * pixelData[y * width + (x+i-offset)];
+	                tmp[y * width + (width-1-x)] += v_filter[i] * pixelData[y * width + (width-1-x-i+offset)];
 	            }
         	}
         	// Apply Sobeloperator on rest
         	else {
 	            tmp[y * width + x] = 0;
 	            for(int i = 0; i < kernelSize; i++) {
-	                tmp[y * width + x] += v_filter[i] * input[y * width + (x+i-offset)];
+	                tmp[y * width + x] += v_filter[i] * pixelData[y * width + (x+i-offset)];
 	            }
 	        }
         }
@@ -204,19 +203,29 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 	    }
 	}
 
-	/*#ifdef _OPENMP
+    #ifdef _OPENMP
+    #pragma omp parallel for
+    #endif
+    // Clear pixelData data
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+            pixelData[y * width + x] = 0;
+        }
+    }
+
+	#ifdef _OPENMP
 	#pragma omp parallel for
-	#endif*/
+	#endif
 	// Hysteresis
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
 			// Follow strong edges if not already performed
-			if(g[y * width + x] > highThreshold && output[y * width + x] != 255) {
+			if(g[y * width + x] > highThreshold && pixelData[y * width + x] != 255) {
 				int i = y;
 				int j = x;
 				// Follow edge in positive direction
 				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i * width + j] > lowThreshold) {
-                    output[i * width + j] = 255;
+                    pixelData[i * width + j] = 255;
 					switch(delta[i * width + j]) {
 						case 0:
 							i -= 1;
@@ -238,7 +247,7 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 				j = x;
 				// Follow edge in negative direction
 				while(i > 0 && i < height-1 && j > 0 && j < width-1 && g[i * width + j] > lowThreshold) {
-					output[i * width + j] = 255;
+					pixelData[i * width + j] = 255;
 					switch(delta[i * width + j]) {
 						case 0:
 							i += 1;
@@ -260,11 +269,10 @@ uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t 
 		}
 	}
 
-	free(input);
 	free(delta);
     free(g);
     free(g_x);
     free(g_y);
     free(tmp);
-    return output;
+    return pixelData;
 }

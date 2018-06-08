@@ -22,4 +22,4 @@
 #endif /*OMP_H_INCLUDED*/
 #endif /*_OPENMP*/
 
-uint8_t* canny(uint8_t* input, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold);
+uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint8_t threshold, uint8_t lowThreshold, uint8_t highThreshold);
