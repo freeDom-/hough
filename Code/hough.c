@@ -59,6 +59,7 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     }
 
     // Find biggest values in relation to their radius
+    // TODO parallelize???
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {
             for(int r = radiiCount-1; r >= 0; r--) {

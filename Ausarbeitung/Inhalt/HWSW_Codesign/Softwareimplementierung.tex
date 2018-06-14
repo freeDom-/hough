@@ -1,9 +1,11 @@
 In diesem Kapitel wird die Softwareimplementierung der \ac{HT} vorgestellt. Da das zur anschließenden \ac{HLS} verwendete Programm \emph{Vivado HLS} für C Code ausgelegt ist wurde C als Programmiersprache gewählt. Die Implementierung kann in 5 verschiedene Module unterteilt werden, welche die unterschiedlichen Funktionalitäten implementieren. Dabei ist ein modularer Aufbau zur Übersicht, Zeiterfassung und vor allem für die spätere \ac{HLS} von großem Vorteil. Es lässt sich jedes Modul einzeln synthetisieren und so in \ac{HW} auslagern. Die einzelnen Module werden in den folgenden Unterkapiteln näher beschrieben.
 \\
 \\
-Zum Laden des zu verarbeitenden Bildes und der Pixeldaten wurde die Bibliothek \ac{SDL 2}\footnote{\url{https://www.libsdl.org/}} verwendet, welche einen leichten Zugriff auf die Pixeldaten ermöglicht und es einfach gestaltet die von den Zwischenschritten erzeugten Bilder abzuspeichern.
+Als Compiler wurde GCC (TODO VERSIONNR.) verwendet.
 \\
-Zur Parallelisierung des Programmes wurde \ac{OMP}\footnote{\url{https://www.openmp.org/}} genutzt. \ac{OMP} ermöglicht eine leichte Parallelisierung durch Präprozessoranweisungen und bietet über das Compilerflag \emph{-fopenmp}, welches das Präprozessormakro \emph{\_OPENMP} definiert, eine einfache Möglichkeit, um eine serielle und parallele Version des Programms zu kompilieren.
+Zum Laden des zu verarbeitenden Bildes und der Pixeldaten wurde die Bibliothek \ac{SDL 2}\footnote{\url{https://www.libsdl.org/}} (TODO VERSIONNR.) verwendet, welche einen leichten Zugriff auf die Pixeldaten ermöglicht und es einfach gestaltet die von den Zwischenschritten erzeugten Bilder abzuspeichern.
+\\
+Zur Parallelisierung des Programmes wurde \ac{OMP}\footnote{\url{https://www.openmp.org/}} (TODO VERSIONNR.) genutzt. \ac{OMP} ermöglicht eine leichte Parallelisierung durch Präprozessoranweisungen und bietet über das Compilerflag \emph{-fopenmp}, welches das Präprozessormakro \emph{\_OPENMP} definiert, eine einfache Möglichkeit, um eine serielle und parallele Version des Programms zu kompilieren.
 
 \begin{figure}[htb]
 	\centering

@@ -1,0 +1,51 @@
+Die \ac{CHT} nutzt zur Erkennung von Kreisen, wie in \autoref{sec:circle-hough-transformation} erläutert, einen Akkumulatorraum und untersucht diesen anschließend nach Maxima, um Kreise zu finden.
+\\
+\\
+Als Datenstruktur für Kreise wurde das in \autoref{lst:circle} gezeigte \emph{struct} gewählt, welches einen Kreis durch seinen Radius $r$ und die Position des Mittelpunktes $x$ und $y$ beschreibt.
+
+\begin{lstlisting}[label=lst:circle,caption=Auszug aus hough.h]
+typedef struct{
+	unsigned int x;
+	unsigned int y;
+	uint8_t r;
+} circle;
+\end{lstlisting}
+
+Zunächst wird in einem Votingverfahren jedes Kantenpixel des Bildes durchlaufen. Für jeden Radius wird mit Hilfe des \emph{Bresenham Algorithmus} ein Kreis generiert. Alle Zellen im Akkumulatorraum, die auf dem Kreis liegen werden nun inkrementiert. Anschließend wird der Akkumulatorraum wie in \autoref{lst:hough} nach Maxima durchsucht.
+\\
+\\
+In Z. \ref{lst:hough_if} wird der im Akkumulatorraum gespeicherte Wert durch die maximal mögliche Anzahl an Kreispixeln für einen vom \emph{Bresenham Algorithmus} erzeugten Kreis geteilt und anschleßend mit 100 multipliziert. Hierdurch erhält man den prozentualen Anteil von den Punkten, die auf einem Kreis mit dem Radius $r$ liegen und mit dem Schwellwert $threshold$ kann dem Programm dann der Einfachheit halber ein prozentualer Parameter übergeben werden.
+\\
+Anschließend wird der gefundene Kreis in einem \emph{Array} vom Datentyp \emph{circle} abgelegt und der Akkumulatorraum in der näheren Umgebung auf 0 gesetzt, um Mehrfacherkennungen zu verhindern. Das \emph{Array} mit allen gefundenen Kreisen wird anschließend von der Funktion an die Main Methode zurückgegeben.
+
+\begin{lstlisting}[label=lst:hough,caption=Auszug aus hough.c]
+for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+            for(int r = radiiCount-1; r >= 0; r--) {
+                int currentRadius = r+radius;
+                if(acc[y * width * radiiCount + x * radiiCount + r] / (4*round((currentRadius)*SQRT2)) * 100 > threshold) {(@\label{lst:hough_if}@)
+                	// Add circle
+                	...
+                	// Clear circle from hough space
+                	...
+                }
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\begin{figure}[htb]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=.8\linewidth]{Bilder/canny.png}
+		\caption[Eingabebild der Circle Hough Transformation]{Eingabebild der \ac{CHT}}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=.8\linewidth]{Bilder/hough.png}
+		\caption[Ausgabebild der Circle Hough Transformation]{Ausgabebild der \ac{CHT}}
+	\end{subfigure}
+	\caption{Ein- und Ausgabebild der Circle Hough Transformation}
+\end{figure}
