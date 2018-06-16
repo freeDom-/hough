@@ -140,15 +140,15 @@ void printUsage() {
                 "\t-k kernel_size: filtersize for the gaussian kernel\n"
                 "\t\t(default is 5)\n"
                 "\t-l low_threshold: lower threshold for canny edge detectors hysteresis\n"
-                "\t\t(default is 100)\n"
+                "\t\t(default is 50)\n"
                 "\t-h high_threshold: higher threshold for canny edge detectors hysteresis\n"
-                "\t\t(default is 200)\n"
+                "\t\t(default is 150)\n"
                 "\t-r radius: radius for the circles searched in the hough transform\n"
-                "\t\t(default is 15)\n"
+                "\t\t(default is 44)\n"
                 "\t-R radius_upper_bounds: upper bounds radius for the circles searched in the hough transform\n"
-                "\t\t(default is 25)\n"
+                "\t\t(default is 50)\n"
                 "\t-H threshold: threshold for the hough transform in percentage\n"
-                "\t\t(default is 70)\n"
+                "\t\t(default is 33)\n"
                 #ifdef _OPENMP
                 "\t-o number_of_threads: use OpenMP with a certain number of threads\n"
                 #endif
@@ -265,11 +265,11 @@ void evaluateArguments(int argc, char** argv, char* path, const char* dir, uint8
 int main(int argc, char **argv) {
     // Default parameters
     uint8_t kernelSize = 5;
-    uint8_t lowThreshold = 100;
-    uint8_t highThreshold = 200;
-    unsigned int radius = 15;
-    unsigned int radiusUpperBounds = 25;
-    unsigned int houghThreshold = 70;
+    uint8_t lowThreshold = 50;
+    uint8_t highThreshold = 150;
+    unsigned int radius = 44;
+    unsigned int radiusUpperBounds = 50;
+    unsigned int houghThreshold = 33;
 
     long startTime, endTime;
     long grayscalerTime;
