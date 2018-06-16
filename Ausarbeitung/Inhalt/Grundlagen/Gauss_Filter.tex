@@ -55,7 +55,6 @@ Durch Ausnutzen der Separierbarkeit des Gauß-Filters kann die Rechenzeit allerd
 \end{align}
 
 In der Bildverarbeitung wird häufig nur eine Approximation für den Filterkernel verwendet, die auf dem Pascalschen Dreieck beruht. Diese bietet den Vorteil, dass der Kernel nur aus ganzen Zahlen aufgebaut ist und zur Normierung durch eine Zweierpotenz geteilt werden kann. Für einen Kernel der Größe $N$ wird die $N$-te Zeile des Pascalschen Dreiecks in ein Feld mit $N$ Elementen geladen. Anschließend wird der Kernel wie folgt aufgebaut: Die $i$-te Zeile des Kernels entsteht durch Multiplikation des Feldes mit dem $i$-ten Element des Felds. Der Faktor zur Normierung ist dann $X=2^N$.
-\cite{QUELLE FEHLT}
 \\
 \\
 Die Pixel am Rand eines Bildes müssen bei der Filterung besonders betrachtet werden, da hier nicht das gesamte Filter angewandt werden kann. Um das Filter auf ein Randpixel anzuwenden gibt es verschiedene Möglichkeiten. An dieser Stelle soll nur die in dieser Arbeit verwendete Methode erläutert werden:
