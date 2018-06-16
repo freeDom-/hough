@@ -1,6 +1,7 @@
 Code/hough
 Code/hough_omp
-Code/obj/
+Code/obj/*.o
+img/gen/*.png
 Ausarbeitung/bachelorarbeit.aux
 Ausarbeitung/bachelorarbeit.bbl
 Ausarbeitung/bachelorarbeit.blg
@@ -12,8 +13,6 @@ Ausarbeitung/bachelorarbeit.out
 Ausarbeitung/bachelorarbeit.pdf
 Ausarbeitung/bachelorarbeit.synctex.gz
 Ausarbeitung/bachelorarbeit.toc
-Quellen/
-img/
 lab/
 transfer.sh
 zcu_img/
