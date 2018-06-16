@@ -16,7 +16,7 @@ Zunächst wird in einem Votingverfahren jedes Kantenpixel des Bildes durchlaufen
 \\
 In Z. \ref{lst:hough_if} wird der im Akkumulatorraum gespeicherte Wert durch die maximal mögliche Anzahl an Kreispixeln für einen vom \emph{Bresenham Algorithmus} erzeugten Kreis geteilt und anschleßend mit 100 multipliziert. Hierdurch erhält man den prozentualen Anteil von den Punkten, die auf einem Kreis mit dem Radius $r$ liegen und mit dem Schwellwert $threshold$ kann dem Programm dann der Einfachheit halber ein prozentualer Parameter übergeben werden.
 \\
-Anschließend wird der gefundene Kreis in einem \emph{Array} vom Datentyp \emph{circle} abgelegt und der Akkumulatorraum in der näheren Umgebung auf 0 gesetzt, um Mehrfacherkennungen zu verhindern. Das \emph{Array} mit allen gefundenen Kreisen wird anschließend von der Funktion an die Main Methode zurückgegeben.
+Anschließend wird der gefundene Kreis in einem \emph{Array} vom Datentyp \emph{circle} abgelegt und der Akkumulatorraum in der näheren Umgebung auf 0 gesetzt, um Mehrfacherkennungen zu verhindern. Das \emph{Array} mit allen gefundenen Kreisen wird schließlich von der Funktion an die Main Methode zurückgegeben.
 
 \begin{lstlisting}[label=lst:hough,caption=Auszug aus hough.c]
 for(int y = 0; y < height; y++) {

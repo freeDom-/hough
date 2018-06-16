@@ -4,7 +4,7 @@ Die Canny Edge Detection erzeugt, wie in \autoref{sec:canny-edge-detection} erl�
 Die beiden Schwellwerte werden bei der Hysterese genutzt, um auch schwache Kanten, welche über dem niedrigeren Schwellwert liegen, aber mit starken Kanten, welche über dem höheren Schwellwert liegen, verbunden sind, im Kantenbild zu behalten.
 \\
 \\
-Als Ausgabe wird ein Zeiger auf die 8 Bit breiten Kantendaten geliefert. Es muss von der Main Methode dafür gesorgt werden, dass die erzeugten Pixeldaten auch in ein geeignetes Bild geladen werden. Theoretisch würde an dieser Stelle auch ein einziges Bit reichen, um die Daten zu speichern, allerdings ist der kleinste Datentyp in C bereits 8 Bit groß.
+Als Ausgabe wird ein Zeiger auf die 8 Bit breiten Kantendaten geliefert. Es muss von der Main Methode dafür gesorgt werden, dass die erzeugten Pixeldaten auch in ein geeignetes Bild geladen werden.
 
 \begin{figure}[htb]
 	\centering
