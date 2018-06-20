@@ -1,4 +1,4 @@
-Die Canny Edge Detection erzeugt, wie in \autoref{sec:canny-edge-detection} erläutert, ein binäres Gradientenbild, welches für die \ac{CHT} benötigt wird. Sie bekommt dabei einen Zeiger auf die 8 Bit breiten Pixeldaten, die Höhe und Breite des Bildes, so wie zwei Schwellwerte übergeben.
+Die Canny Edge Detection erzeugt ein binäres Gradientenbild, welches für die \ac{CHT} benötigt wird. Dies wurde bereits in \autoref{sec:canny-edge-detection} erläutert. Sie bekommt als Argumente einen Zeiger auf die 8 Bit breiten Pixeldaten, die Höhe und Breite des Bildes, sowie zwei Schwellwerte übergeben.
 \\
 \\
 Die beiden Schwellwerte werden bei der Hysterese genutzt, um auch schwache Kanten, welche über dem niedrigeren Schwellwert liegen, aber mit starken Kanten, welche über dem höheren Schwellwert liegen, verbunden sind, im Kantenbild zu behalten.

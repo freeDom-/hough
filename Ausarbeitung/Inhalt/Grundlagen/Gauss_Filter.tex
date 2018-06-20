@@ -1,4 +1,4 @@
-Einige Bilder enthalten ein Bildrauschen, welches bei einer späteren Kantenextraktion zu fehlerhaften Kanten führen kann. Um dieses Rauschen zu verringern wird zur Glättung des Bildes ein lineares Weichzeichnungsfilter, wie das Gauß-Filter, angewandt.
+Einige Bilder enthalten ein Bildrauschen, welches bei einer späteren Kantenextraktion zu fehlerhaften Kanten führen kann. Um dieses Rauschen zu verringern, wird zur Glättung des Bildes ein lineares Weichzeichnungsfilter, wie das Gauß-Filter, angewandt.
 
 \begin{align}
 G(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{x^2}{2 \sigma^2}}
@@ -6,11 +6,11 @@ G(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{x^2}{2 \sigma^2}}
 G(x,y) = \frac{1}{2 \pi \sigma^2} e^{-\frac{x^2+y^2}{2 \sigma^2}}
 \end{align}
 
-Die eindimensionale Filterfunktion $G(x)$ entspricht der Funktion der Normalverteilung. Die zweidimensionale Funktion $G(x,y)$ des Gauß-Filters ergibt sich aus dem Produkt der Funktionen in x- und y-Richtung. Die Argumente x und y bezeichnen jeweils die Entfernungen in horizontaler und vertikaler Richtung zu dem aktuell gefilterten Pixel und $\sigma$ bezeichnet die Standardabweichung der Normalverteilung.
+Die eindimensionale Filterfunktion $G(x)$ entspricht der Funktion der Normalverteilung. Die zweidimensionale Funktion $G(x,y)$ des Gauß-Filters ergibt sich aus dem Produkt der Funktionen in x- und y-Richtung. Die Argumente x und y bezeichnen jeweils die Entfernungen in horizontaler und vertikaler Richtung zu dem aktuell gefilterten Pixel. $\sigma$ bezeichnet die Standardabweichung der Normalverteilung.
 \cite[S. 106-109]{burger2009podip_1}
 \\
 \\
-Ein Filterkernel für einen Gauß-Filter lässt sich nun über die zweidimensionale Filterfunktion berechnen. Ein Kernel der Größe $N \times N$ mit $N \in \{2i + 1 | i \in \mathbb{N} \setminus 0\}$ berechnet sich wie folgt:
+Ein Filterkernel für einen Gauß-Filter lässt sich über die zweidimensionale Filterfunktion berechnen. Ein Kernel der Größe $N \times N$ mit $N \in \{2i + 1 | i \in \mathbb{N} \setminus 0\}$ berechnet sich wie folgt:
 
 \begin{align}
 \begin{split}
@@ -30,7 +30,7 @@ h(-B,B) & ... & ... & h(0,B) & ... & ... & h(B,B)
 \end{pmatrix}
 \end{equation}
 
-Ein Filter der Größe $(2K+1) \times (2L+1)$ angewandt auf ein Bild mit $M \times N$ Pixeln benötigt $2K \cdot 2L \cdot M \cdot N = 4 KLMN$ Operationen. Bei der vereinfachten Annahme, dass Bild und Filter die Größe $N \times N$ haben folgt daraus eine Komplexität von $O(N^4)$.
+Ein Filter der Größe $(2K+1) \times (2L+1)$ angewandt auf ein Bild mit $M \times N$ Pixeln benötigt $2K \cdot 2L \cdot M \cdot N = 4 KLMN$ Operationen. Bei der vereinfachten Annahme, dass Bild und Filter die Größe $N \times N$ haben, folgt daraus eine Komplexität von $O(N^4)$.
 \\
 Durch Ausnutzen der Separierbarkeit des Gauß-Filters kann die Rechenzeit allerdings deutlich reduziert werden, indem das zweidimensionale Filter in zwei eindimensionale Filter $G(x)$ und $G(y)$ aufgeteilt wird \eqref{eq:separierbarkeit}. Diese werden dann nacheinander auf das Bild angewandt.
 \cite[S.113f]{burger2009podip_1}
@@ -57,7 +57,7 @@ Durch Ausnutzen der Separierbarkeit des Gauß-Filters kann die Rechenzeit allerd
 In der Bildverarbeitung wird häufig nur eine Approximation für den Filterkernel verwendet, die auf dem Pascalschen Dreieck beruht. Diese bietet den Vorteil, dass der Kernel nur aus ganzen Zahlen aufgebaut ist und zur Normierung durch eine Zweierpotenz geteilt werden kann. Für einen Kernel der Größe $N$ wird die $N$-te Zeile des Pascalschen Dreiecks in ein Feld mit $N$ Elementen geladen. Anschließend wird der Kernel wie folgt aufgebaut: Die $i$-te Zeile des Kernels entsteht durch Multiplikation des Feldes mit dem $i$-ten Element des Felds. Der Faktor zur Normierung ist dann $X=2^N$.
 \\
 \\
-Die Pixel am Rand eines Bildes müssen bei der Filterung besonders betrachtet werden, da hier nicht das gesamte Filter angewandt werden kann. Um das Filter auf ein Randpixel anzuwenden gibt es verschiedene Möglichkeiten. An dieser Stelle soll nur die in dieser Arbeit verwendete Methode erläutert werden:
+Die Pixel am Rand eines Bildes müssen bei der Filterung gesondert betrachtet werden, da hier nicht das gesamte Filter angewandt werden kann. Um das Filter auf ein Randpixel anzuwenden gibt es verschiedene Möglichkeiten. An dieser Stelle soll nur die in dieser Arbeit verwendete Methode erläutert werden:
 \\
-Das Bild wird um die benötigte Pixelanzahl erweitert und die Pixel außerhalb des Bildes auf den Wert des Randpixels gesetzt. Dies hat nur kleinere Artefakte zur Folge und wird Aufgrund der Einfachheit häufig verwendet.
+Das Bild wird um die benötigte Pixelanzahl erweitert und die Pixel außerhalb des Bildes auf den Wert des Randpixels gesetzt. Dies hat nur kleinere Artefakte zur Folge und wird aufgrund der Einfachheit häufig verwendet.
 \cite[S. 125f]{burger2009podip_1}
