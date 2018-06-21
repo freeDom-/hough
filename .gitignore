@@ -1,3 +1,4 @@
+Ignore/
 Code/hough
 Code/hough_omp
 Code/obj/*.o
@@ -13,7 +14,5 @@ Ausarbeitung/bachelorarbeit.out
 Ausarbeitung/bachelorarbeit.pdf
 Ausarbeitung/bachelorarbeit.synctex.gz
 Ausarbeitung/bachelorarbeit.toc
-lab/
 transfer.sh
-zcu_img/
 .~lock.*.odp
