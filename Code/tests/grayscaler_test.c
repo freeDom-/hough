@@ -96,12 +96,12 @@ int main(int argc, char **argv) {
 	}
 	SDL_SetSurfacePalette(grayImg, createPalette(0));
 
+#ifdef HW_COSIM
 	// Convert pixels to grayscale using HW
 	hwStartTime = getTime();
 	grayscaler(img->pixels, hwResult);
 	hwEndTime = getTime();
 	printf("%li ms needed for grayscaler on HW.\n", hwEndTime-hwStartTime);
-	SDL_FreeSurface(img);
 
 	// Compare results
     for(y = 0; y < HEIGHT; y++) {
@@ -116,7 +116,12 @@ int main(int argc, char **argv) {
     	fprintf(stderr, "ERROR: %i mismatches detected!\n", errCnt);
     }
     else fprintf(stderr, "Test passed!");
-
+    free(hwResult);
+#endif
 	free(swResult);
-	free(hwResult);
+	SDL_FreeSurface(img);
+    SDL_FreePalette(grayImg->format->palette);
+    SDL_FreeSurface(grayImg);
+
+	return errCnt;
 }
