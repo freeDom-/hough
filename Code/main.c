@@ -2,6 +2,10 @@
 ** Finds circles in a 32 bit color image
 */
 
+#ifndef INTTYPES_H_INCLUDED
+#define INTTYPES_H_INCLUDED
+#include <inttypes.h>
+#endif /*INTTYPES_H_INCLUDED*/
 #ifndef STDIO_H_INCLUDED
 #define STIDO_H_INCLUDED
 #include <stdio.h>
@@ -305,7 +309,7 @@ int main(int argc, char **argv) {
 
     printf("Dimensions: (%ix%i)\n", img->w, img->h);
 
-    // Prepare image and create a big Surface with 8 Bit depth
+    // Prepare image and create a Surface with 8 Bit depth
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
     grayImg = SDL_CreateRGBSurface(0, img->w, img->h, 8, 0, 0, 0, 0);
     if(grayImg == NULL) {

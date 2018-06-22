@@ -18,7 +18,7 @@ void grayscaler(uint32_t input[SIZE], uint8_t output[SIZE]) {
                 g = input[index] >> 8 & 0xFF;
                 b = input[index] & 0xFF;
 
-                output[index] = (30*r + 59*g + 11*b)/100;
+                output[index] = 0.3*r + 0.59*g + 0.11*b;
         }
     }
 }
