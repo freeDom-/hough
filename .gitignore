@@ -1,6 +1,7 @@
 Ignore/
 Code/hough
 Code/hough_omp
+Code/convert
 Code/obj/*.o
 img/gen/*.png
 Ausarbeitung/bachelorarbeit.aux
