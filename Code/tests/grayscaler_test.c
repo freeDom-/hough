@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
     SDL_Surface* grayImg;
 
     uint32_t *input;
-    uint8_t *swResult = malloc(400*400);
-    uint8_t *hwResult = malloc(400*400);
+    static uint8_t swResult[SIZE];// = malloc(400*400);
+    static uint8_t hwResult[SIZE];// = malloc(400*400);
 
     // Initialize SDL and SDL Image
     SDL_Init(SDL_INIT_VIDEO);
@@ -115,10 +115,10 @@ int main(int argc, char **argv) {
     if(errCnt) {
     	fprintf(stderr, "ERROR: %i mismatches detected!\n", errCnt);
     }
-    else fprintf(stderr, "Test passed!");
-    free(hwResult);
+    else fprintf(stderr, "Test passed!\n");
+    //free(hwResult);
 #endif
-	free(swResult);
+	//free(swResult);
 	SDL_FreeSurface(img);
     SDL_FreePalette(grayImg->format->palette);
     SDL_FreeSurface(grayImg);
