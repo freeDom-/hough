@@ -4,7 +4,7 @@ CC=gcc
 CFLAGS=-I$(IDIR) -std=c11 -g
 LIBS=-lSDL2 -lSDL2_image -lm
 
-_DEPS=grayscaler.h gauss.h canny.h hough.h dimensions.h
+_DEPS=grayscaler.h gauss.h canny.h hough.h
 DEPS=$(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ=main.o grayscaler.o gauss.o canny.o hough.o
@@ -32,4 +32,4 @@ all: hough hough_omp convert
 
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o hough hough_omp ../img/gen/*.png
+	rm -f $(ODIR)/*.o hough hough_omp convert ../img/gen/*.png

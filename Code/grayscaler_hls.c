@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
-#include "include/dimensions.h"
+#include "include/grayscaler_hls.h"
 
 /*
 ** Converts 32-Bit colored image data to 8-Bit grayscale image data
