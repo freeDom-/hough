@@ -4,6 +4,7 @@ Code/hough_omp
 Code/convert
 Code/obj/*.o
 img/gen/*.png
+img/gen/*.txt
 Ausarbeitung/bachelorarbeit.aux
 Ausarbeitung/bachelorarbeit.bbl
 Ausarbeitung/bachelorarbeit.blg

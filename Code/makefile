@@ -8,8 +8,10 @@ _DEPS=grayscaler.h gauss.h canny.h hough.h dimensions.h
 DEPS=$(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ=main.o grayscaler.o gauss.o canny.o hough.o
+_CONVOBJ=convert.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 OMPOBJ=$(patsubst %,$(ODIR)/omp_%,$(_OBJ))
+CONVOBJ=$(patsubst %,$(ODIR)/omp_%,$(_CONVOBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -Wall -c -o $@ $< $(CFLAGS)
@@ -23,7 +25,10 @@ hough: $(OBJ)
 hough_omp: $(OMPOBJ)
 	$(CC) -Wall -o $@ $^ $(CFLAGS) -fopenmp $(LIBS)
 
-all: hough hough_omp
+convert: $(CONVOBJ)
+	$(CC) -Wall -o $@ $^ $(CFLAGS) $(LIBS)
+
+all: hough hough_omp convert
 
 .PHONY: clean
 clean:
