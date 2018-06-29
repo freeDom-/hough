@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define PATH "/home/dom/Bachelorarbeit/img/gen/"
-#define DATA_PATH PATH "data.txt"
+#define DATA_PATH PATH "data.dat"
 #define WIDTH 400
 #define HEIGHT 400
 
@@ -49,7 +49,7 @@ void convertImage8(char* path) {
 
     f = fopen(DATA_PATH, "w");
     if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH);
+        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH "\n");
         exit(EXIT_FAILURE);
     }
 
@@ -79,7 +79,7 @@ void convertImage32(char* path) {
 
     f = fopen(DATA_PATH, "w");
     if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH);
+        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH "\n");
         exit(EXIT_FAILURE);
     }
 
@@ -95,16 +95,16 @@ void convertImage32(char* path) {
     free(img);
 }
 
-void convertData8() {
+void convertData8(char* path) {
     SDL_Surface* img;
     uint8_t* data = malloc(WIDTH*HEIGHT*sizeof(uint8_t));
     FILE* f;
     char buff[255];
     unsigned long index = 0;
 
-    f = fopen(DATA_PATH, "r");
+    f = fopen(path, "r");
     if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH);
+        fprintf(stderr, "ERROR: Could not open file: %s\n", path);
         exit(EXIT_FAILURE);
     }
 
@@ -122,16 +122,16 @@ void convertData8() {
     SDL_FreeSurface(img);
 }
 
-void convertData32() {
+void convertData32(char* path) {
     SDL_Surface* img;
     uint32_t* data = malloc(WIDTH*HEIGHT*sizeof(uint32_t));
     FILE* f;
     char buff[255];
     unsigned long index = 0;
 
-    f = fopen(DATA_PATH, "r");
+    f = fopen(path, "r");
     if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH);
+        fprintf(stderr, "ERROR: Could not open file: %s\n", path);
         exit(EXIT_FAILURE);
     }
 
@@ -154,6 +154,7 @@ void printUsage() {
 
 int main(int argc, char** argv) {
     uint8_t bitdepth;
+    char* path = DATA_PATH;
 
     // Initialize SDL and SDL Image
     SDL_Init(SDL_INIT_VIDEO);
@@ -174,12 +175,14 @@ int main(int argc, char** argv) {
         else if(bitdepth == 32) convertImage32(argv[3]);
     }
     else if(strcmp(argv[1], "data") == 0) {
-        if(argc != 3) {
+        if(argc == 4) path = argv[3];
+        else if(argc != 3) {
             printUsage();
             exit(EXIT_FAILURE);
         }
-        if(bitdepth == 8) convertData8();
-        else if(bitdepth == 32) convertData32();
+
+        if(bitdepth == 8) convertData8(path);
+        else if(bitdepth == 32) convertData32(path);
     }
     else {
         printUsage();

@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-
 #include "include/grayscaler_hls.h"
 
 /*

@@ -7,6 +7,8 @@ int main(int argc, char** argv) {
 	int x, y;
 	unsigned int errCnt = 0;
 	FILE* f;
+	FILE* f_hw;
+	FILE* f_sw;
 	char buff[9];
 	unsigned long index = 0;
 
@@ -24,6 +26,7 @@ int main(int argc, char** argv) {
 		input[index] = strtol(buff, NULL, 16);
 		index++;
 	}
+	fclose(f);
 
 	// Convert pixels to grayscale using SW
     for(y = 0; y < HEIGHT; y++) {
@@ -39,24 +42,30 @@ int main(int argc, char** argv) {
         }
     }
 
-//#ifdef HW_COSIM
 	// Convert pixels to grayscale using HW
 	grayscaler(input, hwResult);
 
-	// Compare results
+	// Compare results and save
+	f_hw = fopen(OUTPUT_HW, "w");
+	f_sw = fopen(OUTPUT_SW, "w");
     for(y = 0; y < HEIGHT; y++) {
         for(x = 0; x < WIDTH; x++) {
+        	fprintf(f_hw, "%X ", hwResult[y * WIDTH + x]);
+        	fprintf(f_sw, "%X ", swResult[y * WIDTH + x]);
         	if(hwResult[y * WIDTH + x] != swResult[y * WIDTH + x]) {
         		errCnt++;
         		fprintf(stderr, "ERROR: mismatch at position (%i, %i)\n", x, y);
         	}
         }
+        fprintf(f_hw, "\n");
+        fprintf(f_sw, "\n");
     }
     if(errCnt) {
     	fprintf(stderr, "ERROR: %i mismatches detected!\n", errCnt);
     }
     else fprintf(stderr, "Test passed!\n");
-//#endif
+    fclose(f_hw);
+    fclose(f_sw);
 
 	return errCnt;
 }

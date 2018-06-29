@@ -32,4 +32,4 @@ all: hough hough_omp convert
 
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o hough hough_omp convert ../img/gen/*.png
+	rm -f $(ODIR)/*.o hough hough_omp convert ../img/gen/*.png ../img/gen/*.dat
