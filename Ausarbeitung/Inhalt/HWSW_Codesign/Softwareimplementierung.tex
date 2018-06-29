@@ -1,11 +1,11 @@
 Dieses Kapitel befasst sich näher mit der Softwareimplementierung der \ac{HT}. Das zur anschließenden \ac{HLS} verwendete Programm \emph{Vivado HLS} ist für C Code ausgelegt. Deshalb wurde die Programmiersprache C für die Implementierung gewählt. Die Implementierung kann in fünf verschiedene Module unterteilt werden, welche die unterschiedlichen Funktionalitäten bereitstellen. Dabei ist ein modularer Aufbau zur Übersicht, Zeiterfassung und vor allem für die spätere \ac{HLS} von großem Vorteil. Es lässt sich dadurch jedes Modul einzeln synthetisieren und in die Hardware auslagern. Die einzelnen Module werden in den folgenden Unterkapiteln näher beschrieben.
 \\
 \\
-Als Compiler wurde GCC (TODO VERSIONNR.) verwendet.
+Als Compiler wurde GCC (Version 4.9.2) verwendet.
 \\
-Zum Laden des zu verarbeitenden Bildes und der Pixeldaten wurde die Bibliothek \ac{SDL 2}\footnote{\url{https://www.libsdl.org/}} (TODO VERSIONNR.) verwendet, welche einen leichten Zugriff auf die Pixeldaten ermöglicht und es einfach gestaltet, die von den Zwischenschritten erzeugten Bilder abzuspeichern.
+Zum Laden des zu verarbeitenden Bildes und der Pixeldaten wurde die Bibliothek \ac{SDL 2}\footnote{\url{https://www.libsdl.org/}} (Version 2.0.2) verwendet, welche einen leichten Zugriff auf die Pixeldaten ermöglicht und es einfach gestaltet, die von den Zwischenschritten erzeugten Bilder abzuspeichern.
 \\
-Zur Parallelisierung des Programmes wurde \ac{OMP}\footnote{\url{https://www.openmp.org/}} (TODO VERSIONNR.) genutzt. \ac{OMP} ermöglicht eine leichte Parallelisierung durch Präprozessoranweisungen und bietet über das Compilerflag \emph{-fopenmp}, welches das Präprozessormakro \emph{\_OPENMP} definiert, eine einfache Möglichkeit, um eine serielle und parallele Version des Programms zu kompilieren.
+Zur Parallelisierung des Programmes wurde \ac{OMP}\footnote{\url{https://www.openmp.org/}} (Version 4.0) genutzt. \ac{OMP} ermöglicht eine leichte Parallelisierung durch Präprozessoranweisungen und bietet über das Compilerflag \emph{-fopenmp}, welches das Präprozessormakro \emph{\_OPENMP} definiert, eine einfache Möglichkeit, um eine serielle und parallele Version des Programms zu kompilieren.
 
 \begin{figure}[htb]
 	\centering

@@ -3,6 +3,7 @@
 #define WIDTH 400
 #define HEIGHT 400
 #define SIZE WIDTH * HEIGHT
+#define KERNELSIZE 5
 #define INPUT_IMAGE "/home/dom/Bachelorarbeit/img/gen/grayscaler_hw.dat"
 #define OUTPUT_HW "/home/dom/Bachelorarbeit/img/gen/grayscaler_hw.dat"
 #define OUTPUT_SW "/home/dom/Bachelorarbeit/img/gen/grayscaler_sw.dat"
