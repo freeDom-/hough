@@ -24,6 +24,8 @@ uint8_t* canny(uint8_t* pixelData, unsigned int width, unsigned int height, uint
 	int16_t *g_x = malloc(width * height * sizeof(int16_t));    // allocate memory on heap instead of using the stack
 	int16_t *g_y = malloc(width * height * sizeof(int16_t));    // allocate memory on heap instead of using the stack
 	int16_t *tmp = malloc(width * height * sizeof(int16_t));    // allocate memory on heap instead of using the stack
+	
+	// TODO: REWRITE TO FIT in 1 FOR LOOP! TOO COSTLY ATM, CAN BE FURTHER IMPROVED
 
 	/*
 	** Calculate g_x
