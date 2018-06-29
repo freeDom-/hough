@@ -1,0 +1,28 @@
+TODO
+Quellen bei Zielarchitektur (hinter CPU / FPGA , ...) und jedem Absatz
+"Quelle:" bei Bildern kann weggelassen werden
+
+use streaming protocols for data access for higher performance?
+
+SCREENSHOTS und DOKUMENTATION von bisherigen progress
+	-> HLS
+	-> Blockschaltbild
+	-> Ressourcenübersicht
+	-> Timings
+
+HW_SW_Codesign
+	GRAYSCALER
+		ca. 5 facher Speedup für Grayscaler:
+			Laufzeit auf ARM 1 Kern:       12 ms
+			Laufzeit auf ARM 4 Kerne:       4 ms
+			Laufzeit simuliert auf FPGA:  0,8 ms
+			160020 Takte × 5ns ÷ (10^6) -> 200 MHz Takt entspricht 5ns
+		Optimierung auf Integer auf Grund des enorm höheren DSP Verbrauches nicht sinnvoll!
+
+	Ausblicke
+		Treiber schreiben, um in Linux einzubinden (durch Kernel, der zwischengeschaltet ist langsamer)
+		Als Standaloneanwendung direkt auf PS ausführen, Bilddaten ggf. von SD-Karte lesen!
+
+	Weitere Optimierung
+		Alle Module ineinander verzahnt laufen lassen
+
