@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define PATH "/home/dom/Bachelorarbeit/img/gen/"
-#define DATA_PATH PATH "data.dat"
+#define PATH8 "/home/dom/Bachelorarbeit/img/gen/"
+#define PATH32 "/home/dom/Bachelorarbeit/img/src/"
+#define PATH PATH8
 #define WIDTH 400
 #define HEIGHT 400
 
@@ -35,10 +36,19 @@ SDL_Palette* createPalette(uint8_t mode) {
     return p;
 }
 
-void convertImage8(char* path) {
+void convertImage(char* name, uint8_t bitdepth) {
     SDL_Surface* img;
     uint32_t* data;
     FILE* f;
+    char* path = malloc(255);
+    if(bitdepth == 8) strcpy(path, PATH8);
+    else if(bitdepth == 32) strcpy(path, PATH32);
+    strcat(path, name);
+    strcat(path, ".png");
+    char* outPath = malloc(255);
+    strcpy(outPath, PATH8);
+    strcat(outPath, name);
+    strcat(outPath, ".dat");
 
     img = IMG_Load(path);
     if(!img) {
@@ -47,16 +57,17 @@ void convertImage8(char* path) {
     }
     img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
 
-    f = fopen(DATA_PATH, "w");
+    f = fopen(outPath, "w");
     if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH "\n");
+        fprintf(stderr, "ERROR: Could not open file: %s\n", path);
         exit(EXIT_FAILURE);
     }
 
     data = img->pixels;
     for(int y = 0; y < img->h; y++) {
         for(int x = 0; x < img->w; x++) {
-            fprintf(f, "%X ", data[y * img->w + x] & 0xFF);
+            if(bitdepth == 8) fprintf(f, "%X ", data[y * img->w + x] & 0xFF);
+            else if(bitdepth == 32) fprintf(f, "%X ", data[y * img->w + x] & 0xFFFFFF);
         }
         fprintf(f, "\n");
     }
@@ -65,96 +76,62 @@ void convertImage8(char* path) {
     free(img);
 }
 
-void convertImage32(char* path) {
+void convertData(char* name, uint8_t bitdepth) {
     SDL_Surface* img;
-    uint32_t* data;
+    uint8_t* data8;
+    uint32_t* data32;
     FILE* f;
+    char buff[255];
+    unsigned long index = 0;
+    char* path = malloc(255);
+    strcpy(path, PATH);
+    strcat(path, name);
+    strcat(path, ".dat");
+    char* outPath = malloc(255);
+    strcpy(outPath, PATH);
+    strcat(outPath, name);
+    strcat(outPath, ".png");
 
-    img = IMG_Load(path);
-    if(!img) {
-        fprintf(stderr, "ERROR: Could not load image: %s\n", IMG_GetError());
-        exit(EXIT_FAILURE);
-    }
-    img = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ARGB8888, 0);
-
-    f = fopen(DATA_PATH, "w");
+    f = fopen(path, "r");
     if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: " DATA_PATH "\n");
+        fprintf(stderr, "ERROR: Could not open file: %s\n", path);
         exit(EXIT_FAILURE);
     }
 
-    data = img->pixels;
-    for(int y = 0; y < img->h; y++) {
-        for(int x = 0; x < img->w; x++) {
-            fprintf(f, "%X ", data[y * img->w + x] & 0xFFFFFF);
+    if(bitdepth == 8) {
+        data8 = malloc(WIDTH*HEIGHT*sizeof(uint8_t));
+        while(fscanf(f, "%s", buff) != EOF) {
+            data8[index] = strtol(buff, NULL, 16);
+            index++;
         }
-        fprintf(f, "\n");
+        img = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 8, 0, 0, 0, 0);
+        SDL_SetSurfacePalette(img, createPalette(0));
+        img->pixels = data8;
     }
+    else if(bitdepth == 32) {
+        data32 = malloc(WIDTH*HEIGHT*sizeof(uint32_t));
+        while(fscanf(f, "%s", buff) != EOF) {
+            data32[index] = strtol(buff, NULL, 16);
+            index++;
+        }
+        img = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0);
+        img->pixels = data32;
+    }
+
+    IMG_SavePNG(img, outPath);
 
     fclose(f);
-    free(img);
-}
-
-void convertData8(char* path) {
-    SDL_Surface* img;
-    uint8_t* data = malloc(WIDTH*HEIGHT*sizeof(uint8_t));
-    FILE* f;
-    char buff[255];
-    unsigned long index = 0;
-
-    f = fopen(path, "r");
-    if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: %s\n", path);
-        exit(EXIT_FAILURE);
-    }
-
-    while(fscanf(f, "%s", buff) != EOF) {
-        data[index] = strtol(buff, NULL, 16);
-        index++;
-    }
-    img = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 8, 0, 0, 0, 0);
-    SDL_SetSurfacePalette(img, createPalette(0));
-    img->pixels = data;
-    IMG_SavePNG(img, PATH "data.png");
-    
-    fclose(f);
-    SDL_FreePalette(img->format->palette);
-    SDL_FreeSurface(img);
-}
-
-void convertData32(char* path) {
-    SDL_Surface* img;
-    uint32_t* data = malloc(WIDTH*HEIGHT*sizeof(uint32_t));
-    FILE* f;
-    char buff[255];
-    unsigned long index = 0;
-
-    f = fopen(path, "r");
-    if(f == NULL) {
-        fprintf(stderr, "ERROR: Could not open file: %s\n", path);
-        exit(EXIT_FAILURE);
-    }
-
-    while(fscanf(f, "%s", buff) != EOF) {
-        data[index] = strtol(buff, NULL, 16);
-        index++;
-    }
-    img = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0);
-    img->pixels = data;
-    IMG_SavePNG(img, PATH "data.png");
-    
-    fclose(f);
+    if(bitdepth == 8) SDL_FreePalette(img->format->palette);
     SDL_FreeSurface(img);
 }
 
 void printUsage() {
-    fprintf(stderr, "usage: convert mode bitdepth name\n"
+    fprintf(stderr, "usage: convert mode bitdepth filename\n"
         "\tmode: 'data' or 'image'\n");
 }
 
 int main(int argc, char** argv) {
     uint8_t bitdepth;
-    char* path = DATA_PATH;
 
     // Initialize SDL and SDL Image
     SDL_Init(SDL_INIT_VIDEO);
@@ -171,18 +148,15 @@ int main(int argc, char** argv) {
             printUsage();
             exit(EXIT_FAILURE);
         }
-        if(bitdepth == 8) convertImage8(argv[3]);
-        else if(bitdepth == 32) convertImage32(argv[3]);
+        convertImage(argv[3], bitdepth);
     }
     else if(strcmp(argv[1], "data") == 0) {
-        if(argc == 4) path = argv[3];
-        else if(argc != 3) {
+        if(argc != 4) {
             printUsage();
             exit(EXIT_FAILURE);
         }
 
-        if(bitdepth == 8) convertData8(path);
-        else if(bitdepth == 32) convertData32(path);
+        convertData(argv[3], bitdepth);
     }
     else {
         printUsage();
