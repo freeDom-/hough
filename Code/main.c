@@ -325,7 +325,7 @@ int main(int argc, char **argv) {
     grayscalerTime = endTime-startTime;
     totalTime += grayscalerTime;
     printf("%li ms needed for grayscaler.\n", grayscalerTime);
-    IMG_SavePNG(grayImg, "../img/gen/grayscale.png");
+    IMG_SavePNG(grayImg, "../img/gen/grayscaler.png");
     SDL_FreeSurface(img);
 
     // Apply gauss filter

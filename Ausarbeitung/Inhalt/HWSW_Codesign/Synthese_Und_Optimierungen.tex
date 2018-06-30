@@ -1,9 +1,18 @@
-Für die Auslagerung der Komponenten auf die \ac{PL} müssen diese zunächst in Hardware umgewandelt werden. Die im vorigen Kapitel vorgestellten Softwareimplementierungen werden dazu mittels Vivado HLS zu einem \ac{RTL} synthetisiert. Anschließend wird dieses über eine C/\ac{RTL} Cosimulation verifiziert und kann schließlich als \ac{IP} in Vivado zum Hardware/Software Codesign verwendet werden. Bei der Synthese werden bereits ungenaue Daten bezüglich der Laufzeit und den benötigten Ressourcen erzeugt. Diese bieten einen ersten Anhaltspunkt für die weitere Optimierung.
+Für die Auslagerung der Komponenten auf die \ac{PL} müssen diese zunächst in Hardware umgewandelt werden. Die im vorigen Kapitel vorgestellten Softwareimplementierungen werden dazu mittels Vivado HLS zu einem \ac{RTL} synthetisiert. Anschließend wird dieses über eine C/\ac{RTL} Cosimulation verifiziert und kann schließlich als \ac{IP} in Vivado zum Hardware/Software Codesign verwendet werden. Bei der Synthese werden bereits approximierte Daten bezüglich der Laufzeit und den benötigten Ressourcen erzeugt. Diese bieten einen ersten Anhaltspunkt für die weitere Optimierung.
 \\
 \\
-Die Optimierung findet in zwei Schritten statt: Zuerst wird die Laufzeit minimiert. Dies geschieht vor allem durch Pipelining von Schleifen oder Funktionen und dem Loop unrolling. Das Loop unrolling bezeichnet das zusammenfassen von allen Iterationsschritten einer Schleife zu einem einzigen Schritt. Dies ist oftmals für das Pipelining einer verschachtelten Schleife eine notwendige Bedingung. Jedoch führt das Loop unrolling auch zu einem hohen Ressourcenverbrauch und der Kompromiss zwischen Laufzeitersparnis und erhöhtem Hardwareaufwand muss in jedem Fall einzeln betrachtet werden.
+Die Optimierung findet in zwei Schritten statt: Zuerst wird die Laufzeit minimiert. Dies geschieht vor allem durch Pipelining von Schleifen oder Funktionen und Loop unrolling. Das Loop unrolling bezeichnet das zusammenfassen von allen Iterationsschritten einer Schleife zu einem einzigen Schritt. Dies ist oftmals für das Pipelining einer verschachtelten Schleife eine notwendige Bedingung. Allerdings führt das Loop unrolling auch zu einem hohen Ressourcenverbrauch und der Kompromiss zwischen Laufzeitersparnis und erhöhtem Hardwareaufwand muss in jedem Fall einzeln betrachtet werden.
 \cite[S. 188-209]{vivado902ug}
 \\
 \\
 Wenn die Laufzeit zufriedenstellend optimiert wurde und keine weiteren Verbesserungen mehr erzielt werden können, kann das Design anschließend hinsichtlich des Ressourcenverbrauchs optimiert werden. Hierbei können vor allem durch Datenflussdirektiven, oder das Zusammenfassen von mehreren kleineren Feldern zu einem großen (Array Mapping) Verbesserungen erzielt werden.
 \cite[S. 210-219]{vivado902ug}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\linewidth]{Bilder/arm_laufzeit400x400.png}
+	\caption{Laufzeit der \ac{HT} für ein 400x400 Pixel großes Bild auf dem Cortex-A53}
+	\label{img:arm_laufzeit400x400}
+\end{figure}
+
+\autoref{img:arm_laufzeit400x400} zeigt, dass durch die Parallelisierung bereits eine ungefähr 2,5-fache Laufzeitbeschleunigung erzielt werden kann. Darüber hinaus kann der Grafik entnommen werden, dass das Modul für die \ac{CHT} mit Abstand am längsten braucht. Das Modul für die Canny Edge Detection ist mit einer Laufzeit von 81ms ungefähr 13 mal schneller und damit am zweitlangsamsten. Daher sollte der Fokus für die Optimierung und Auslagerung in die Hardware auf das \ac{CHT} Modul gelegt werden. In den folgenden Kapiteln soll die \ac{HLS} allerdings für jedes Modul gezeigt werden.

@@ -1,0 +1,20 @@
+Für den Grayscaler müssen keine Veränderungen am Quellcode durchgeführt werden. Es stellt sich lediglich die Frage, ob die äußere Schleife in \autoref{lst:grayscaler} Z. \ref{lst:grayscaler_outer_loop} oder die innere Schleife in Z. \ref{lst:grayscaler_inner_loop} zur Optimierung gepipielined werden soll.
+
+\begin{figure}[htb]
+	\centering
+%	\includegraphics[width=0.8\linewidth]{Bilder/synthese_grayscaler400x400.png}
+	\caption{Ergebnisse der Synthese für das Grayscalermodul bei einem 400x400 Pixel großen Bild}
+	\label{img:synthese_grayscaler400x400}
+\end{figure}
+
+Für das Pipelining der äußeren Schleife muss die innere Schleife unrolled werden. Dies führt dazu, dass beim Pipelining $width$ mal gleichzeitig auf das Feld $input$ zugegriffen wird. Dieses wird auf dem FPGA allerdings durch einen \ac{BRAM} realisiert, welcher nur 2 Zugriffe gleichzeitig ermöglicht. Das Feld könnte nun auch durch mehrere kleinere \acp{BRAM} realisiert werden, allerdings ist es der zusätzliche Hardwareaufwand in diesem Fall nicht wert. \autoref{img:synthese_grayscaler400x400} zeigt, dass die \ac{PL} ungefähr XXXXXXX Takte benötigt. Bei einer Taktrate von 200 MHz, die als realisierbar betrachtet werden kann, wird nach der Synthese eine Laufzeit von 0,8ms und damit bereits ein Speedup von 5 erzielt.
+\\
+\\
+In \autoref{img:implementierung_grayscaler400x400} sieht man, dass die von der Synthese berechneten Werte auch nach der Implementierung eingehalten werden können. Sowohl der Platzbedarf als auch das Timing liegen in einem zufriedenstellenden Bereich.
+
+\begin{figure}[htb]
+	\centering
+%	\includegraphics[width=0.8\linewidth]{Bilder/implementierung_grayscaler400x400.png}
+	\caption{Ergebnisse der Implementierung für das Grayscalermodul bei einem 400x400 Pixel großen Bild}
+	\label{img:implementierung_grayscaler400x400}
+\end{figure}

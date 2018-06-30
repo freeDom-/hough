@@ -17,8 +17,8 @@ uint8_t *output = malloc(width * height * sizeof(uint8_t));
 #pragma omp parallel for
 #endif(@\label{lst:grayscaler_omp_end}@)
 // Convert image to grayscale
-for(int y = 0; y < height; y++) {
-	for(int x = 0; x < width; x++) {
+for(int y = 0; y < height; y++) {(@\label{lst:grayscaler_outer_loop}@)
+	for(int x = 0; x < width; x++) {(@\label{lst:grayscaler_inner_loop}@)
 		uint8_t r, g, b;
 		int index = y * width + x;
 		
