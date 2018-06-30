@@ -1,4 +1,4 @@
-Für den Grayscaler müssen keine Veränderungen am Quellcode durchgeführt werden. Es stellt sich lediglich die Frage, ob die äußere Schleife in \autoref{lst:grayscaler} Z. \ref{lst:grayscaler_outer_loop} oder die innere Schleife in Z. \ref{lst:grayscaler_inner_loop} zur Optimierung gepipielined werden soll.
+Für den Grayscaler müssen keine Veränderungen am Quellcode durchgeführt werden. Es stellt sich nur noch die Frage, ob die äußere Schleife in \autoref{lst:grayscaler} Z. \ref{lst:grayscaler_outer_loop} oder die innere Schleife in Z. \ref{lst:grayscaler_inner_loop} zur Optimierung gepipielined werden soll.
 
 \begin{figure}[htb]
 	\centering
@@ -7,7 +7,19 @@ Für den Grayscaler müssen keine Veränderungen am Quellcode durchgeführt werd
 	\label{img:synthese_grayscaler400x400}
 \end{figure}
 
-Für das Pipelining der äußeren Schleife muss die innere Schleife unrolled werden. Dies führt dazu, dass beim Pipelining $width$ mal gleichzeitig auf das Feld $input$ zugegriffen wird. Dieses wird auf dem FPGA allerdings durch einen \ac{BRAM} realisiert, welcher nur 2 Zugriffe gleichzeitig ermöglicht. Das Feld könnte nun auch durch mehrere kleinere \acp{BRAM} realisiert werden, allerdings ist es der zusätzliche Hardwareaufwand in diesem Fall nicht wert. \autoref{img:synthese_grayscaler400x400} zeigt, dass die \ac{PL} ungefähr XXXXXXX Takte benötigt. Bei einer Taktrate von 200 MHz, die als realisierbar betrachtet werden kann, wird nach der Synthese eine Laufzeit von 0,8ms und damit bereits ein Speedup von 5 erzielt.
+Für das Pipelining der äußeren Schleife muss die innere Schleife unrolled werden. Dies führt dazu, dass beim Pipelining $width$ mal gleichzeitig auf das Feld $input$ zugegriffen wird. Dieses wird auf dem FPGA allerdings durch einen \ac{BRAM} realisiert, welcher nur 2 Zugriffe gleichzeitig ermöglicht. Das Feld könnte nun auch durch mehrere kleinere \acp{BRAM} realisiert werden, allerdings ist es der zusätzliche Hardwareaufwand in diesem Fall nicht wert. Das Pipelining der inneren Schleife bringt zwar nur einen geringeren Performanceboost, allerdings gibt es dadurch auch keine weiteren Probleme.
+\\
+\\
+Als weiterer Optimierungsansatz wurde versucht die Berechnung des Intensitätswertes auf eine ganzzahlbasierte Berechnung umzustellen:
+
+\begin{equation}
+output[index] = (3*r + 59*g + 11*b)/100
+\end{equation}
+
+Nach der Umstellung ist der Verbrauch von \acp{FF} jedoch von XXX auf XXX gestiegen. Die von Vivado automatisch vorgenommene Umwandlung scheint an dieser Stelle deutlich effektiver zu sein.
+\\
+\\
+\autoref{img:synthese_grayscaler400x400} zeigt, dass die \ac{PL} ungefähr 160020 Takte benötigt. Bei einer Taktrate von 200 MHz, die als realisierbar betrachtet werden kann, wird nach der Synthese eine Laufzeit von 0,8ms und damit bereits ein Speedup von 5 erzielt.
 \\
 \\
 In \autoref{img:implementierung_grayscaler400x400} sieht man, dass die von der Synthese berechneten Werte auch nach der Implementierung eingehalten werden können. Sowohl der Platzbedarf als auch das Timing liegen in einem zufriedenstellenden Bereich.

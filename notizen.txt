@@ -1,6 +1,9 @@
 TODO
-Quellen bei Zielarchitektur (hinter CPU / FPGA , ...) und jedem Absatz
-"Quelle:" bei Bildern kann weggelassen werden
+   "Quelle:" bei Bildern kann weggelassen werden
+   Bilder erstellen für Synthese und Implementation
+
+   Optional (low Priority)
+      neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
 
 use streaming protocols for data access for higher performance?
 
