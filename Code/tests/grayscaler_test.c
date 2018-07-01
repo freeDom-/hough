@@ -28,44 +28,40 @@ int main(int argc, char** argv) {
 	}
 	fclose(f);
 
-	// Convert pixels to grayscale using SW
-    for(y = 0; y < HEIGHT; y++) {
-        for(x = 0; x < WIDTH; x++) {
-			int index = y * WIDTH + x;
-			uint8_t r, g, b;
-
-			r = input[index] >> 16 & 0xFF;
-			g = input[index] >> 8 & 0xFF;
-			b = input[index] & 0xFF;
-
-			swResult[index] = 0.3*r + 0.59*g + 0.11*b;
-        }
-    }
+	// Load software result
+	f_sw = fopen(SW_IMAGE, "r");
+	if(f == NULL) {
+		fprintf(stderr, "ERROR: Could not open file: " SW_IMAGE);
+		exit(EXIT_FAILURE);
+	}
+	index = 0;
+	while(fscanf(f_sw, "%s", buff) != EOF) {
+		swResult[index] = strtol(buff, NULL, 16);
+		index++;
+	}
+	fclose(f_sw);
 
 	// Convert pixels to grayscale using HW
 	grayscaler(input, hwResult);
 
 	// Compare results and save
 	f_hw = fopen(OUTPUT_HW, "w");
-	f_sw = fopen(OUTPUT_SW, "w");
     for(y = 0; y < HEIGHT; y++) {
         for(x = 0; x < WIDTH; x++) {
         	fprintf(f_hw, "%X ", hwResult[y * WIDTH + x]);
-        	fprintf(f_sw, "%X ", swResult[y * WIDTH + x]);
-        	if(hwResult[y * WIDTH + x] != swResult[y * WIDTH + x]) {
+        	index = y * WIDTH + x;
+        	if(abs(hwResult[index] - swResult[index]) > 1) {
         		errCnt++;
         		fprintf(stderr, "ERROR: mismatch at position (%i, %i)\n", x, y);
         	}
         }
         fprintf(f_hw, "\n");
-        fprintf(f_sw, "\n");
     }
     if(errCnt) {
     	fprintf(stderr, "ERROR: %i mismatches detected!\n", errCnt);
     }
     else fprintf(stderr, "Test passed!\n");
     fclose(f_hw);
-    fclose(f_sw);
 
 	return errCnt;
 }

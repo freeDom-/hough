@@ -3,6 +3,7 @@ TODO
    Bilder erstellen für Synthese und Implementation
 
    Optional (low Priority)
+      Pipelining erklären?
       neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
 
 use streaming protocols for data access for higher performance?
@@ -20,12 +21,12 @@ HW_SW_Codesign
 			Laufzeit auf ARM 4 Kerne:       4 ms
 			Laufzeit simuliert auf FPGA:  0,8 ms
 			160020 Takte × 5ns ÷ (10^6) -> 200 MHz Takt entspricht 5ns
-		Optimierung auf Integer auf Grund des enorm höheren DSP Verbrauches nicht sinnvoll!
 
 	Ausblicke
 		Treiber schreiben, um in Linux einzubinden (durch Kernel, der zwischengeschaltet ist langsamer)
 		Als Standaloneanwendung direkt auf PS ausführen, Bilddaten ggf. von SD-Karte lesen!
 
 	Weitere Optimierung
+		AXI4 Interface und Streams benutzen
 		Alle Module ineinander verzahnt laufen lassen
 
