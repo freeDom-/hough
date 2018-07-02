@@ -1,0 +1,17 @@
+Das Konzept des Pipelinings kann auf Funktionen und Schleifen angewandt werden, um diese zu Beschleunigen. Dies ermöglicht es Operationen parallel ausgeführt zu werden.
+\\
+\\
+In dem Beispiel aus \autoref{img:pipelining} ist die Schleife in drei Operationen unterteilt. Die erste Operation op\_Read liest Daten aus dem Speicher, die zweite Operation op\_Compute führt eine Berechnung aus und die dritte Operation op\_Write schreibt Daten in den Speicher.
+\\
+Der linke Teil der Grafik zeigt die Laufzeit für die serielle Verarbeitung der Schleife. Es dauert 3 Takte, bis neue Daten gelesen werden können und nach 2 Takten ist das Ergebnis der Operation von einer Iteration berechnet. Nach 8 Takten sind die Ergebnisse aller Operationen berechnet.
+\\
+Wenn die Schleife allerdings gepipelined wird, kann wie im rechten Teil der Grafik zu erkennen, in jedem Takt eine neue Leseoperation angefangen werden. Damit stehen bereits nach 4 Takten die Ergebnisse aller Operationen zur Verfügung.
+\\
+Das Pipelining funktioniert nur, sofern keine Datenabhängigkeiten vorhanden sind. Das bedeutet, dass in der Berechnung keine Daten benötigt werden, die in dem vorherigen Schleifendurchlauf berechnet werden. Diese sind noch nicht zurück in den Speicher geschrieben und damit noch nicht vorhanden.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{Bilder/pipelining.pdf}
+	\caption[Pipelining]{Pipelining einer Schleife \cite[S. 190]{vivado902ug}}
+	\label{img:pipelining}
+\end{figure}
