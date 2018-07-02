@@ -64,7 +64,7 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
         for(int x = 0; x < width; x++) {
             for(int r = radiiCount-1; r >= 0; r--) {
                 int currentRadius = r+radius;
-                if(acc[y * width * radiiCount + x * radiiCount + r] / (4*round((currentRadius)*SQRT2)) * 100 > threshold) {
+                if(acc[y * width * radiiCount + x * radiiCount + r] / (4*round(currentRadius*SQRT2)) * 100 > threshold) {
                     //printf("circle found at: (%i, %i) with radius %i\n", x, y, currentRadius);
                     // Add circle
                     circle tmp = {x, y, currentRadius};

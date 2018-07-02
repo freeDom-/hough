@@ -1,0 +1,15 @@
+Mit dem Bresenham Algorithmus können die Punkte eines Kreises mit gegebenem Radius $r$ und Mittelpunkt $(x_0, y_0)$ berechnet werden. Da der Algorithmus nur auf ganzzahligen Berechnungen basiert ist er besonders effektiv und zählt zu den Standardalgorithmen in der Bildbearbeitung.
+\\
+\\
+Auf Grund der Symmetrie eines Kreises kann dieser in acht Oktanten unterteilt werden. Beim Bresenham Algorithmus wird bei jedem Schritt für jeden Oktanten ein Pixel gezeichnet. Für den Anfang können außerdem bereits die Punkte $(x_0+r, y_0)$, $(x_0-r, y_0)$, $(x_0, y_0+r)$ und $(x_0, y_0-r)$ eingezeichnet werden. Im folgenden wird der Algorithmus für den ersten Oktanten gezeigt. Für die anderen Oktanten kann analog verfahren werden.
+\\
+\\
+Es gibt eine schnelle und eine langsame Richtung. Die schnellen Richtung ist im Falle des ersten Oktanten die y-Richtung. Diese wird mit 0 initialisiert und bei jedem Schritt um eins erhöht. Die langsame Richtung, also die x-Richtung, wird mit $r$ initialisiert und abhängig von einer Fehlervariablen dekrementiert. Der Fehler wird zu Beginn auf den Radius gesetzt. Bei jedem Schritt wird $y*2 + 1$ von dem Fehler abgezogen. Wenn die Fehlervariable kleiner als 0 ist wird die langsame Richtung um eins verringert. Der Algorithmus ist fertig, wenn $y \ge x$ erreicht ist.
+\cite{bresenham1977circle}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{Bilder/Bresenham_circle.png}
+	\caption[Bresenham Algorithmus]{Bresenham Algorithmus $[$https://upload.wikimedia.org/wikipedia/de/0/09/Bresenham\_circle2.png, 02.07.2018$]$}
+	\label{img:bresenham}
+\end{figure}
