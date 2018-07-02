@@ -1,21 +1,28 @@
 TODO
-   CHT Modul synthetisieren
-   Pipelining erklären
-   Bresenham Algorithmus erklären
+	CHT Modul synthetisieren
+	Pipelining erklären
+	Bresenham Algorithmus erklären
 
-   Optional (low Priority)
-      neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
-      Bilder anordnen
+	Optional (low Priority)
+		neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
+		Bilder anordnen
 
 use streaming protocols for data access for higher performance?
 
 
 Ausblicke
-    Restliche Module synthetisieren für Performanceboost?
+	Restliche Module synthetisieren für Performanceboost?
 	Treiber schreiben, um in Linux einzubinden (durch Kernel, der zwischengeschaltet ist langsamer)
 	Als Standaloneanwendung direkt auf PS ausführen, Bilddaten ggf. von SD-Karte lesen!
 
 Weitere Optimierung
 	HLS Streams benutzen
 	Alle Module ineinander verzahnt laufen lassen
+
+Noch nicht Probegelesen:
+	2.4 Pipelining
+	2.5 Bresenham Algorithmus
+	3.2.1 Grayscaler (Synthese)
+	3.3 Auslagerung einzelner Komponenten auf den FPGA
+	3.3.1 Grayscaler (Auslagerung)
 
