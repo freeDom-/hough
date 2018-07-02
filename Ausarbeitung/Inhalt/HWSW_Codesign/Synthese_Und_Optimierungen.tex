@@ -14,8 +14,8 @@ Wenn die Laufzeit zufriedenstellend optimiert wurde und keine weiteren Verbesser
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/arm_laufzeit400x400.png}
-	\caption{Laufzeit der \ac{HT} für ein 400x400 Pixel großes Bild auf dem Cortex-A53}
+	\caption[Laufzeit der Softwareimplementierung der Hough Transformation]{Laufzeit der Softwareimplementierung der \ac{HT} für ein 400x400 Pixel großes Bild auf dem Cortex-A53}
 	\label{img:arm_laufzeit400x400}
 \end{figure}
 
-Aus \autoref{img:arm_laufzeit400x400} geht hervor, dass durch die Parallelisierung bereits eine ungefähr 2,5-fache Laufzeitbeschleunigung erzielt werden kann. Darüber hinaus kann der Grafik entnommen werden, dass das Modul für die \ac{CHT} eindeutig am meisten Zeit benötigt. Das Modul für die Canny Edge Detection ist nach der \ac{CHT} das langsamste Modul, aber mit einer Laufzeit von 81ms immer noch ungefähr 13-mal schneller als die \ac{CHT}. Daher soll der Fokus für die Optimierung und Auslagerung in die Hardware auf das \ac{CHT} Modul gelegt werden. In den folgenden Kapiteln wird die \ac{HLS} zunächst als einleitendes Beispiel für das Grayscaler Modul und anschließend für das \ac{CHT} Modul durchgeführt.
+Aus \autoref{img:arm_laufzeit400x400} geht hervor, dass durch die Parallelisierung bereits eine ungefähr 2,5-fache Laufzeitbeschleunigung erzielt werden kann. Darüber hinaus kann der Grafik entnommen werden, dass das Modul für die \ac{CHT} eindeutig am meisten Zeit benötigt. Das Modul für die Canny Edge Detection ist nach der \ac{CHT} das langsamste Modul, aber mit einer Laufzeit von 81ms immer noch ungefähr 13-mal schneller als die \ac{CHT}. Daher soll der Fokus für die Optimierung und Auslagerung in die Hardware auf das \ac{CHT} Modul gelegt werden. In den folgenden Kapiteln wird die \ac{HLS} deshalb zunächst als einleitendes Beispiel für das Grayscaler Modul und anschließend für das \ac{CHT} Modul durchgeführt.

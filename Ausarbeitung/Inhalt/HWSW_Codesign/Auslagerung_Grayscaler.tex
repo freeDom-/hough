@@ -1,9 +1,12 @@
-Die Implementierung des Grayscalers beschränkt sich auf die Verwendung von vier \acp{IP}. Die ZynQ UltraScale+ MPSoC \ac{IP} \cite{vivado201pg} enthält das \ac{PS} und die \ac{PL}. Die \ac{AXI4} Interconnect \ac{IP} \cite{vivado059pg} verbindet das Grayscalermodul, welches in der \ac{PL} realisiert wird, über einen Bus mit dem \ac{PS}. Als letzte Komponente wird ein Resetmodul \cite{vivado164pg} benötigt, welches das Reset-Signal für den Grayscaler erzeugt. Das \ac{PS} kann über das von dem \ac{AXI4} Modul generierte \ac{API} schließlich angesteuert werden.
+Die Implementierung des Grayscalers beschränkt sich auf die Verwendung von vier \acp{IP}. Die Zynq UltraScale+ MPSoC \ac{IP} \cite{vivado201pg} enthält das \ac{PS} und die \ac{PL}. Die \ac{AXI4} Interconnect \ac{IP} \cite{vivado059pg} verbindet das Grayscalermodul, welches in der \ac{PL} realisiert wird, über einen Bus mit dem \ac{PS}. Als letzte Komponente wird ein Resetmodul \cite{vivado164pg} benötigt, welches das Reset-Signal für den Grayscaler erzeugt.
+\\
+\\
+Das \ac{PS} kann über das von dem \ac{AXI4} Modul generierte \ac{API} angesteuert werden.
 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/implementierung_blockschaltbild_grayscaler400x400.png}
-	\caption{Blockschaltbild für die Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild}
+	\caption[Blockschaltbild für die Implementierung des Grayscalermoduls]{Blockschaltbild für die Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado 2017.4 \cite{vivado902ug}}
 	\label{img:implementierung_timing_grayscaler400x400}
 \end{figure}
 
@@ -12,13 +15,13 @@ Aus \autoref{img:implementierung_timing_grayscaler400x400} und \autoref{img:impl
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=\linewidth]{Bilder/implementierung_timing_grayscaler400x400.png}
-	\caption{Timing der Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild}
+	\caption[Timing der Implementierung des Grayscalermoduls]{Timing der Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado 2017.4 \cite{vivado902ug}}
 	\label{img:implementierung_timing_grayscaler400x400}
 \end{figure}
 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=\linewidth]{Bilder/implementierung_utilization_grayscaler400x400.png}
-	\caption{Ressourcenaufwand der Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild}
+	\caption[Ressourcenaufwand der Implementierung des Grayscalermoduls]{Ressourcenaufwand der Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado 2017.4 \cite{vivado902ug}}
 	\label{img:implementierung_utilization_grayscaler400x400}
 \end{figure}

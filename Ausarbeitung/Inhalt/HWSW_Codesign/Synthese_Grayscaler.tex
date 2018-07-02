@@ -9,11 +9,11 @@ Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die A
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/synthese_grayscaler400x400.png}
-	\caption{Ergebnisse der Synthese des Grayscalermodul bei einem 400x400 Pixel großen Bild}
+	\caption[Ergebnisse der Synthese des Grayscalermoduls]{Ergebnisse der Synthese des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado HLS 2017.4 \cite{vivado902ug}}
 	\label{img:synthese_grayscaler400x400}
 \end{figure}
 
-Bei einem Pipelining der inneren Schleife kann ein Bild der Größe $hoehe \cdot breite$ in $hoehe \cdot breite$ Takten verarbeitet werden. Bei einem Bild der Größe $400 \cdot 400$ entspricht das $160.000$ Takten. Für das Pipelining der äußeren Schleife muss die innere Schleife unrolled werden. Dies führt dazu, dass beim Pipelining $breite$ mal gleichzeitig auf das Feld $input$ zugegriffen wird. Dieses wird allerdings über \ac{AXI4} realisiert. Hierbei kann nur ein Zugriff pro Takt erfolgen, weshalb in diesem Fall die äußere Schleife nicht gepipelined werden kann.
+Bei einem Pipelining der inneren Schleife kann ein Bild der Größe $hoehe \cdot breite$ in $hoehe \cdot breite$ Takten verarbeitet werden. Bei einem Bild der Größe $400 \cdot 400$ entspricht das $160.000$ Takten. Für das Pipelining der äußeren Schleife muss die innere Schleife unrolled werden. Dies führt dazu, dass beim Pipelining $breite$ mal gleichzeitig auf das Feld $input$ zugegriffen wird. Dieses wird allerdings über \ac{AXI4} realisiert. Hierbei kann nur ein Zugriff pro Takt erfolgen, weshalb in diesem Fall die äußere Schleife nicht gepipelined wird. Als Lösung kann das Eingabefeld \emph{gecached} werden. Dabei wird das Feld in den \ac{BRAM} des \ac{FPGA} geladen. Dies kann jedoch durch die zum Laden der Eingabedaten in den \ac{BRAM} benötigte Zeit und den erweiterte Ressourcenaufwand nicht gerechtfertigt werden.
 \\
 \\
 \autoref{img:synthese_grayscaler400x400} zeigt, dass die \ac{PL} ungefähr 160.005 Takte beim Pipelining der inneren Schleife benötigt. Bei einer Taktrate von 200 MHz, die als realisierbar betrachtet werden kann, wird nach der Synthese eine Laufzeit von 0,8ms und damit ein Speedup von 5 erzielt.
