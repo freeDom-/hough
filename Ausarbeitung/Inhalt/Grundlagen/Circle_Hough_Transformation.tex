@@ -10,7 +10,7 @@ Ein Punkt $p = (x,y)$ liegt auf einem Kreis mit den gegebenen Parametern, wenn d
 Die \ac{CHT} benötigt deshalb einen dreidimensionalen Parameterraum $A(x_0,y_0,r)$, um Position und Radius von Kreisen in Bildern zu finden. Da keine einfache funktionale Abhängigkeit zwischen den Koordinaten im Parameterraum existiert, ist ein anderer Weg notwendig, um alle Parameterkombinationen $(x_0,y_0,r)$ zu finden. Eine Möglichkeit wäre, für jedes Element im Parameterraum zu testen, ob es die Gleichung erfüllt. Dieser \emph{brute force} Ansatz ist jedoch sehr rechenintensiv. Es kann sich auch die Eigenschaft aus \autoref{img:circle-hough-transformation} zunutze gemacht werden. Hier sieht man, dass die Koordinaten auch im Hough Raum einen Kreis beschreiben und jeder Kantenpunkt des Kreises $C$ einen Kreis mit dem selben Radius $\rho_i$ hat, welcher wieder durch den Kreismittelpunkt geht. Es ist daher nicht notwendig, den gesamten dreidimensionalen Parameterraum für jeden Bildpunkt zu testen. Stattdessen wird an jeder Kante für alle möglichen Radien $r$ mit Hilfe eines Standardalgorithmus wie dem Bresenham Algorithmus ein Kreis generiert. Alle auf dem Kreis liegenden Zellen werden im Akkumulator $A(x,y,r)$ entsprechend inkrementiert. Zuletzt wird der Akkumulatorraum nach den höchsten Einträgen durchsucht. Dies sind die Kreise, welche die meisten Kanten enthalten.
 \cite[S. 64]{burger2009podip_2}
 
-\begin{figure}[htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/circle_hough_transform-burger2009podip_2.pdf}
 	\caption[Circle Hough Transformation]{Circle Hough Transformation\\\cite[S. 65]{burger2009podip_2}}

@@ -1,6 +1,6 @@
 Der Grayscaler wandelt ein RGB-Bild nach \autoref{sec:umwandlung-eines-rgb-bildes-in-graustufen} in ein Graustufenbild um. Dabei erhält er als Eingabe einen Zeiger auf 32 Bit breite Pixeldaten und die Höhe und Breite des Bildes. Anschließend wird jedes Pixel durchlaufen und in \autoref{lst:grayscaler} Z. \ref{lst:grayscaler_output} der neue Intensitätswert berechnet. Die einzelnen Werte für Rot, Grün und Blau berechnen sich in Z. \ref{lst:grayscaler_rgb_start} - \ref{lst:grayscaler_rgb_end}. Als Pixelformat wurde \emph{ARGB8888} gewählt, welches in \autoref{img:argb-format} näher dargestellt ist. Die 8 höchstwertigen Bit enthalten den Alphawert des jeweiligen Pixels, die nächsten 8 Bit den Rotwert, die folgenden 8 Bit den Grünwert und die 8 niedrigsten Bit den Blauwert.
 
-\begin{figure}[htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/ARGB_format.png}
 	\caption[Pixelformat ARGB]{Darstellung des Pixelformates ARGB8888}
@@ -35,7 +35,7 @@ return output;
 
 Als Ausgabe liefert der Grayscaler einen Zeiger auf die neu berechneten 8 Bit breiten Pixeldaten. Es muss von der Main Methode dafür gesorgt werden, dass die erzeugten Pixeldaten auch in ein geeignetes Bild geladen werden.
 
-\begin{figure}[htb]
+\begin{figure}[H]
 	\centering
 	\begin{subfigure}{.5\textwidth}
 		\centering

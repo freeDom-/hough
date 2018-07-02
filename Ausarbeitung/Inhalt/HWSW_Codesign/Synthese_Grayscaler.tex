@@ -6,7 +6,7 @@ output[index] = (30*r + 59*g + 11*b)/100
 
 Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die Abweichung am Intensitätswert höchstens 1 von der alten Berechnungsmethode. Dies ist in dem erzeugten Bild nicht erkennbar und spielt für die weitere Verarbeitung keine Rolle. Der Ressourcenverbrauch sinkt allerdings wie in \autoref{img:synthese_grayscaler400x400} zu sehen von 2.837 benötigten \acp{FF} und 3.017 \acp{LUT} auf 136 benötigte \acp{FF} und 194 \acp{LUT}. Zusätzlich wird die Anzahl der benötigten Takte um einen Faktor von ungefähr 8,2 auf 640.801 Takte reduziert.
 
-\begin{figure}[htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/synthese_grayscaler400x400.png}
 	\caption[Ergebnisse der Synthese des Grayscalermoduls]{Ergebnisse der Synthese des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado HLS 2017.4 \cite{vivado902ug}}

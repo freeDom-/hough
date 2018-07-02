@@ -3,7 +3,7 @@ Die Implementierung des Grayscalers beschränkt sich auf die Verwendung von vier
 \\
 Das \ac{PS} kann über das von dem \ac{AXI4} Modul generierte \ac{API} angesteuert werden.
 
-\begin{figure}[htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{Bilder/implementierung_blockschaltbild_grayscaler400x400.png}
 	\caption[Blockschaltbild für die Implementierung des Grayscalermoduls]{Blockschaltbild für die Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado 2017.4 \cite{vivado902ug}}
@@ -12,14 +12,14 @@ Das \ac{PS} kann über das von dem \ac{AXI4} Modul generierte \ac{API} angesteue
 
 Aus \autoref{img:implementierung_timing_grayscaler400x400} und \autoref{img:implementierung_utilization_grayscaler400x400} geht hervor, dass die von der Synthese in \autoref{sec:synthese-grayscaler} berechneten Werte auch nach der Implementierung eingehalten werden können. Sowohl der Platzbedarf als auch das Timing liegen in einem zufriedenstellenden Bereich.
 
-\begin{figure}[htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{Bilder/implementierung_timing_grayscaler400x400.png}
 	\caption[Timing der Implementierung des Grayscalermoduls]{Timing der Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado 2017.4 \cite{vivado902ug}}
 	\label{img:implementierung_timing_grayscaler400x400}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{Bilder/implementierung_utilization_grayscaler400x400.png}
 	\caption[Ressourcenaufwand der Implementierung des Grayscalermoduls]{Ressourcenaufwand der Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado 2017.4 \cite{vivado902ug}}
