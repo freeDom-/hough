@@ -1,7 +1,10 @@
 TODO
 	CHT Modul synthetisieren
-	Pipelining erklären
-	Bresenham Algorithmus erklären
+	Pipelining Quelle einfügen (Quelle Einführung in die Rechnerarchitektur)
+	Evaluation !DER PLATTFORM!
+		mehr Daten aufnehmen, verschiedene Bildgrößen
+		Ergebnisse in fps (frames per second) berechnen über II der Funktionen
+		Evaluation der Plattform hinsichtlich Tauglichkeit für Anwendung
 
 	Optional (low Priority)
 		neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
@@ -21,8 +24,3 @@ Weitere Optimierung
 
 Noch nicht Probegelesen:
 	2.4 Pipelining
-	2.5 Bresenham Algorithmus
-	3.2.1 Grayscaler (Synthese)
-	3.3 Auslagerung einzelner Komponenten auf den FPGA
-	3.3.1 Grayscaler (Auslagerung)
-

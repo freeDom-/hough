@@ -11,25 +11,25 @@ Die For-Schleifen, in welchen das gesamte Bild durchlaufen und verarbeitet wird,
 
 \begin{lstlisting}[label=lst:grayscaler,caption=Auszug aus grayscaler.c]
 uint8_t* grayscaler(uint32_t* input, unsigned int width, unsigned int height) {
-uint8_t *output = malloc(width * height * sizeof(uint8_t));
-
-#ifdef _OPENMP(@\label{lst:grayscaler_omp_start}@)
-#pragma omp parallel for
-#endif(@\label{lst:grayscaler_omp_end}@)
-// Convert image to grayscale
-for(int y = 0; y < height; y++) {(@\label{lst:grayscaler_outer_loop}@)
-	for(int x = 0; x < width; x++) {(@\label{lst:grayscaler_inner_loop}@)
-		uint8_t r, g, b;
-		int index = y * width + x;
-		
-		r = input[index] >> 16 & 0xFF;(@\label{lst:grayscaler_rgb_start}@)
-		g = input[index] >> 8 & 0xFF;
-		b = input[index] & 0xFF;(@\label{lst:grayscaler_rgb_end}@)
-		output[index] = 0.3*r + 0.59*g + 0.11*b;(@\label{lst:grayscaler_output}@)
+	uint8_t *output = malloc(width * height * sizeof(uint8_t));
+	
+	#ifdef _OPENMP(@\label{lst:grayscaler_omp_start}@)
+	#pragma omp parallel for
+	#endif(@\label{lst:grayscaler_omp_end}@)
+	// Convert image to grayscale
+	for(int y = 0; y < height; y++) {(@\label{lst:grayscaler_outer_loop}@)
+		for(int x = 0; x < width; x++) {(@\label{lst:grayscaler_inner_loop}@)
+			uint8_t r, g, b;
+			int index = y * width + x;
+			
+			r = input[index] >> 16 & 0xFF;(@\label{lst:grayscaler_rgb_start}@)
+			g = input[index] >> 8 & 0xFF;
+			b = input[index] & 0xFF;(@\label{lst:grayscaler_rgb_end}@)
+			output[index] = 0.3*r + 0.59*g + 0.11*b;(@\label{lst:grayscaler_output}@)
+		}
 	}
-}
-
-return output;
+	
+	return output;
 }
 \end{lstlisting}
 
