@@ -1,6 +1,7 @@
 TODO
 	CHT Modul synthetisieren
-	Pipelining Quelle einfügen (Quelle Einführung in die Rechnerarchitektur)
+		acc mit als uint9 implementieren, um volle präzision zu erhalten
+		Line Buffer benutzen anstatt gesamten acc zu laden?
 	Evaluation !DER PLATTFORM!
 		mehr Daten aufnehmen, verschiedene Bildgrößen
 		Ergebnisse in fps (frames per second) berechnen über II der Funktionen

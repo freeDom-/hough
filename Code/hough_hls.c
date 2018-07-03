@@ -1,19 +1,19 @@
 #include "include/hough_hls.h"
 
-void vote(unsigned int* acc, int x, int y, unsigned int r) {
-    if(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT && r < RADIICOUNT) {
-        acc[y * WIDTH * RADIICOUNT + x * RADIICOUNT + r] += 1;
+void vote(uint9* acc, int x, int y, unsigned int r) {
+    if(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
+    	acc[y * WIDTH * RADIICOUNT + x * RADIICOUNT + r] += 1;
     }
 }
 
 void hough(uint8_t input[SIZE], circle output[MAXCIRCLES], unsigned int* circleCount) {
-    static unsigned int acc[SIZE * RADIICOUNT] = {0};
+	uint9 acc[SIZE * RADIICOUNT] = {0};
 
-    // Vote accumulator matrix
-    for(int y0 = 0; y0 < HEIGHT; y0++) {
-        for(int x0 = 0; x0 < WIDTH; x0++) {
+	// Vote accumulator matrix
+    vote_outer_loop:for(int y0 = 0; y0 < HEIGHT; y0++) {
+        vote_mid_loop:for(int x0 = 0; x0 < WIDTH; x0++) {
             if(input[y0 * WIDTH + x0] != 0) {
-                for(unsigned int r = RADIUS; r <= RADIUS_UPPER_BOUNDS; r++) {
+                vote_inner_loop:for(unsigned int r = RADIUS; r <= RADIUS_UPPER_BOUNDS; r++) {
                     // Bresenham
                     int dy, dx;
                     int x = r;
@@ -24,7 +24,7 @@ void hough(uint8_t input[SIZE], circle output[MAXCIRCLES], unsigned int* circleC
                     vote(acc, x0+r, y0, r-RADIUS);
                     vote(acc, x0-r, y0, r-RADIUS);
 
-                    while(y < x) {
+                    bresenham_while:while(y < x) {
                         dy = y*2 + 1;
                         y += 1;
                         error -= dy;
@@ -51,9 +51,9 @@ void hough(uint8_t input[SIZE], circle output[MAXCIRCLES], unsigned int* circleC
     // TODO parallelize???
     for(int y = 0; y < HEIGHT; y++) {
         for(int x = 0; x < WIDTH; x++) {
-            for(int r = RADIICOUNT-1; r >= 0; r--) {
+            find_radii_loop: for(int r = RADIICOUNT-1; r >= 0; r--) {
                 int currentRadius = r+RADIUS;
-                if(acc[y * WIDTH * RADIICOUNT + x * RADIICOUNT + r] / (4*round(currentRadius*SQRT2)) * 100 > THRESHOLD) {
+                if(acc[y * WIDTH * RADIICOUNT + x * RADIICOUNT + r] / ((4*currentRadius*SQRT2) / SQRT2FACTOR) * 100 > THRESHOLD) {
                     // Add circle
                     if(*circleCount < MAXCIRCLES) {
 						circle tmp = {x, y, currentRadius};
@@ -62,9 +62,9 @@ void hough(uint8_t input[SIZE], circle output[MAXCIRCLES], unsigned int* circleC
                     }
 
                     // Clear circle from hough space
-                    for(int yy = y; yy < y+currentRadius; yy++) {
-                        for(int xx = x-currentRadius; xx < x+currentRadius; xx++) {
-                            for(int rr = 0; rr < RADIICOUNT; rr++) {
+                    outer_clearing_loop:for(int yy = y; yy < y+currentRadius; yy++) {
+                        mid_clearing_loop:for(int xx = x-currentRadius; xx < x+currentRadius; xx++) {
+                            inner_clearing_loop:for(int rr = 0; rr < RADIICOUNT; rr++) {
                                 acc[yy * WIDTH * RADIICOUNT +  xx * RADIICOUNT + rr] = 0;
                             }
                         }
