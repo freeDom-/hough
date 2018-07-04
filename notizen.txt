@@ -6,10 +6,12 @@ TODO
 		mehr Daten aufnehmen, verschiedene Bildgrößen
 		Ergebnisse in fps (frames per second) berechnen über II der Funktionen
 		Evaluation der Plattform hinsichtlich Tauglichkeit für Anwendung
+		(RAM Lesegeschwindigkeit bzw. AXI4-Lite Geschwindigkeit) * (Datenwortbreite bzw. Busbreite?) zur Überschlagung der Geschwindigkeit für das Laden der Daten in den FPGA
 
 	Optional (low Priority)
 		neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
 		Bilder anordnen
+		Softwareimplementierung ergänzen
 
 use streaming protocols for data access for higher performance?
 
@@ -25,3 +27,8 @@ Weitere Optimierung
 
 Noch nicht Probegelesen:
 	2.4 Pipelining
+	3.2 Synthese und Optimierungen
+	3.2.1 Graysclaer (Synthese)
+	3.2.2 Circle Hough Transformation (Synthese)
+
+

@@ -1,15 +1,37 @@
-Für die Auslagerung der Komponenten auf die \ac{PL} müssen diese zunächst in Hardware umgewandelt werden. Die im vorigen Kapitel vorgestellten Softwareimplementierungen werden dazu mittels Vivado HLS zu einem \ac{RTL} synthetisiert. Anschließend wird das \ac{RTL} über eine C/\ac{RTL} Cosimulation verifiziert und kann schließlich als \ac{IP} in Vivado zum Hardware/Software Codesign verwendet werden. Bei der Synthese werden bereits approximierte Daten bezüglich der Laufzeit und den benötigten Ressourcen erzeugt. Die erzeugten Daten bieten einen ersten Anhaltspunkt für die weitere Optimierung.
+Für die Auslagerung der Komponenten auf die \ac{PL} müssen diese zunächst in Hardware umgewandelt werden. Die im vorigen Kapitel vorgestellten Softwareimplementierungen werden dazu mittels Vivado HLS zu einem \ac{RTL} synthetisiert. Anschließend wird das \ac{RTL} über eine C/\ac{RTL} Cosimulation verifiziert und kann schließlich als \ac{IP} in Vivado 2017.4 zum Hardware/Software Codesign verwendet werden. Bei der Synthese werden bereits approximierte Daten bezüglich der Laufzeit und den benötigten Ressourcen erzeugt. Die erzeugten Daten bieten einen ersten Anhaltspunkt für die weitere Optimierung.
 \\
 \\
-Im ersten Schritt der Synthese müssen die Interfaces definiert werden. Diese dienen als Schnittstelle zum Datenaustausch. Die Definition der Interfaces geschieht in Vivado HLS durch setzen der Interface-Direktive für die jeweiligen Argumente der Funktion. Die Module sollen im Hardware/Software Codesign verwendet werden. Hierfür wird das \ac{AXI4} verwendet. Die Argumente, welche eine sequentielle Verarbeitung der Daten zulassen, sollten zudem als HLS Stream \cite[S. 263-270]{vivado902ug} implementiert werden. Dies führt zu Designs, die eine bessere Performance haben und weniger Ressourcen benötigen. \cite[S. 113ff]{vivado902ug}
+Jedes Hardwaremodul benötigt Schnittstellen für den Datenaustausch. Diese werden Interfaces genannt. Im ersten Schritt der Synthese müssen diese definiert werden. Vivado HLS definiert standardmäßig alle Argumente einer Funktion als Interfaces, über die Daten empfangen oder gesendet werden können. Außerdem können im Programm Schnittstellen über Direktiven für die jeweiligen Argumente manuell definiert werden. Die Module sollen im Hardware/Software Codesign verwendet werden. Hierfür wird das \ac{AXI4} verwendet \cite[S. 167ff]{vivado902ug}. Bei diesem können mehrere Schnittstellen zu einem Bus zusammengefasst werden. Die \ac{HLS} kümmert sich dann um das Bereitstellen der benötigten Schnittstelle. Bei der Implementierung des \ac{AXI4} Moduls werden automatisch C-Treiber generiert. Diese stellen ein \ac{API} zur Ansteuerung des synthetisierten Moduls bereit. Die Argumente, welche eine sequentielle Verarbeitung der Daten zulassen, sollten zudem als HLS Stream \cite[S. 263-270]{vivado902ug} implementiert werden. Dies führt zu Designs, die eine bessere Performance haben und weniger Ressourcen benötigen. \cite[S. 113ff]{vivado902ug}
 \\
 \\
-Die Optimierung findet in zwei Schritten statt: Zuerst wird die Laufzeit minimiert. Dies geschieht vor allem durch Pipelining von Schleifen und Funktionen sowie durch Loop unrolling. Loop unrolling bezeichnet das Zusammenfassen von allen Iterationsschritten einer Schleife zu einem einzigen Schritt. Loop unrolling stellt für das Pipelining einer äußeren Schleife eine notwendige Bedingung dar. Allerdings führt Loop unrolling auch zu einem hohen Ressourcenverbrauch. Der Kompromiss zwischen Laufzeitersparnis und erhöhtem Hardwareaufwand muss in jedem Fall einzeln betrachtet werden.
+Die Optimierung findet in zwei Schritten statt: Zuerst wird die Laufzeit minimiert. Dies geschieht vor allem durch Pipelining von Schleifen und Funktionen sowie durch Loop unrolling. In den folgenden Abschnitten werden diese Techniken näher erläutert.
+\\
+\\
+Loop unrolling bezeichnet das Zusammenfassen von Iterationsschritten einer Schleife. Dabei kann eine Schleife teilweise, oder vollständig unrolled werden. Beim vollständigen unrollen werden alle Iterationsschritte, sofern möglich, in einem Takt ausgeführt. In \autopageref{img:loop_unrolling} sind die verschiedenen Varianten des Loop unrollings aufgeführt. In der gezeigten Schleife müssen in einem Takt zwei Daten gelesen, eine Operation ausgeführt und ein Wert geschrieben werden. Die komplette Abarbeitung der Schleife dauert dann vier Takte. Wenn die Schleife vollständig unrolled wird, dauert die Abarbeitung nur einen Takt, dafür müssen allerdings acht Werte gelesen, vier Operationen ausgeführt und vier Werte geschrieben werden. Die Felder a, b, und c aus dem Beispiel werden im \ac{BRAM} gespeichert. Da dieser nur maximal zwei Zugriffe pro Takt erlaubt müssen die Felder zusätzlich partitioniert werden, wenn die gesamte Schleife in einem Takt abgearbeitet werden soll. Loop unrolling ist nur möglich, wenn die Schleife feste Iterationsgrenzen besitzt. Der Kompromiss zwischen Laufzeitersparnis und erhöhtem Hardwareaufwand muss in jedem Fall einzeln betrachtet werden.
+\cite[S. 199-202]{vivado902ug}
+\\
+\\
+Das Partitionieren von Feldern bezeichnet die Unterteilung von einem Feld auf mehrere Speichereinheiten, um die Anzahl der möglichen Zugriffe pro Takt zu erhöhen. Felder können komplett, zyklisch oder blockweise partitioniert werden. Bei der kompletten Partitionierung wird das gesamte Feld zerlegt und jedes Element in einem Register gespeichert. Bei einer blockweisen Partitionierung werden $n$ gleichgroße Blöcke gebildet, welche die einzelnen Elemente fortlaufend enthalten. Bei der zyklischen Partitionierung werden ebenfalls $n$ gleichgroße Blöcke gebildet. Diese enthalten die Daten allerdings zyklisch. Wenn jeder Block $N$ Elemente enthält, dann enthält der $i$-te Block die folgende Menge an Elementen: $\sum_{i=0}^{n} elem_i = \{i, n+i, 2*n+i, ..., N*n+i\}$
+\cite[S. 194-196]{vivado902ug}
+\\
+\\
+Das Pipelining von Schleifen wurde bereits in \autoref{sec:pipelining} beschrieben. Dies ist jedoch nicht immer möglich. Zum Pipelining einer Schleife, die eine oder mehrere innere Schleifen enthält, ist es notwendig allen inneren Schleifen zu unrollen. Wenn diese nicht unrolled werden können, kann auch die äußere Schleife nicht gepipelined werden.
+\\
+Als weiteres notwendiges Kriterium für das Pipelining von verschachtelten Schleifen darf nur die innerste Schleife Anweisungen enthalten.
+%TODO: Ausleitung? Umstellen? Komisches Ende hier
 \cite[S. 188-209]{vivado902ug}
-\\
-\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{Bilder/loop_unrolling.pdf}
+	\caption{Loop unrolling}
+	\label{img:loop_unrolling}
+\end{figure}
+
 Wenn die Laufzeit zufriedenstellend optimiert wurde und keine weiteren Verbesserungen mehr erzielt werden können, kann das Design hinsichtlich des Ressourcenverbrauchs optimiert werden. Hierbei können vor allem durch Datenflussdirektiven oder durch Zusammenfassen mehrerer kleiner Felder zu einem großen Feld (Array Mapping) Verbesserungen erzielt werden.
 \cite[S. 210-219]{vivado902ug}
+
+Aus \autoref{img:arm_laufzeit400x400} geht hervor, dass durch die Parallelisierung bereits eine ungefähr 2,5-fache Laufzeitbeschleunigung erzielt werden kann. Darüber hinaus kann der Grafik entnommen werden, dass das Modul für die \ac{CHT} eindeutig am meisten Zeit benötigt. Das Modul für die Canny Edge Detection ist nach der \ac{CHT} das langsamste Modul, aber mit einer Laufzeit von 81ms immer noch ungefähr 13-mal schneller als die \ac{CHT}. Daher soll der Fokus für die Optimierung und Auslagerung in die Hardware auf das \ac{CHT} Modul gelegt werden. In den folgenden Kapiteln wird die \ac{HLS} deshalb zunächst als einleitendes Beispiel für das Grayscaler Modul und anschließend für das \ac{CHT} Modul durchgeführt.
 
 \begin{figure}[H]
 	\centering
@@ -17,5 +39,3 @@ Wenn die Laufzeit zufriedenstellend optimiert wurde und keine weiteren Verbesser
 	\caption[Laufzeit der Softwareimplementierung der Hough Transformation]{Laufzeit der Softwareimplementierung der \ac{HT} für ein 400x400 Pixel großes Bild auf dem Cortex-A53}
 	\label{img:arm_laufzeit400x400}
 \end{figure}
-
-Aus \autoref{img:arm_laufzeit400x400} geht hervor, dass durch die Parallelisierung bereits eine ungefähr 2,5-fache Laufzeitbeschleunigung erzielt werden kann. Darüber hinaus kann der Grafik entnommen werden, dass das Modul für die \ac{CHT} eindeutig am meisten Zeit benötigt. Das Modul für die Canny Edge Detection ist nach der \ac{CHT} das langsamste Modul, aber mit einer Laufzeit von 81ms immer noch ungefähr 13-mal schneller als die \ac{CHT}. Daher soll der Fokus für die Optimierung und Auslagerung in die Hardware auf das \ac{CHT} Modul gelegt werden. In den folgenden Kapiteln wird die \ac{HLS} deshalb zunächst als einleitendes Beispiel für das Grayscaler Modul und anschließend für das \ac{CHT} Modul durchgeführt.

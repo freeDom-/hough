@@ -1,10 +1,13 @@
-Als Interfaces für den Grayscaler dienen die Felder, welche Ein- und Ausgabedaten enthalten. Als einzige Anpassung am Code empfiehlt es sich, die Berechnung des Intensitätswertes auf eine ganzzahlbasierte Berechnung zu ändern.
+Das Grayscaler Modul besitzt die geringste Laufzeit von allen Modulen und ist daher aus praktischer Sicht keine gute Wahl für eine \ac{HLS}. Die Synthese des Grayscaler Moduls gestaltet sich jedoch vergleichsweise sehr einfach und dient daher als gutes Beispiel, um die grundlegenden Methoden der \ac{HLS} zu zeigen.
+\\
+\\
+Als Interfaces für den Grayscaler werden das 32 Bit breite Eingabe- und das 8 Bit breite Ausgabefeld definiert. Als einzige Anpassung am Code empfiehlt es sich, die Berechnung des Intensitätswertes auf eine ganzzahlbasierte Berechnung zu verändern.
 
 \begin{equation}
 output[index] = (30*r + 59*g + 11*b)/100
 \end{equation}
 
-Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die Abweichung des Intensitätswertes höchstens 1 im Vergleich zur alten Berechnungsmethode. Dies ist in dem erzeugten Bild nicht erkennbar und spielt für die weitere Verarbeitung keine Rolle. Entscheidend ist, wie in \autoref{img:synthese_grayscaler400x400} zu sehen, dass der Ressourcenverbrauch 2.837 benötigten \acp{FF} und 3.017 \acp{LUT} auf 136 benötigte \acp{FF} und 194 \acp{LUT} sinkt. Zusätzlich wird die Anzahl der benötigten Takte um einen Faktor von circa 8,2 auf 640.801 Takte reduziert.
+Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die Abweichung des Intensitätswertes höchstens 1 im Vergleich zur alten Berechnungsmethode. Dies ist in dem erzeugten Bild nicht erkennbar und spielt für die weitere Verarbeitung keine Rolle. Entscheidend ist, wie in \autoref{img:synthese_grayscaler400x400} zu sehen, dass der Ressourcenverbrauch von 2.837 benötigten \acp{FF} und 3.017 \acp{LUT} auf 136 benötigte \acp{FF} und 194 \acp{LUT} sinkt. Zusätzlich wird die Anzahl der benötigten Takte um einen Faktor von circa 8,2 auf 640.801 Takte reduziert.
 
 \begin{figure}[H]
 	\centering
@@ -13,7 +16,13 @@ Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die A
 	\label{img:synthese_grayscaler400x400}
 \end{figure}
 
-Bei einem Pipelining der inneren Schleife kann ein Bild der Größe $hoehe \cdot breite$ in $hoehe \cdot breite$ Takten verarbeitet werden. Demnach kann ein Bild der Größe $400 \cdot 400$ in $160.000$ Takten verarbeitet werden. Um die äußere Schleife pipelinen zu können, muss die innere Schleife zunächst unrolled werden. Dies führt dazu, dass beim Pipelining $breite$-mal gleichzeitig auf das Feld $input$ zugegriffen wird. Das Feld wird allerdings über \ac{AXI4} bereitgestellt. Hierbei kann nur ein Zugriff pro Takt erfolgen, weshalb die äußere Schleife nicht gepipelined wird. Eine Lösungsmöglichkeit stellt das \emph{cachen} des Eingabefeld dar. Dabei wird das Feld in den \ac{BRAM} des \ac{FPGA} geladen. Jedoch rechtfertigt die zum Laden der Eingabedaten in den \ac{BRAM} benötigte Zeit und der höhere Ressourcenaufwand dieses Vorgehen nicht.
+Um das Modul weiter zu Beschleunigen können im Folgenden noch die Schleifen gepipelined werden.
+\\
+Beim Pipelining der inneren Schleife beträgt das \ac{II} eins. Daher kann diese für ein Bild der Größe $hoehe \cdot breite$ in $hoehe \cdot breite$ Takten ausgeführt werden. Demnach kann ein Bild der Größe $400 \cdot 400$ in circa $160.000$ Takten verarbeitet werden.
+\\
+Um die äußere Schleife pipelinen zu können, muss die innere Schleife zunächst unrolled werden. Dies führt dazu, dass beim Pipelining $breite$-mal gleichzeitig auf das Feld $input$ zugegriffen wird. Das Feld befindet sich allerdings in einem \ac{BRAM}, welcher nur zwei Zugriffe pro Takt ermöglicht. Für das Pipelining der äußeren Schleife ist es deshalb zusätzlich nötig das Eingabe- und Ausgabefeld mit einem Faktor von $\frac{breite}{2}$ zu partitionieren. Damit auch \ac{BRAM} verwendet wird, der zwei Schreib- oder Lesezugriffe pro Takt ermöglicht, muss zusätzlich die \emph{HLS\_RESSOURCE} Direktive mit dem Parameter \emph{core=RAM\_T2P\_BRAM} angegeben werden. Beim Pipelining der äußeren Schleife hat diese schließlich auch ein \ac{II} von eins. Damit kann ein Bild in circa $hoehe$ Takten verarbeitet werden. Das entspricht $400$ Takten für ein Bild der Größe $400 \cdot 400$.
 \\
 \\
-\autoref{img:synthese_grayscaler400x400} zeigt, dass die \ac{PL} ungefähr 160.005 Takte beim Pipelining der inneren Schleife benötigt. Bei einer Taktrate von 200 MHz, die als realisierbar betrachtet werden kann, wird nach der Synthese eine Laufzeit von 0,8ms und damit ein Speedup von 5 erzielt.
+\autoref{img:synthese_grayscaler400x400} zeigt, dass die \ac{PL} geschätzt 160.005 Takte nach dem Pipelining der inneren Schleife benötigt. Bei einer Taktrate von 200 MHz, die als realisierbar betrachtet werden kann, wird nach der Synthese eine Laufzeit von 0,8 ms und damit ein Speedup von 5 erzielt.
+\\
+Nach dem Pipelining der äußeren Schleife werden geschätzt 404 Takte benötigt. Bei einer Taktrate von 200 MHz, welche auch hier als realisierbar geschätzt wird, wird eine Laufzeit von 0,002 ms und damit ein Speedup von 2000 erzielt.
