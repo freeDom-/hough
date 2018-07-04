@@ -1,7 +1,7 @@
 Das Grayscaler Modul besitzt die geringste Laufzeit von allen Modulen und ist daher aus praktischer Sicht keine gute Wahl für eine \ac{HLS}. Die Synthese des Grayscaler Moduls gestaltet sich jedoch vergleichsweise sehr einfach und dient daher als gutes Beispiel, um die grundlegenden Methoden der \ac{HLS} zu zeigen.
 \\
 \\
-Als Interfaces für den Grayscaler werden das 32 Bit breite Eingabe- und das 8 Bit breite Ausgabefeld definiert. Als einzige Anpassung am Code empfiehlt es sich, die Berechnung des Intensitätswertes auf eine ganzzahlbasierte Berechnung zu verändern.
+Als Interfaces für den Grayscaler werden das 32 Bit breite Eingabe- und das 8 Bit breite Ausgabefeld definiert. Es empfiehlt sich als einzige Anpassung am Code, die Berechnung des Intensitätswertes auf eine ganzzahlbasierte Berechnung zu verändern.
 
 \begin{equation}
 output[index] = (30*r + 59*g + 11*b)/100
@@ -16,13 +16,13 @@ Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die A
 	\label{img:synthese_grayscaler400x400}
 \end{figure}
 
-Um das Modul weiter zu Beschleunigen können im Folgenden noch die Schleifen gepipelined werden.
+Um das Modul weiter zu beschleunigen, können im Anschluss die Schleifen gepipelined werden.
 \\
-Beim Pipelining der inneren Schleife beträgt das \ac{II} eins. Daher kann diese für ein Bild der Größe $hoehe \cdot breite$ in $hoehe \cdot breite$ Takten ausgeführt werden. Demnach kann ein Bild der Größe $400 \cdot 400$ in circa $160.000$ Takten verarbeitet werden.
+Beim Pipelining der inneren Schleife beträgt das \ac{II} eins. Daher kann sie für ein Bild der Größe $hoehe \cdot breite$ in $hoehe \cdot breite$ Takten ausgeführt werden. Demnach kann ein Bild der Größe $400 \cdot 400$ in circa $160.000$ Takten verarbeitet werden.
 \\
-Um die äußere Schleife pipelinen zu können, muss die innere Schleife zunächst unrolled werden. Dies führt dazu, dass beim Pipelining $breite$-mal gleichzeitig auf das Feld $input$ zugegriffen wird. Das Feld befindet sich allerdings in einem \ac{BRAM}, welcher nur zwei Zugriffe pro Takt ermöglicht. Für das Pipelining der äußeren Schleife ist es deshalb zusätzlich nötig das Eingabe- und Ausgabefeld mit einem Faktor von $\frac{breite}{2}$ zu partitionieren. Damit auch \ac{BRAM} verwendet wird, der zwei Schreib- oder Lesezugriffe pro Takt ermöglicht, muss zusätzlich die \emph{HLS\_RESSOURCE} Direktive mit dem Parameter \emph{core=RAM\_T2P\_BRAM} angegeben werden. Beim Pipelining der äußeren Schleife hat diese schließlich auch ein \ac{II} von eins. Damit kann ein Bild in circa $hoehe$ Takten verarbeitet werden. Das entspricht $400$ Takten für ein Bild der Größe $400 \cdot 400$.
+Um die äußere Schleife pipelinen zu können, muss die innere Schleife zunächst unrolled werden. Dies führt dazu, dass beim Pipelining $breite$-mal gleichzeitig auf das Feld $input$ zugegriffen wird. Das Feld befindet sich allerdings in einem \ac{BRAM}, welcher nur zwei Zugriffe pro Takt ermöglicht. Für das Pipelining der äußeren Schleife ist es deshalb zusätzlich notwendig, das Eingabe- und Ausgabefeld mit einem Faktor von $\frac{breite}{2}$ zu partitionieren. Damit auch \ac{BRAM} verwendet wird, der zwei Schreib- oder Lesezugriffe pro Takt ermöglicht, muss zusätzlich die \emph{HLS\_RESSOURCE} Direktive mit dem Parameter \emph{core=RAM\_T2P\_BRAM} angegeben werden. Beim Pipelining der äußeren Schleife hat diese schließlich auch ein \ac{II} von eins. Damit kann ein Bild in circa $hoehe$ Takten verarbeitet werden. Das entspricht $400$ Takten für ein Bild der Größe $400 \cdot 400$.
 \\
 \\
 \autoref{img:synthese_grayscaler400x400} zeigt, dass die \ac{PL} geschätzt 160.005 Takte nach dem Pipelining der inneren Schleife benötigt. Bei einer Taktrate von 200 MHz, die als realisierbar betrachtet werden kann, wird nach der Synthese eine Laufzeit von 0,8 ms und damit ein Speedup von 5 erzielt.
 \\
-Nach dem Pipelining der äußeren Schleife werden geschätzt 404 Takte benötigt. Bei einer Taktrate von 200 MHz, welche auch hier als realisierbar geschätzt wird, wird eine Laufzeit von 0,002 ms und damit ein Speedup von 2000 erzielt.
+Nach dem Pipelining der äußeren Schleife werden geschätzt 404 Takte benötigt. Bei einer Taktrate von 200 MHz, welche auch für diesen Fall als realisierbar geschätzt wird, wird eine Laufzeit von 0,002 ms und damit ein Speedup von 2000 erzielt.

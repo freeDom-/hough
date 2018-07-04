@@ -1,4 +1,4 @@
-Das Pipelining ist eine Technik aus der Rechnerarchitektur. Beim Pipelining werden Maschinencodebefehlen in mehrere Teilaufgaben unterteilt. Eine beispielhafte Unterteilung könnte eine Stufe zum Laden des Befehls, eine Stufe zur Ausführung des Befehls und eine Stufe zum Speichern des Ergebnisses enthalten. Es werden mehrere Befehle parallel verarbeitet, indem jeden Takt ein neuer Befehl in die Pipeline geladen wird (s. \autoref{img:pipelining}).
+Das Pipelining ist eine Technik aus der Rechnerarchitektur. Beim Pipelining werden Maschinencodebefehle in mehrere Teilaufgaben unterteilt. Eine beispielhafte Unterteilung könnte eine Stufe zum Laden des Befehls, eine Stufe zur Ausführung des Befehls und eine Stufe zum Speichern des Ergebnisses enthalten. Es werden mehrere Befehle parallel verarbeitet, indem in jedem Takt ein neuer Befehl in die Pipeline geladen wird (s. \autoref{img:pipelining}).
 \\
 Das Pipelining funktioniert nur, wenn keine Datenabhängigkeiten vorhanden sind. Das bedeutet, dass in der Berechnung keine Daten benötigt werden, die erst noch von einer anderen Pipelinestufe berechnet werden müssen. Diese sind zum Zeitpunkt der Berechnung noch nicht zurück in den Speicher geschrieben und damit noch nicht vorhanden.
 \cite[S. 91-95]{maertin2003rechnerarchitektur}
@@ -6,7 +6,7 @@ Das Pipelining funktioniert nur, wenn keine Datenabhängigkeiten vorhanden sind.
 \\
 Das Konzept des Pipelinings kann in der \ac{HLS} auf Funktionen und Schleifen angewandt werden, um diese zu beschleunigen.
 \\
-In dem Beispiel aus \autoref{img:pipelining} ist die Schleife in drei Operationen unterteilt. Die erste Operation \emph{op\_Read} liest Daten aus dem Speicher, die zweite Operation \emph{op\_Compute} führt eine Berechnung aus und die dritte Operation \emph{op\_Write} schreibt Daten in den Speicher.
+In dem Beispiel aus \autoref{img:pipelining} ist die Schleife in drei Operationen unterteilt. Die erste Operation \emph{op\_Read} liest Daten aus dem Speicher, die zweite \emph{op\_Compute} führt eine Berechnung aus und die dritte \emph{op\_Write} schreibt Daten in den Speicher.
 \\
 Der linke Teil der Grafik zeigt die Laufzeit der seriellen Verarbeitung der Schleife. Es dauert drei Takte bis neue Daten gelesen werden können. Nach zwei Takten ist das Ergebnis der Operation von einer Iteration berechnet. Nach acht Takten sind die Ergebnisse aller Operationen berechnet.
 \\

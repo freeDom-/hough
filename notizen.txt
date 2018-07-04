@@ -26,9 +26,6 @@ Weitere Optimierung
 	Alle Module ineinander verzahnt laufen lassen
 
 Noch nicht Probegelesen:
-	2.4 Pipelining
-	3.2 Synthese und Optimierungen
-	3.2.1 Graysclaer (Synthese)
 	3.2.2 Circle Hough Transformation (Synthese)
 
 
