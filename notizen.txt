@@ -7,6 +7,8 @@ TODO
 		Ergebnisse in fps (frames per second) berechnen über II der Funktionen
 		Evaluation der Plattform hinsichtlich Tauglichkeit für Anwendung
 		(RAM Lesegeschwindigkeit bzw. AXI4-Lite Geschwindigkeit) * (Datenwortbreite bzw. Busbreite?) zur Überschlagung der Geschwindigkeit für das Laden der Daten in den FPGA
+	Fazit
+		Für spezielle Anwendungen (geg. Bildgröße, ungefähre größe der gesuchten Kreise, ...) gut geeignet, für allgemeinere Anwendungen schwierig (viele Variable Parameter..., Frage der Dimensionierung?)
 
 	Optional (low Priority)
 		neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
@@ -26,6 +28,7 @@ Weitere Optimierung
 	Alle Module ineinander verzahnt laufen lassen
 
 Noch nicht Probegelesen:
+	3.2.1 Grayscaler (Synthese) -> Letzter Abschnitt
 	3.2.2 Circle Hough Transformation (Synthese)
 
 
