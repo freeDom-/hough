@@ -1,7 +1,8 @@
 Für die Synthese des \ac{CHT} Moduls müssen verschiedene Veränderungen gegenüber der Softwareimplementierung vorgenommen werden.
 \\
 \\
-Als Interfaces für das Modul werden das 8 Bit breite Eingabefeld mit den Daten des Eingabebildes, das Ausgabefeld, welches die gefundenen Kreise enthält und ein Zeiger auf die Anzahl der gefundenen Kreise definiert. Das Ausgabefeld ist vom Datentyp \emph{struct circle}, welcher in \autoref{lst:circle} definiert wird. %TODO: Implementierung von Zeiger in Schnittstelle erklären?
+Als Interfaces für das Modul werden das 8 Bit breite Eingabefeld mit den Daten des Eingabebildes, das Ausgabefeld, welches die gefundenen Kreise enthält und ein Zeiger auf die Anzahl der gefundenen Kreise definiert. Das Ausgabefeld ist vom Datentyp \emph{struct circle}, welcher in \autoref{lst:circle} definiert wird.
+%TODO: Implementierung von Zeiger in Schnittstelle erklären? Größen der Felder erwähnen?
 \\
 \\
 Zunächst muss das Feld, welches die Votingmatrix der \ac{CHT} implementiert, betrachtet werden. Dies wurde in der Softwarelösung dynamisch allokiert und damit im Heap gespeichert. Auf dem FPGA sollte das Akkumulatorfeld für einen effektiven Zugriff im \ac{BRAM} gespeichert werden. Für ein Bild mit einer Größe von $400 \cdot 400$ Pixeln und sieben zu durchsuchenden Radien benötigt der Akkumulator $400 \cdot 400 \cdot 7 = 1.120.000$ Elemente. In der Softwareimplementierung wurde das Feld als \emph{unsigned int} realisiert. Ein Element vom Datentyp \emph{unsigned int} hat auf der Zielarchitektur eine Größe von 32 Bit. Damit benötigt das Feld $32 \cdot 1.120.000 = 35.840.000$ Bit $\equiv 35,84$ Mb Speicherplatz. Die Zielplattform besitzt jedoch nur einen \ac{BRAM} von insgesamt $32,1$ Mb. Für das Beispielbild liegt die obere Grenze der zu durchsuchenden Radien bei 50. Der Bresenham Algorithmus für einen Kreis mit dem Radius von 50 erzeugt $4 \cdot \sqrt{2} \cdot 50 = 282,84 \approx 283$ Punkte. Diese können in neun Bit gespeichert werden: $2^9 = 512$. Über die \emph{Arbirary Precision Data Types Library} von Vivado kann das Feld mit einem neun Bit großem Datentyp realisiert werden. Der benötigte \ac{BRAM} beträgt dann: $9 \cdot 1.120.000 = 10.080.000$ Bit $\equiv 10,08$ Mb und das gesamte Feld passt in den \ac{BRAM}.
@@ -14,11 +15,54 @@ Zur weiteren Beschleunigung muss geschaut werden, an welchen Stellen Pipelining 
 \\
 Der erste Block besteht aus drei verschachtelten For-Schleifen und einer While-Schleife. Dieser Block implementiert das Votingverfahren. Hier kann nur die innerste Schleife, die While-Schleife, gepipelined werden. Sie hat eine variable Anzahl an Iterationen und kann daher nicht unrolled werden. Für das Pipelining einer der äußeren Schleifen wäre das Unrolling aller inneren Schleifen jedoch eine notwendige Bedingung.
 \\
-Innerhalb der While-Schleife wird acht mal hintereinander die \emph{vote} Methode aufgerufen. Dort wird das Akkumulatorfeld an den entsprechenden Koordinaten erhöht, sofern sie innerhalb der Bildgrenzen liegen. Vivado HLS erkennt nicht, dass auf verschiedene Indizes des Akkumulators zugegriffen wird und vermutet an dieser Stelle Datenabhängigkeiten. Mit der \emph{DEPENDENCE} Direktive können diese Abhängigkeiten als falsch gekennzeichnet werden. Wenn nun zusätzlich das Akkumulatorfeld partitioniert wird, um die größere Menge an Zugriffen zu realisieren, kann das \ac{II} auf eins gebracht werden. Es stehen der \ac{PL} insgesamt 1.824 \acp{BRAM} zur Verfügung, von denen mit der oben beschriebenen Lösung nur $\frac{10.080 \; \text{Kb}}{18 \; \text{Kb}} = 560$ verwendet werden.
-%TODO: Partitionierung genauer beschreiben. Partitionierung von 8 genügt. Menge des benötigten BRAM abchecken
+Innerhalb der While-Schleife wird acht mal hintereinander die \emph{vote} Methode aufgerufen. Dort wird das Akkumulatorfeld an den entsprechenden Koordinaten erhöht, sofern sie innerhalb der Bildgrenzen liegen. Vivado HLS erkennt nicht, dass auf verschiedene Indizes des Akkumulators zugegriffen wird und vermutet an dieser Stelle Datenabhängigkeiten. Mit der \emph{DEPENDENCE} Direktive können diese Abhängigkeiten als falsch gekennzeichnet werden. Wenn nun zusätzlich das Akkumulatorfeld partitioniert wird, um die größere Menge an Zugriffen zu realisieren, kann das \ac{II} auf eins gebracht werden. Dazu muss eine Partitionierung mit dem Faktor acht vorgenommen werden.
 \\
 \\
 Der zweite Block ist in \autoref{lst:hough} dargestellt. Er filtert die höchsten Werte aus dem Akkumulator, erhöht die Anzahl der gefundenen Kreise und fügt die gefundenen Kreise dem Ausgabefeld hinzu. Sobald ein Kreis gefunden wurde, muss der Akkumulator in der näheren Umgebung für alle Radien auf Null gesetzt werden. Diese Funktion wird durch drei For-Schleifen implementiert, welche in \autoref{lst:hough} an der Stelle von Z. 9 stehen.
 \\
 Zum Pipelining der äußersten For-Schleife wird diese mit der mittleren Zusammengefasst, da beide variable Parameter enthalten. Die innerste For-Schleife kann ohne Probleme unrolled werden. Nach dem Unrolling finden sieben Zugriffe auf den Akkumulator statt. Im ersten Block wurde der Akkumulator bereits ausreichend partitioniert, sodass sieben parallele Zugriffe möglich sind. Damit kann auch für diese Schleife ein \ac{II} von eins erreicht werden.
-%TODO: Auswertung und Bilder einfügen
+\\
+\\
+Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen initialisiert gepipelined werden. Diese hat auch mit den bereits definierten Direktiven ein \ac{II} von eins.
+\\
+\\
+\begin{table}[H]
+	\centering
+	\caption[Ergebnisse der Synthese für das Circle Hough Detection Modul]{Ergebnisse der Synthese für das \ac{CHT} Modul. In den Spalten stehen die verschiedenen Optimierungsschritte. Die prozentualen Angaben sind auf ganze Prozent gerundet.}
+	\begin{tabular}{ccccc}
+		&  & \multicolumn{3}{c}{\textbf{Pipelining}} \\
+		& \textbf{Keine} & \textbf{Bresenham-While} & \textbf{Clearing-For} & \textbf{Acc-Init-For} \\
+		\hline
+		\hline
+		Zieltakt $[$ns$]$ & 5 & 5 & 5 & 5 \\
+		\hline
+		Erw. Takt $[$ns$]$ & 4,62 & 4,8 & 4,8 & 4,8 \\
+		\hline
+		Min. Latenz $[$Takte$]$ & 18.721.603 & 20.000.803 & 20.000.803 & 19.680.004 \\
+		\hline
+		Max. Latenz $[$Takte$]$ & 51.881.441.603 & 50.591.360.803 & 5.682.400.003 & 5.681.280.004 \\
+		\hline
+		Min. Laufzeit $[$ms$]$ & 93,61 & 100 & 100 & 98,4 \\
+		\hline
+		Max. Laufzeit $[$ms$]$ & 259.407,21 &  &  &  \\
+		\hline
+		\textbf{Speedup} &  &  &  &  \\
+		\hline
+		\hline
+		BRAM & 0 (0\%) & 640 (35\%) & 640 (35\%) & 1.600 (88\%) \\
+		\hline
+		DSP48E & 25 (1\%) & 3 (0\%) & 4 (0\%) & 1.200 (48\%) \\
+		\hline
+		FF & 2.837 (1\%) & 332 (0\%) & 445 (0\%) & 80.190 (15\%) \\
+		\hline
+		LUT & 3.017 (1\%) & 374 (0\%) & 466 (0\%) & 64.599 (24\%) \\
+		\hline
+		\textbf{Gesamtressourcen} & 1\% & 9\% & \textbf{9\%} & \textbf{44\%} \\
+		\hline
+		\hline
+		\textbf{Speedup pro} & 15 & 13,89 & \textbf{55,56} & \textbf{4.545,45} \\
+		\textbf{Ressourcen} &  &  &  &  \\
+	\end{tabular}
+	\label{tab:synthese_hough400x400}
+\end{table}
+%TODO: fill table: berechne richtige latenz und laufzeitwerte für 19 gefundene kreise

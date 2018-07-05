@@ -59,8 +59,8 @@ void hough(uint8_t input[SIZE], circle output[MAXCIRCLES], unsigned int* circleC
             find_radii_loop: for(int r = RADIICOUNT-1; r >= 0; r--) {
                 int currentRadius = r+RADIUS;
                 if(acc[y * WIDTH * RADIICOUNT + x * RADIICOUNT + r] / ((4*currentRadius*SQRT2) / SQRT2FACTOR) * 100 > THRESHOLD) {
-                    // Add circle
-                    if(*circleCount < MAXCIRCLES) {
+                	// Add circle
+                	if(*circleCount < MAXCIRCLES) {
 						circle tmp = {x, y, currentRadius};
 						output[*circleCount] = tmp;
 						(*circleCount)++;

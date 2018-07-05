@@ -1,6 +1,10 @@
 Für die Auslagerung der Komponenten auf die \ac{PL} müssen diese zunächst in Hardware umgewandelt werden. Die im vorigen Kapitel vorgestellten Softwareimplementierungen werden dazu mittels Vivado HLS zu einem \ac{RTL} synthetisiert. Anschließend wird das \ac{RTL} über eine C/\ac{RTL} Cosimulation verifiziert und kann schließlich als \ac{IP} in Vivado 2017.4 zum Hardware/Software Codesign verwendet werden. Bei der Synthese werden bereits approximierte Daten bezüglich der Laufzeit und der benötigten Ressourcen erzeugt. Die erzeugten Daten bieten einen ersten Anhaltspunkt für die weitere Optimierung.
 \\
 \\
+Vor der eigentlichen Synthese muss überprüft werden, ob die gegebene Funktion überhaupt synthetisiert werden kann. Die Softwareimplementierung ist grundsätzlich nur dann synthetisierbar, wenn keine dynamischen Speicherallokationen vorliegen und alle C-Konstrukte eine feste oder beschränkte Größe besitzen. Die Ein- und Ausgabedaten der Funktion müssen als Parameter implementiert werden. Weiterhin dürfen keine rekursiven Funktionen verwendet werden. Wenn eines der Kriterien nicht erfüllt ist, müssen zunächst entsprechende Veränderungen am Code vorgenommen werden.
+\cite[S. 313ff]{vivado902ug}
+\\
+\\
 Jedes Hardwaremodul benötigt Schnittstellen für den Datenaustausch. Diese werden Interfaces genannt. Im ersten Schritt der Synthese müssen die Interfaces definiert werden. Vivado HLS definiert standardmäßig alle Argumente einer Funktion als Interfaces, über die Daten empfangen oder gesendet werden können. Außerdem können im Programm Schnittstellen über Direktiven für die jeweiligen Argumente manuell definiert werden. Die Module sollen im Hardware/Software Codesign verwendet werden. Hierfür wird das \ac{AXI4} verwendet \cite[S. 167ff]{vivado902ug}. Mit diesem können mehrere Schnittstellen zu einem Bus zusammengefasst werden. Mit der Implementierung des \ac{AXI4} Moduls werden automatisch C-Treiber generiert. Diese stellen ein \ac{API} zur Ansteuerung des synthetisierten Moduls bereit. Die Argumente, welche eine sequentielle Verarbeitung der Daten zulassen, sollten zudem als HLS Stream \cite[S. 263-270]{vivado902ug} implementiert werden. Daraus resultieren Designs, die eine bessere Performance haben und weniger Ressourcen benötigen. \cite[S. 113ff]{vivado902ug}
 \\
 \\
@@ -15,10 +19,11 @@ Das Partitionieren von Feldern bezeichnet die Unterteilung von einem Feld auf me
 \cite[S. 194-196]{vivado902ug}
 \\
 \\
-Das Pipelining von Schleifen wurde bereits in \autoref{sec:pipelining} beschrieben. Pipelining ist jedoch nicht immer möglich. Als Voraussetzung für das Pipelining einer Schleife, die eine oder mehrere innere Schleifen enthält, ist es vorher notwendig, alle inneren Schleifen zu unrollen. Wenn diese nicht unrolled werden können, kann auch die äußere Schleife nicht gepipelined werden.
+Das Pipelining von Schleifen wurde bereits in \autoref{sec:pipelining} beschrieben. Bei verschachtelten Schleifen sollte zur Optimierung der Laufzeit immer mit dem Pipelining der innersten Schleife begonnen werden. Wenn dies erfolgreich ist können schrittweise die äußeren Schleifen statt den inneren gepipelined werden. So wird eine gute Übersicht über den Laufzeitgewinn und den unterschiedlichen Ressourcenverbauch erzielt.
+\\
+Pipelining ist jedoch nicht immer möglich. Als Voraussetzung für das Pipelining einer Schleife, die eine oder mehrere innere Schleifen enthält, ist es vorher notwendig, alle inneren Schleifen zu unrollen. Wenn diese nicht unrolled werden können, kann auch die äußere Schleife nicht gepipelined werden.
 \\
 Ein weiteres notwendiges Kriterium für das Pipelining von verschachtelten Schleifen ist, dass nur die innerste Schleife Anweisungen enthalten darf.
-%TODO: Ausleitung? Umstellen? Komisches Ende hier
 \cite[S. 188-209]{vivado902ug}
 
 \begin{figure}[H]

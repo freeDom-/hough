@@ -28,7 +28,8 @@ Weitere Optimierung
 	Alle Module ineinander verzahnt laufen lassen
 
 Noch nicht Probegelesen:
-	3.2.1 Grayscaler (Synthese) -> Letzter Abschnitt
+	3.2 Synthese -> zweiter Abschnitt, Abschnitt über Pipelining (drittletzter)
+	3.2.1 Grayscaler (Synthese) -> letzter Abschnitt (Tabelle)
 	3.2.2 Circle Hough Transformation (Synthese)
 
 
