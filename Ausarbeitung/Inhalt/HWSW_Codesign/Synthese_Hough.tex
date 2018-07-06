@@ -10,10 +10,10 @@ Zunächst muss das Feld, welches die Votingmatrix der \ac{CHT} implementiert, be
 Falls der \ac{BRAM} für größere Bilder nicht mehr ausreicht, kann der Akkumulator im für den \ac{FPGA} verfügbaren \ac{RAM} gespeichert werden. Über Linebuffer können dann die benötigten Zeilen dann in den \ac{BRAM} geladen werden, sodass sie zum Zeitpunkt des Zugriffes dort für einen schnellen Zugriff zur Verfügung stehen.
 \\
 \\
-Zur weiteren Beschleunigung muss geschaut werden, an welchen Stellen Pipelining angewandt werden kann. Es gibt zwei große verschachtelte Schleifenblöcke, die in den Folgenden Abschnitten betrachtet werden.
+Zur weiteren Beschleunigung wird geschaut, an welchen Stellen Pipelining angewandt werden kann. Es gibt zwei große verschachtelte Schleifenblöcke, die in den Folgenden Abschnitten betrachtet werden.
 \\
 \\
-Der erste Block besteht aus drei verschachtelten For-Schleifen und einer While-Schleife. Dieser Block implementiert das Votingverfahren. Hier kann nur die innerste Schleife, die While-Schleife, gepipelined werden. Sie hat eine variable Anzahl an Iterationen und kann daher nicht unrolled werden. Für das Pipelining einer der äußeren Schleifen wäre das Unrolling aller inneren Schleifen jedoch eine notwendige Bedingung.
+Der erste Block besteht aus drei verschachtelten For-Schleifen und einer While-Schleife. Dieser Block implementiert das Votingverfahren. Die Softwareimplementierung benötigt für diesen Block am meisten Zeit. Er sollte also auch bei der Optimierung im Vordergrund stehen. Hier kann nur die innerste Schleife, die While-Schleife, gepipelined werden. Sie hat eine variable Anzahl an Iterationen und kann daher nicht unrolled werden. Für das Pipelining einer der äußeren Schleifen wäre das Unrolling aller inneren Schleifen jedoch eine notwendige Bedingung.
 \\
 Innerhalb der While-Schleife wird acht mal hintereinander die \emph{vote} Methode aufgerufen. Dort wird das Akkumulatorfeld an den entsprechenden Koordinaten erhöht, sofern sie innerhalb der Bildgrenzen liegen. Vivado HLS erkennt nicht, dass auf verschiedene Indizes des Akkumulators zugegriffen wird und vermutet an dieser Stelle Datenabhängigkeiten. Mit der \emph{DEPENDENCE} Direktive können diese Abhängigkeiten als falsch gekennzeichnet werden. Wenn nun zusätzlich das Akkumulatorfeld partitioniert wird, um die größere Menge an Zugriffen zu realisieren, kann das \ac{II} auf eins gebracht werden. Dazu muss eine Partitionierung mit dem Faktor acht vorgenommen werden.
 \\
@@ -23,46 +23,35 @@ Der zweite Block ist in \autoref{lst:hough} dargestellt. Er filtert die höchste
 Zum Pipelining der äußersten For-Schleife wird diese mit der mittleren Zusammengefasst, da beide variable Parameter enthalten. Die innerste For-Schleife kann ohne Probleme unrolled werden. Nach dem Unrolling finden sieben Zugriffe auf den Akkumulator statt. Im ersten Block wurde der Akkumulator bereits ausreichend partitioniert, sodass sieben parallele Zugriffe möglich sind. Damit kann auch für diese Schleife ein \ac{II} von eins erreicht werden.
 \\
 \\
-Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen initialisiert gepipelined werden. Diese hat auch mit den bereits definierten Direktiven ein \ac{II} von eins.
+Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen initialisiert gepipelined werden. Diese hat auch mit den bereits definierten Direktiven ein \ac{II} von eins. Zur schnelleren Verarbeitung kann die Schleife zusätzlich mit einem Faktor von 16 Unrolled werden. Damit verringert sich die Anzahl der Iterationen und es werden 16 Akkumulatoreinträge gleichzeitig initialisiert. Wenn die Schleife noch weiter unrolled werden soll, muss auch die Partitionierung des Akkumulatorfeldes vergrößert werden, um mehr parallele Zugriffe zu ermöglichen.
 \\
 \\
 \begin{table}[H]
 	\centering
 	\caption[Ergebnisse der Synthese für das Circle Hough Detection Modul]{Ergebnisse der Synthese für das \ac{CHT} Modul. In den Spalten stehen die verschiedenen Optimierungsschritte. Die prozentualen Angaben sind auf ganze Prozent gerundet.}
-	\begin{tabular}{ccccc}
-		&  & \multicolumn{3}{c}{\textbf{Pipelining}} \\
-		& \textbf{Keine} & \textbf{Bresenham-While} & \textbf{Clearing-For} & \textbf{Acc-Init-For} \\
-		\hline
-		\hline
-		Zieltakt $[$ns$]$ & 5 & 5 & 5 & 5 \\
-		\hline
-		Erw. Takt $[$ns$]$ & 4,62 & 4,8 & 4,8 & 4,8 \\
-		\hline
-		Min. Latenz $[$Takte$]$ & 18.721.603 & 20.000.803 & 20.000.803 & 19.680.004 \\
-		\hline
-		Max. Latenz $[$Takte$]$ & 51.881.441.603 & 50.591.360.803 & 5.682.400.003 & 5.681.280.004 \\
-		\hline
-		Min. Laufzeit $[$ms$]$ & 93,61 & 100 & 100 & 98,4 \\
-		\hline
-		Max. Laufzeit $[$ms$]$ & 259.407,21 &  &  &  \\
-		\hline
-		\textbf{Speedup} &  &  &  &  \\
-		\hline
-		\hline
-		BRAM & 0 (0\%) & 640 (35\%) & 640 (35\%) & 1.600 (88\%) \\
-		\hline
-		DSP48E & 25 (1\%) & 3 (0\%) & 4 (0\%) & 1.200 (48\%) \\
-		\hline
-		FF & 2.837 (1\%) & 332 (0\%) & 445 (0\%) & 80.190 (15\%) \\
-		\hline
-		LUT & 3.017 (1\%) & 374 (0\%) & 466 (0\%) & 64.599 (24\%) \\
-		\hline
-		\textbf{Gesamtressourcen} & 1\% & 9\% & \textbf{9\%} & \textbf{44\%} \\
-		\hline
-		\hline
-		\textbf{Speedup pro} & 15 & 13,89 & \textbf{55,56} & \textbf{4.545,45} \\
-		\textbf{Ressourcen} &  &  &  &  \\
-	\end{tabular}
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{lrrrr}
+			\toprule
+			&  & \multicolumn{3}{c}{\textbf{Pipelining}} \\
+			& \textbf{Keine} & \textbf{Bresenham-While} & \textbf{Clearing-For} & \textbf{Acc-Init-For} \\
+			\toprule
+			Zieltakt $[$ns$]$ & 5 & 5 & 5 & 5 \\
+			Erw. Takt $[$ns$]$ & 4,62 & 4,8 & 4,8 & 4,8 \\
+			Latenz $[$Takte$]$ & 105.552.579.200 & 50.346.485.074 & 26.940.112 & 24.770.112 \\
+			Laufzeit $[$ms$]$ & 527.762,9 & 251.732,43 & 134,7 & 123,85 \\
+			\textbf{Speedup} & ~0 & ~0 & 7,75 & \textbf{8,43} \\
+			\hline
+			BRAM & 681 (37\%) & 686 (37\%) & 686 (37\%) & 686 (37\%) \\
+			DSP48E & 6 (0\%) & 14 (1\%) & 19 (1\%) & 19 (1\%) \\
+			FF & 1.674 (0\%) & 3.035 (1\%) & 3.932 (1\%) & 3.911 (1\%) \\
+			LUT & 2.699 (1\%) & 6.588 (2\%) & 8.651 (3\%) & 8.764 (3\%) \\
+			\textbf{FPGA-Ressourcen} & 10\% & 10\% & 11\% & \textbf{11}\% \\
+			\textbf{Speedup $\div$ FPGA-Ress.} & 0 & 0 & 70,45 & \textbf{76,74} \\
+			\bottomrule
+		\end{tabular}
+	}
 	\label{tab:synthese_hough400x400}
 \end{table}
-%TODO: fill table: berechne richtige latenz und laufzeitwerte für 19 gefundene kreise
+%TODO: Auswertung
+
+Die Softwarelösung benötigt 1.044 ms zur Ausführung des \ac{CHT} Moduls. \autoref{tab:synthese_hough400x400} kann entnommen werden, dass eine Taktrate von 200 MHz realisierbar ist und das Modul damit nach der Synthese eine Laufzeit von 123,85 ms hat. Daraus folgt, dass ein Speedup von 8,43 gegenüber der Softwarelösung erzielt wird. Die Ressourcen des FPGA werden nur zu zehn Prozent genutzt. Dadurch können entweder noch andere Module der \ac{HT} neben diesem Modul beschleunigt werden, oder weitere Optimierungen an diesem Modul vorgenommen werden. Dafür müssten jedoch Anpassungen am Code vorgenommen werden, sodass weitere Schleifen unrolled werden können.
