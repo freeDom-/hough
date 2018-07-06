@@ -1,6 +1,5 @@
 TODO
 	Evaluation !DER PLATTFORM!
-		mehr Daten aufnehmen, verschiedene Bildgrößen
 		Ergebnisse in fps (frames per second) berechnen über II der Funktionen
 		Evaluation der Plattform hinsichtlich Tauglichkeit für Anwendung
 		(RAM Lesegeschwindigkeit bzw. AXI4-Lite Geschwindigkeit) * (Datenwortbreite bzw. Busbreite?) zur Überschlagung der Geschwindigkeit für das Laden der Daten in den FPGA
@@ -8,12 +7,10 @@ TODO
 		Für spezielle Anwendungen (geg. Bildgröße, ungefähre größe der gesuchten Kreise, ...) gut geeignet, für allgemeinere Anwendungen schwierig (viele Variable Parameter..., Frage der Dimensionierung?)
 
 	Optional (low Priority)
-		neues Bild für Messwerte auf ARM Prozessor mit Leerzeile zwischen den zwei runs?
+		eigene Diagramme für Ressourcennutzung
 		Bilder anordnen
 		Softwareimplementierung ergänzen
-
-use streaming protocols for data access for higher performance?
-
+		Line Buffer?
 
 Ausblicke
 	Restliche Module synthetisieren für Performanceboost?

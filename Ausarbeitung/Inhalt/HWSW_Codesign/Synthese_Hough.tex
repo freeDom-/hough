@@ -2,7 +2,6 @@ Für die Synthese des \ac{CHT} Moduls müssen verschiedene Veränderungen gegen�
 \\
 \\
 Als Interfaces für das Modul werden das 8 Bit breite Eingabefeld mit den Daten des Eingabebildes, das Ausgabefeld, welches die gefundenen Kreise enthält und ein Zeiger auf die Anzahl der gefundenen Kreise definiert. Das Ausgabefeld ist vom Datentyp \emph{struct circle}, welcher in \autoref{lst:circle} definiert wird.
-%TODO: Implementierung von Zeiger in Schnittstelle erklären? Größen der Felder erwähnen?
 \\
 \\
 Zunächst muss das Feld, welches die Votingmatrix der \ac{CHT} implementiert, betrachtet werden. Dies wurde in der Softwarelösung dynamisch allokiert und damit im Heap gespeichert. Auf dem FPGA sollte das Akkumulatorfeld für einen effektiven Zugriff im \ac{BRAM} gespeichert werden. Für ein Bild mit einer Größe von $400 \cdot 400$ Pixeln und sieben zu durchsuchenden Radien benötigt der Akkumulator $400 \cdot 400 \cdot 7 = 1.120.000$ Elemente. In der Softwareimplementierung wurde das Feld als \emph{unsigned int} realisiert. Ein Element vom Datentyp \emph{unsigned int} hat auf der Zielarchitektur eine Größe von 32 Bit. Damit benötigt das Feld $32 \cdot 1.120.000 = 35.840.000$ Bit $\equiv 35,84$ Mb Speicherplatz. Die Zielplattform besitzt jedoch nur einen \ac{BRAM} von insgesamt $32,1$ Mb. Für das Beispielbild liegt die obere Grenze der zu durchsuchenden Radien bei 50. Der Bresenham Algorithmus für einen Kreis mit dem Radius von 50 erzeugt $4 \cdot \sqrt{2} \cdot 50 = 282,84 \approx 283$ Punkte. Diese können in neun Bit gespeichert werden: $2^9 = 512$. Über die \emph{Arbirary Precision Data Types Library} von Vivado kann das Feld mit einem neun Bit großem Datentyp realisiert werden. Der benötigte \ac{BRAM} beträgt dann: $9 \cdot 1.120.000 = 10.080.000$ Bit $\equiv 10,08$ Mb und das gesamte Feld passt in den \ac{BRAM}.
@@ -24,8 +23,7 @@ Zum Pipelining der äußersten For-Schleife wird diese mit der mittleren Zusamme
 \\
 \\
 Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen initialisiert gepipelined werden. Diese hat auch mit den bereits definierten Direktiven ein \ac{II} von eins. Zur schnelleren Verarbeitung kann die Schleife zusätzlich mit einem Faktor von 16 Unrolled werden. Damit verringert sich die Anzahl der Iterationen und es werden 16 Akkumulatoreinträge gleichzeitig initialisiert. Wenn die Schleife noch weiter unrolled werden soll, muss auch die Partitionierung des Akkumulatorfeldes vergrößert werden, um mehr parallele Zugriffe zu ermöglichen.
-\\
-\\
+
 \begin{table}[H]
 	\centering
 	\caption[Ergebnisse der Synthese für das Circle Hough Detection Modul]{Ergebnisse der Synthese für das \ac{CHT} Modul. In den Spalten stehen die verschiedenen Optimierungsschritte. Die prozentualen Angaben sind auf ganze Prozent gerundet.}
@@ -38,6 +36,7 @@ Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen i
 			Zieltakt $[$ns$]$ & 5 & 5 & 5 & 5 \\
 			Erw. Takt $[$ns$]$ & 4,62 & 4,8 & 4,8 & 4,8 \\
 			Latenz $[$Takte$]$ & 105.552.579.200 & 50.346.485.074 & 26.940.112 & 24.770.112 \\
+			Laufzeit Software $[$ms$]$ & 1.044 & 1.044 & 1.044 & 1.044 \\
 			Laufzeit $[$ms$]$ & 527.762,9 & 251.732,43 & 134,7 & 123,85 \\
 			\textbf{Speedup} & ~0 & ~0 & 7,75 & \textbf{8,43} \\
 			\hline
@@ -52,6 +51,5 @@ Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen i
 	}
 	\label{tab:synthese_hough400x400}
 \end{table}
-%TODO: Auswertung
 
 Die Softwarelösung benötigt 1.044 ms zur Ausführung des \ac{CHT} Moduls. \autoref{tab:synthese_hough400x400} kann entnommen werden, dass eine Taktrate von 200 MHz realisierbar ist und das Modul damit nach der Synthese eine Laufzeit von 123,85 ms hat. Daraus folgt, dass ein Speedup von 8,43 gegenüber der Softwarelösung erzielt wird. Die Ressourcen des FPGA werden nur zu zehn Prozent genutzt. Dadurch können entweder noch andere Module der \ac{HT} neben diesem Modul beschleunigt werden, oder weitere Optimierungen an diesem Modul vorgenommen werden. Dafür müssten jedoch Anpassungen am Code vorgenommen werden, sodass weitere Schleifen unrolled werden können.

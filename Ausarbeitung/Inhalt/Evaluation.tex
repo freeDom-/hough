@@ -2,3 +2,30 @@ Zur Evaluierung der Plattform wurden mehrere Messdaten aufgenommen. Die \ac{HT} 
 \\
 \\
 Bla
+
+\begin{table}[H]
+	\centering
+	\caption[Ergebnisse der High Level Synthese für verschiedene Bildgrößen]{Ergebnisse der High Level Synthese für das \ac{CHT} Modul. In den Spalten stehen die verschiedenen Optimierungsschritte. Die prozentualen Angaben sind auf ganze Prozent gerundet.}
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{lrrrr}
+			\toprule
+			& \textbf{200x200} & \textbf{400x400} & \textbf{800x800} & \textbf{1.200x1.200} \\
+			\toprule
+			Zieltakt $[$ns$]$ & 5 & 5 & 5 & 5 \\
+			Erw. Takt $[$ns$]$ & 4,69 &  &  &  \\
+			Latenz $[$Takte$]$ & 6.961.472 &  &  &  \\
+			Laufzeit Software $[$ms$]$ & 94 &  &  &  \\
+			Laufzeit $[$ms$]$ & 32 &  &  &  \\
+			\textbf{Speedup} & 2,94 &  &  &  \\
+			\hline
+			BRAM & 118 (6\%) &  (\%) &  (\%) &  (\%) \\
+			DSP48E & 19 (1\%) &  (\%) &  (\%) &  (\%) \\
+			FF & 3.233 (1\%) &  (\%) &  (\%) &  (1\%) \\
+			LUT & 7.477 (3\%) &  (\%) &  (\%) &  (\%) \\
+			\textbf{FPGA-Ressourcen} & 3\% & \% & \% & \% \\
+			\textbf{Speedup $\div$ FPGA-Ress.} & 98 &  &  &  \\
+			\bottomrule
+		\end{tabular}
+	}
+	\label{tab:synthese_hough400x400}
+\end{table}
