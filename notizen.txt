@@ -1,7 +1,4 @@
 TODO
-	CHT Modul synthetisieren
-		acc mit als uint9 implementieren, um volle präzision zu erhalten
-		Line Buffer benutzen anstatt gesamten acc zu laden?
 	Evaluation !DER PLATTFORM!
 		mehr Daten aufnehmen, verschiedene Bildgrößen
 		Ergebnisse in fps (frames per second) berechnen über II der Funktionen
@@ -28,8 +25,68 @@ Weitere Optimierung
 	Alle Module ineinander verzahnt laufen lassen
 
 Noch nicht Probegelesen:
+	2.5 Bresenham
 	3.2 Synthese -> zweiter Abschnitt, Abschnitt über Pipelining (drittletzter)
 	3.2.1 Grayscaler (Synthese) -> letzter Abschnitt (Tabelle)
 	3.2.2 Circle Hough Transformation (Synthese)
 
+
+200x200:
+dom@linaro-gnome:~/Bachelorarbeit/Code$ ./hough_omp -i euro_s.png -r 22 -R 25 -k 3 -H 40
+Dimensions: (200x200)
+1 ms needed for grayscaler.
+4 ms needed for gauss filter.
+21 ms needed for canny edge detector.
+Voting needed 80 ms.
+Vote inner loop count: 5954
+Clearing needed 14 ms.
+94 ms needed for hough transform.
+------------------------------------------
+120 ms needed total.
+19 circles found.
+
+Dependence Direktive (acc = inter) in Inner Clearing Loop (II = 2)
+
+6.961.472 Takte
+34,81 ms Laufzeit
+
+
+800x800:
+Dimensions: (800x800)
+14 ms needed for grayscaler.
+96 ms needed for gauss filter.
+329 ms needed for canny edge detector.
+Voting needed 24047 ms.
+Vote inner loop count: 72028
+Clearing needed 704 ms.
+24759 ms needed for hough transform.
+------------------------------------------
+25198 ms needed total.
+19 circles found.
+
+Linebuffer
+Dependence Direktive (acc = inter) in Inner Clearing Loop (II = 1)
+
+216.084.169 Takte
+1080,420845 ms Laufzeit
+
+1200x1200:
+dom@linaro-gnome:~/Bachelorarbeit/Code$ ./hough_omp -i euro_xl.png -r 122 -R 150 -h 60
+Dimensions: (1200x1200)
+33 ms needed for grayscaler.
+216 ms needed for gauss filter.
+733 ms needed for canny edge detector.
+Voting needed 271485 ms.
+Vote inner loop count: 180676
+Clearing needed 3436 ms.
+274957 ms needed for hough transform.
+------------------------------------------
+275939 ms needed total.
+19 circles found.
+
+Linebuffer
+Dependence Direktive (acc = inter) in Inner Clearing Loop (II = 2)
+
+834.527.707 Takte
+4172,638535 ms Laufzeit
 
