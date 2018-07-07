@@ -18,10 +18,10 @@ Ausblicke
 	Treiber schreiben, um in Linux einzubinden (durch Kernel, der zwischengeschaltet ist langsamer)
 	Als Standaloneanwendung direkt auf PS ausführen, Bilddaten ggf. von SD-Karte lesen!
 
-Weitere Optimierung
-	HLS Streams benutzen
-	Alle Module ineinander verzahnt laufen lassen
-   Canny Bild nur noch binär -> 1 Bit reicht je Pixel für Eingabefeld!
+   Weitere Optimierung
+	   HLS Streams benutzen
+	   Alle Module ineinander verzahnt laufen lassen
+      Canny Bild nur noch binär -> 1 Bit reicht je Pixel für Eingabefeld!
 
 Noch nicht Probegelesen:
    3.3
