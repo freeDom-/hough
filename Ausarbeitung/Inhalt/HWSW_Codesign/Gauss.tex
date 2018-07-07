@@ -1,10 +1,10 @@
-Mit dem Gauß-Filter wird das Bild, wie in \autoref{sec:gaus-filter} beschrieben, zur Kantenerkennung vorbereitet. Dazu bekommt die Funktion einen Zeiger auf die 8 Bit breiten Pixeldaten, die Höhe und Breite des Bildes, sowie die Kernelgröße als Argumente übergeben.
+Mit dem Gauß-Filter wird das Bild, wie in \autoref{sec:gaus-filter} beschrieben, zur Kantenerkennung vorbereitet. Das Modul bekommt einen Zeiger auf die 8 Bit breiten Pixeldaten, die Höhe und Breite des Bildes, sowie die Kernelgröße als Argumente übergeben. Die Kernelgröße ist ein Parameter, der von dem Benutzer angegeben werden kann.
 \\
 \\
-Mit Hilfe des Pascal'schen Dreiecks wird zunächst ein eindimensionaler Filterkernel generiert, welcher die Gauss'sche Funktion der Normalverteilung approximiert. Dieser wird in horizontaler und anschließend in vertikaler Richtung auf die Pixeldaten angewandt. Die Anwendung in vertikaler Richtung erfolgt dabei auf die zuvor horizontal gefilterten Daten. Dabei werden die Daten zuerst, wie in \autoref{sec:gaus-filter} beschrieben, gewichtet aufsummiert und anschließend normiert. Bei der Normierung wird durch die Summe aller Kernelelemente geteilt. Da diese aber auf Grund der Approximation durch das Pascal'sche Dreieck eine Zweierpotenz ergibt, wird als Optimierung ein Rechtsshift um $2\cdot(Kernelgr"o"se-1)$ durchgeführt. Das Bild wird, wie in \autoref{sec:gaus-filter} beschrieben, an den Ecken um die benötigten Pixel erweitert.
+Mit Hilfe des Pascal'schen Dreiecks wird zunächst ein eindimensionaler Filterkernel generiert, welcher die Gauss'sche Funktion der Normalverteilung approximiert. Dieser wird in horizontaler und anschließend in vertikaler Richtung auf die Pixeldaten angewandt. Die Anwendung in vertikaler Richtung erfolgt dabei auf die zuvor horizontal gefilterten Daten. Dabei werden die Daten zuerst, wie in \autoref{sec:gaus-filter} beschrieben, gewichtet aufsummiert und anschließend normiert. Bei der Normierung wird durch die Summe aller Kernelelemente geteilt. Die Summe ergibt auf Grund der Approximation durch das Pascal'sche Dreieck eine Zweierpotenz. Daher wird als Optimierung ein Rechtsshift um $2\cdot(Kernelgr"o"se-1)$ durchgeführt. Das Bild wird, wie in \autoref{sec:gaus-filter} beschrieben, an den Ecken um die benötigten Pixel erweitert.
 \\
 \\
-Als Ausgabe wird ein Zeiger auf die gefilterten 8 Bit breiten Daten geliefert.
+Als Ausgabe wird ein Zeiger auf die gefilterten acht Bit breiten Daten geliefert. In \autoref{img:gauss_result} ist das Ergebnis des Gauß-Filters zu sehen. Man sieht die typische Unschärfe, die bei der Anwendung eines gauß'schen Weichzeichners entsteht.
 
 \begin{figure}[H]
 	\centering
@@ -19,4 +19,5 @@ Als Ausgabe wird ein Zeiger auf die gefilterten 8 Bit breiten Daten geliefert.
 		\caption{Ausgabebild des Gauß-Filters}
 	\end{subfigure}
 	\caption{Ein- und Ausgabebild des Gauß-Filters}
+	\label{img:gauss_result}
 \end{figure}

@@ -1,4 +1,4 @@
-Das Grayscaler Modul besitzt die geringste Laufzeit von allen Modulen und ist daher aus praktischer Sicht keine gute Wahl für eine \ac{HLS}. Die Synthese des Grayscaler Moduls gestaltet sich jedoch vergleichsweise sehr einfach und dient daher als gutes Beispiel, um die grundlegenden Methoden der \ac{HLS} zu zeigen.
+Das Grayscaler Modul besitzt die geringste Laufzeit von allen Modulen und ist daher aus praktischer Sicht keine gute Wahl für eine \ac{HLS}. Die Synthese des Grayscaler Moduls gestaltet sich jedoch vergleichsweise sehr einfach und eignet sich daher als gutes Beispiel, um die grundlegenden Methoden der \ac{HLS} zu zeigen.
 \\
 \\
 Als Interfaces für den Grayscaler werden das 32 Bit breite Eingabe- und das 8 Bit breite Ausgabefeld definiert. Es empfiehlt sich als einzige Anpassung am Code, die Berechnung des Intensitätswertes auf eine ganzzahlbasierte Berechnung zu verändern.
@@ -7,7 +7,7 @@ Als Interfaces für den Grayscaler werden das 32 Bit breite Eingabe- und das 8 B
 output[index] = (30*r + 59*g + 11*b)/100
 \end{equation}
 
-Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die Abweichung des Intensitätswertes höchstens 1 im Vergleich zur alten Berechnungsmethode. Dies ist in dem erzeugten Bild nicht erkennbar und spielt für die weitere Verarbeitung keine Rolle. Entscheidend ist, wie in \autoref{tab:synthese_grayscaler400x400} zu sehen, dass die Anzahl der benötigten Takte um einen Faktor von circa 8,2 auf 640.801 Takte reduziert. Außerdem erkennt man, dass neun Prozent der Gesamtressourcen verbraucht werden. Das Resultat ist zufriedenstellend.
+Hierdurch verringert sich zwar die Präzision minimal, allerdings beträgt die Abweichung des Intensitätswertes höchstens 1 im Vergleich zur alten Berechnungsmethode. Dies ist in dem erzeugten Bild nicht erkennbar und damit zu vernachlässigen. Entscheidend ist, wie in \autoref{tab:synthese_grayscaler400x400} zu sehen, dass die Anzahl der benötigten Takte um einen Faktor von circa 8,2 auf 640.801 Takte reduziert. Außerdem erkennt man, dass neun Prozent der Gesamtressourcen verbraucht werden. Das Resultat ist zufriedenstellend.
 \\
 \\
 Um das Modul weiter zu beschleunigen, können im Anschluss die Schleifen gepipelined werden.
@@ -26,7 +26,7 @@ Um die Fläche zu optimieren, kann der \ac{BRAM} für das Ein- und Ausgabefeld a
 		\begin{tabular}{lrrrr}
 			\toprule
 			&  &  & \multicolumn{2}{c}{\textbf{Pipelining}} \\
-			& \textbf{Keine} & \textbf{Int.-Berechnung} & \textbf{innere Schleife} & \textbf{äußere Schleife} \\
+			& \textbf{Keine} & \textbf{Integer Berechnung} & \textbf{innere Schleife} & \textbf{äußere Schleife} \\
 			\toprule
 			Zieltakt $[$ns$]$ & 5 & 5 & 5 & 5 \\
 			Erw. Takt $[$ns$]$ & 4,06 & 3,71 & 3,71 & 3,68 \\

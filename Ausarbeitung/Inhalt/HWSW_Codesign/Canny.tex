@@ -1,10 +1,10 @@
-Die Canny Edge Detection erzeugt ein binäres Gradientenbild, welches für die \ac{CHT} benötigt wird. Dies wurde bereits in \autoref{sec:canny-edge-detection} erläutert. Sie bekommt als Argumente einen Zeiger auf die 8 Bit breiten Pixeldaten, die Höhe und Breite des Bildes, sowie zwei Schwellwerte übergeben.
+Die Canny Edge Detection erzeugt ein binäres Gradientenbild, welches für die \ac{CHT} benötigt wird. Dem Modul werden als Argumente ein Zeiger auf die acht Bit breiten Pixeldaten, die Höhe und Breite des Bildes, sowie zwei Schwellwerte übergeben.
 \\
 \\
-Die beiden Schwellwerte werden bei der Hysterese genutzt, um auch schwache Kanten, welche über dem niedrigeren Schwellwert liegen, aber mit starken Kanten, welche über dem höheren Schwellwert liegen, verbunden sind, im Kantenbild zu behalten.
+Für die Kantenerkennung werden mehrere Blöcke an verschachtelten For-Schleifen durchlaufen. Diese durchlaufen jedes Pixel, um den horizontalen Gradienten $g_x$ und den vertikalen Gradienten $g_y$ zu berechnen. Anschließend wird für jedes Pixel der Gradient berechnet und schließlich noch einmal jedes Pixel mit Hilfe von verschachtelten For-Schleifen für die \emph{non maximum suppression} und Hysterese durchlaufen.
 \\
 \\
-Als Ausgabe wird ein Zeiger auf die 8 Bit breiten Kantendaten geliefert. Es muss von der Main Methode dafür gesorgt werden, dass die erzeugten Pixeldaten auch in ein geeignetes Bild geladen werden.
+Als Ausgabe wird ein Zeiger auf die acht Bit breiten Kantendaten geliefert. \autoref{img:canny_result} zeigt die Ausgabe des Canny Edge Detection Moduls.
 
 \begin{figure}[H]
 	\centering
@@ -19,4 +19,5 @@ Als Ausgabe wird ein Zeiger auf die 8 Bit breiten Kantendaten geliefert. Es muss
 		\caption{Ausgabebild der Canny Edge Detection}
 	\end{subfigure}
 	\caption{Ein- und Ausgabebild der Canny Edge Detection}
+	\label{img:canny_result}
 \end{figure}

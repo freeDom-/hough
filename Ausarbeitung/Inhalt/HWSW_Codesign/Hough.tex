@@ -11,10 +11,10 @@ typedef struct{
 } circle;
 \end{lstlisting}
 
-Zunächst wird in einem Votingverfahren jedes Kantenpixel des Bildes durchlaufen. Für jeden Radius wird mit Hilfe des \emph{Bresenham Algorithmus} ein Kreis generiert. Alle auf dem Kreis liegenden Zellen im Akkumulatorraum werden nun inkrementiert. Anschließend wird der Akkumulatorraum wie in \autoref{lst:hough} nach Maxima durchsucht.
+Zunächst wird ein Votingverfahren durchgeführt. Dazu wird jedes Kantenpixel des Bildes durchlaufen. Für jeden Radius wird mit Hilfe des \emph{Bresenham Algorithmus} ein Kreis generiert. Alle auf dem Kreis liegenden Zellen im Akkumulatorraum werden nun inkrementiert. Anschließend wird der Akkumulatorraum wie in \autoref{lst:hough} nach Maxima durchsucht.
 \\
 \\
-In Z. \ref{lst:hough_if} wird der im Akkumulatorraum gespeicherte Wert durch die maximal mögliche Anzahl an Kreispixeln für einen vom \emph{Bresenham Algorithmus} erzeugten Kreis geteilt und anschließend mit 100 multipliziert. Hierdurch erhält man den prozentualen Anteil von den Punkten, die auf einem Kreis mit dem Radius $r$ liegen. Mit dem Schwellwert $threshold$ wird dem Programm damit ein prozentualer Parameter übergeben werden.
+In Z. \ref{lst:hough_if} wird der im Akkumulatorraum gespeicherte Wert nach \autoref{sec:circle-hough-transformation} normalisiert. Hierdurch erhält man den prozentualen Anteil von den Punkten, die auf einem Kreis mit dem Radius $r$ liegen. Mit dem Schwellwert $threshold$ kann dem Programm damit ein prozentualer Parameter übergeben werden.
 \\
 Anschließend wird der gefundene Kreis in einem \emph{Array} vom Datentyp \emph{circle} abgelegt und der Akkumulatorraum in der näheren Umgebung auf 0 gesetzt, um Mehrfacherkennungen zu verhindern. Das \emph{Array} mit allen gefundenen Kreisen wird schließlich von der Funktion an die Main Methode zurückgegeben.
 

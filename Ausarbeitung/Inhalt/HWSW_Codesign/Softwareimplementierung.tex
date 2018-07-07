@@ -1,5 +1,7 @@
-Dieses Kapitel befasst sich näher mit der Softwareimplementierung der \ac{HT}. Das zur anschließenden \ac{HLS} verwendete Programm \emph{Vivado HLS} ist für C Code ausgelegt. Deshalb wurde die Programmiersprache C für die Implementierung gewählt. Die Implementierung kann in fünf verschiedene Module unterteilt werden, welche die unterschiedlichen Funktionalitäten bereitstellen. Dabei ist ein modularer Aufbau zur Übersicht, Zeiterfassung und vor allem für die spätere \ac{HLS} von großem Vorteil. Es lässt sich dadurch jedes Modul einzeln synthetisieren und in die Hardware auslagern. Die einzelnen Module werden in den folgenden Unterkapiteln näher beschrieben.
+Dieses Kapitel befasst sich näher mit der Softwareimplementierung der \ac{HT}. Das verwendete Programm \emph{Vivado HLS} ist für die Synthese von C oder C++ Code ausgelegt. Deshalb wurde die Programmiersprache C für die Implementierung gewählt. Die Implementierung ist in fünf verschiedene Module unterteilt, welche die unterschiedlichen Teilaufgaben des Algorithmus implementieren. Dabei ist ein modularer Aufbau zur Übersicht, Zeiterfassung und vor allem für die spätere \ac{HLS} von großem Vorteil. Dadurch lässt sich jedes Modul einzeln synthetisieren und in die Hardware auslagern. Die einzelnen Module werden in den folgenden Unterkapiteln näher beschrieben.
 \\
+\\
+Für die Softwareimplementierung wurden verschiedene Bibliotheken und Programme genutzt.
 \\
 Als Compiler wurde GCC (Version 4.9.2) verwendet.
 \\
@@ -14,6 +16,4 @@ Zur Parallelisierung des Programmes wurde \ac{OMP}\footnote{\url{https://www.ope
 	\label{img:usage}
 \end{figure}
 
-Das Programm wird in Unix mit \emph{./hough} (oder \emph{./hough\_omp} für die parallele Version) ausgeführt. Die möglichen Argumente sind \autoref{img:usage} zu entnehmen.
-
-%TODO: Alle Softwareimplementierungen nochmal durchgehen -> nähere Erklärung notwendig?
+Das fertig kompilierte Programm wird in Unix mit \emph{./hough} (oder \emph{./hough\_omp} für die parallele Version) ausgeführt. Die möglichen Argumente sind \autoref{img:usage} zu entnehmen. Diese dienen als Parameter für die \ac{HT} und sind bis auf den Bildnamen optional.

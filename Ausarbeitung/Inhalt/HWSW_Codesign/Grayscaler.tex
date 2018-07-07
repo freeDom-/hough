@@ -1,4 +1,4 @@
-Der Grayscaler wandelt ein RGB-Bild nach \autoref{sec:umwandlung-eines-rgb-bildes-in-graustufen} in ein Graustufenbild um. Dabei erhält er als Eingabe einen Zeiger auf 32 Bit breite Pixeldaten und die Höhe und Breite des Bildes. Anschließend wird jedes Pixel durchlaufen und in \autoref{lst:grayscaler} Z. \ref{lst:grayscaler_output} der neue Intensitätswert berechnet. Die einzelnen Werte für Rot, Grün und Blau berechnen sich in Z. \ref{lst:grayscaler_rgb_start} - \ref{lst:grayscaler_rgb_end}. Als Pixelformat wurde \emph{ARGB8888} gewählt, welches in \autoref{img:argb-format} näher dargestellt ist. Die 8 höchstwertigen Bit enthalten den Alphawert des jeweiligen Pixels, die nächsten 8 Bit den Rotwert, die folgenden 8 Bit den Grünwert und die 8 niedrigsten Bit den Blauwert.
+Der Grayscaler wandelt ein RGB-Bild nach \autoref{sec:umwandlung-eines-rgb-bildes-in-graustufen} in ein Graustufenbild um. Dabei erhält das Modul als Eingabe einen Zeiger auf 32 Bit breite Pixeldaten, die Höhe und die Breite des Bildes. Anschließend wird jedes Pixel durchlaufen und der neue Intensitätswert wie in \autoref{lst:grayscaler} Z. \ref{lst:grayscaler_output} berechnet. Die einzelnen Werte für Rot, Grün und Blau berechnen sich in Z. \ref{lst:grayscaler_rgb_start} - \ref{lst:grayscaler_rgb_end}. Als Pixelformat wurde \emph{ARGB8888} gewählt, welches in \autoref{img:argb-format} näher dargestellt ist. Die Bits 31 bis 24 enthalten den Alphawert des jeweiligen Pixels, die Bits 23 bis 16 den Rotwert, die Bits 15 bis 8 den Grünwert und die Bit 7 bis 0 den Blauwert.
 
 \begin{figure}[H]
 	\centering
@@ -33,7 +33,7 @@ uint8_t* grayscaler(uint32_t* input, unsigned int width, unsigned int height) {
 }
 \end{lstlisting}
 
-Als Ausgabe liefert der Grayscaler einen Zeiger auf die neu berechneten 8 Bit breiten Pixeldaten. Es muss von der Main Methode dafür gesorgt werden, dass die erzeugten Pixeldaten auch in ein geeignetes Bild geladen werden.
+Als Ausgabe liefert der Grayscaler einen Zeiger auf die neu berechneten acht Bit breiten Pixeldaten. \autoref{img:grayscaler_result} zeigt das Ergebnis des Grayscalings.
 
 \begin{figure}[H]
 	\centering
@@ -48,4 +48,5 @@ Als Ausgabe liefert der Grayscaler einen Zeiger auf die neu berechneten 8 Bit br
 		\caption[Ausgabebild des Grayscalers]{Ausgabebild des Grayscalers\newline\newline\newline}
 	\end{subfigure}
 	\caption{Ein- und Ausgabebild des Grayscalers}
+	\label{img:grayscaler_result}
 \end{figure}

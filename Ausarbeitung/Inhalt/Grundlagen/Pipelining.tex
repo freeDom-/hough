@@ -10,7 +10,7 @@ In dem Beispiel aus \autoref{img:pipelining} ist die Schleife in drei Operatione
 \\
 Der linke Teil der Grafik zeigt die Laufzeit der seriellen Verarbeitung der Schleife. Es dauert drei Takte bis neue Daten gelesen werden können. Nach zwei Takten ist das Ergebnis der Operation von einer Iteration berechnet. Nach acht Takten sind die Ergebnisse aller Operationen berechnet.
 \\
-Wenn die Schleife allerdings gepipelined wird, kann wie im rechten Teil der Grafik zu erkennen, in jedem Takt eine neue Leseoperation verarbeitet werden. Damit stehen bereits nach vier Takten die Ergebnisse aller Operationen zur Verfügung.
+Wenn die Schleife allerdings gepipelined wird, kann wie im rechten Teil der Grafik zu erkennen, in jedem Takt eine neue Leseoperation verarbeitet werden. Dies entspricht einem \ac{II} von eins. Das \ac{II} gibt an, nach wie vielen Takten die nächste Iteration einer Schleife anfängt Daten zu verarbeiten. Damit stehen bereits nach vier Takten die Ergebnisse aller Operationen zur Verfügung.
 \cite[S. 188 - 192]{vivado902ug}
 
 \begin{figure}[H]
