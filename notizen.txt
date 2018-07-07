@@ -2,7 +2,7 @@ TODO
 	Evaluation !DER PLATTFORM!
 		Ergebnisse in fps (frames per second) berechnen über II der Funktionen
 		Evaluation der Plattform hinsichtlich Tauglichkeit für Anwendung
-		(RAM Lesegeschwindigkeit bzw. AXI4-Lite Geschwindigkeit) * (Datenwortbreite bzw. Busbreite?) zur Überschlagung der Geschwindigkeit für das Laden der Daten in den FPGA
+		Für zu Große Bilder wird Realisierung (selbst über Puffer) irgendwann Performanceeinbußen erbringen!
 	Fazit
 		Für spezielle Anwendungen (geg. Bildgröße, ungefähre größe der gesuchten Kreise, ...) gut geeignet, für allgemeinere Anwendungen schwierig (viele Variable Parameter..., Frage der Dimensionierung?)
 
@@ -11,6 +11,7 @@ TODO
 		Bilder anordnen
 		Softwareimplementierung ergänzen
 		Line Buffer?
+      unrolleds ändern?
 
 Ausblicke
 	Restliche Module synthetisieren für Performanceboost?
@@ -20,13 +21,11 @@ Ausblicke
 Weitere Optimierung
 	HLS Streams benutzen
 	Alle Module ineinander verzahnt laufen lassen
+   Canny Bild nur noch binär -> 1 Bit reicht je Pixel für Eingabefeld!
 
 Noch nicht Probegelesen:
-	2.5 Bresenham
-	3.2 Synthese -> zweiter Abschnitt, Abschnitt über Pipelining (drittletzter)
-	3.2.1 Grayscaler (Synthese) -> letzter Abschnitt (Tabelle)
-	3.2.2 Circle Hough Transformation (Synthese)
-
+   3.3
+   4 Evaluation
 
 200x200:
 dom@linaro-gnome:~/Bachelorarbeit/Code$ ./hough_omp -i euro_s.png -r 22 -R 25 -k 3 -H 40
