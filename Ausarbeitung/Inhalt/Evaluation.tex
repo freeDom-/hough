@@ -6,7 +6,7 @@ Bisher wurden nur die Laufzeiten der einzelnen Module mit den Laufzeiten der Sof
 \\
 An dieser Stelle muss noch auf eine wichtige Veränderung am Design eingegangen werden. Der Speicherbedarf der \ac{HT} ist so hoch, dass das Akkumulatorfeld für ein Bild der Größe von $800 \cdot 800$ nicht mehr in den \ac{BRAM} des \ac{FPGA} passt. Daher wurde zur besseren Auswertung für alle Bildgrößen ein zweidimensionaler \emph{Memory Window Buffer} \cite[S. 281 - 286]{vivado902ug} implementiert. Dieser reduziert den Speicherbedarf enorm und wurde so gewählt, dass alle zur parallelen Ausführung benötigten Daten innerhalb des Pufferfensters liegen und die zusätzlichen Ladezeiten kaschiert werden. Die Zeit zum einmaligen Füllen des Puffers ist so gering, dass sie vernachlässigt werden kann.
 
-\begin{table}[H]
+\begin{table}[!ht]
 	\centering
 	\caption[Ergebnisse des Hardware/Software Codesigns für verschiedene Bildgrößen]{Ergebnisse des Hardware/Software Codesigns für das \ac{CHT} Modul}
 	\resizebox{\textwidth}{!}{
