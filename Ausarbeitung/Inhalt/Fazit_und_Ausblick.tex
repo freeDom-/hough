@@ -1,0 +1,19 @@
+Ziel der Bachelorarbeit war der Entwurf und die Evaluation eines Hardware/Software Codesigns am Beispiel einer \ac{HT}. Zu diesem Zweck wurde zunächst eine Software für die \ac{HT} zur Erkennung von Kreisen entwickelt. Diese wurde in verschiedene Module aufgeteilt, von denen zwei mittels \ac{HLS} synthetisiert wurden. Anschließend wurde die Laufzeit der Software auf der Zielplattform gemessen und es wurde eine mögliche Auslagerung der Module auf den rekonfigurierbaren Bereich der Zielplattform aufgezeigt. Schließlich wurden die synthetisierten Module hinsichtlich Laufzeit und Ressourcenverbrauch untersucht und mit der Softwarelösung verglichen.
+\\
+Dabei ergab sich, dass die Beschleunigung der \ac{HT} mittels Hardware/Software Codesign insgesamt gut funktioniert. Das Hardware/Software Codesign hat für alle getesteten Bildgrößen einen Speedup erzielt, aber sich vor allem für die größeren Testbilder als effektiv herausgestellt. Das erzeugte Codesign war für das $1.200 \cdot 1.200$ Pixel große Testbild in der Lage, die \ac{HT} um einen Faktor von etwa 64 zu beschleunigen.
+\\
+Andererseits musste festgestellt werden, dass die Beschleunigung bei größeren Bildern als $400 \cdot 400$ Pixel nicht mehr ausreicht, um eine Kreiserkennung in Echtzeit realisieren zu können. Die \ac{HT} benötigt außerdem viele Parameter, welche nach der Synthese fest in die Hardwarelösung implementiert sind. Damit ist sie nicht mehr flexibel und kann z.B. nicht auf Bilder mit unterschiedlichen Lichtverhältnissen angewandt werden. Für eine Veränderung der Parameter muss eine erneute Synthese durchgeführt werden.
+\\
+\\
+Im Verlauf der Arbeit haben sich weitere Optimierungen aufgezeigt, welche im Rahmen dieser Bachelorarbeit nicht mehr betrachtet werden konnten.
+\\
+Die \ac{HLS} wurde nur für das Grayscaler und \ac{CHT}-Modul durchgeführt. Auf Grund der viel höheren Laufzeit ist ein Fokus auf die Optimierung des \ac{CHT}-Moduls sinnvoll gewesen. Nicht genutzte Ressourcen können von den anderen, in dieser Arbeit nicht synthetisierten Modulen, verwendet werden. Es bietet sich auch die Möglichkeit des Pipelinings gesamter Module. Die Module können dann über die \ac{PS} angesteuert werden und ineinander verzahnt laufen. Damit würden mehrere Bilder gleichzeitig verarbeitet und folglich auch die \ac{fps} ansteigen.
+\\
+Des Weiteren können \ac{BRAM}-Blöcke eingespart werden, indem die Bittiefe des von der Canny Edge Detection erzeugten binären Gradientenbildes verringert wird. Da dieses Bild nur zwei Farben (Schwarz und Weiß) enthält, ist eine Bittiefe von eins ausreichend. Im aktuellen Design wird, wie in der Softwareimplementierung, eine Bittiefe von acht Bit benutzt. Dies würde das Eingangsfeld des \ac{CHT}-Modules um einen Faktor von acht verringern.
+\\
+Außerdem lässt sich für die Synthese des \ac{CHT}-Moduls der Code umschreiben, um effektiveres Pipelining durchzuführen. Das Votingverfahren beansprucht den Großteil der Laufzeit. Dieses kann in eine Funktion ausgelagert werden und für alle Radien gleichzeitig ausgeführt werden.
+\\
+Schließlich können die synthetisierten Module nicht ohne weiteres auf einem Betriebssystem genutzt werden, da dort der Kernel die Ansteuerung der Hardware übernimmt. Für eine Realisierung des Codesigns unter einem laufenden Betriebssystem müssten die automatisch generierten Treiber zunächst angepasst werden. Durch die Zwischenschaltung vom Kernel wäre das Design zudem deutlich langsamer als die direkt auf das \ac{PS} und die \ac{PL} aufgespielte Anwendung. Dennoch ist dies interessant, da der Software so leichter Parameter, wie unterschiedliche Eingabebilder, übergeben werden können und die Vorzüge eines Dateisystems auch das Laden des Bildes erleichtern.
+\\
+\\
+Das Hardware/Software Codesign der \ac{HT} ist eine vielseitige Aufgabe gewesen, welche am Ende ein zufriedenstellendes Resultat erbracht hat.

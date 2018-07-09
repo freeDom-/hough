@@ -1,97 +1,47 @@
-Zur Evaluierung der Plattform wurden mehrere Messdaten aufgenommen. Die \ac{HT} und ihre Auslagerung in Hardware wurde mit vier verschiedenen Bildgrößen untersucht. Im Rahmen dieser Arbeit konnten sowohl Softwareimplementierung wie auch Umsetzung auf der Hardware nicht bis ins letzte Detail optimiert werden. Dieses Kapitel zeigt allerdings die Stärken und Schwächen des Zynq UltraScale+ \ac{MPSoC} beim Hardware/Software Codesign einer \ac{HT}.
+Zur Evaluierung der Plattform wurden mehrere Messdaten aufgenommen. Die \ac{HT} und ihre Auslagerung in Hardware wurde mit vier verschiedenen Bildgrößen untersucht. Im Rahmen dieser Arbeit konnten sowohl Softwareimplementierung als auch Umsetzung auf der Hardware nicht bis ins letzte Detail optimiert werden. Dieses Kapitel fasst die Stärken und Schwächen des Hardware/Software Codesigns auf dem Zynq UltraScale+ \ac{MPSoC} zusammen.
 \\
 \\
-Bisher wurden nur die Laufzeiten der einzelnen Module mit den Laufzeiten der Softwareimplementierung verglichen. Um realistischere Werte zu erhalten muss allerdings die Zeit, die benötigt wird, um die Daten vom \ac{RAM} in den \ac{FPGA} zu laden, berücksichtigt werden. Die theoretisch maximale Performance des Speicherinterfaces der Zielplattform beträgt 2.666 Mb/s \cite{vivado890ds}. Diese wird zwar in der Praxis nicht erreicht werden, bietet aber einen ersten Anhaltspunkt, um den Vergleich realistischer zu gestalten.
-\\
-Deshalb wird in den Folgenden Absätzen zunächst die Größe der Eingabeschnittstelle betrachtet. Die benötigte Ladezeit der Daten aus dem \ac{RAM} und der Bedarf an \acp{BRAM} wird maßgeblich von der Größe der Eingabedaten beeinflusst.
+Bisher wurden nur die Laufzeiten der einzelnen Module mit den Laufzeiten der Softwareimplementierung verglichen. Um realistischere Werte zu erhalten, muss die benötigte Zeit, um die Daten vom \ac{RAM} in den \ac{FPGA} zu laden, berücksichtigt werden. Die theoretisch maximale Performance des Speicherinterfaces der Zielplattform beträgt 2.666 Mb/s \cite{vivado890ds}. Auch, wenn dieser Wert in der Praxis nicht erreicht wird, bietet er einen ersten Anhaltspunkt, um den Vergleich realistischer zu gestalten.
 \\
 \\
-Die Größe des Akkumulatorfeldes berechnet aus der Bildgröße und der Anzahl zu durchsuchender Radien. Für ein Bild der Größe von $400 \cdot 400$ Pixeln werden für das genutzte Beispielbild die Kreise mit den Radien zwischen 44 und 50 gesucht. Für andere Bildgrößen skalieren diese Zahlen jeweils: Für ein Bild der Größe von $200 \cdot 200$ Pixeln werden dann die Radien zwischen 22 und 25 durchsucht usw.
-
-\begin{equation}\label{eq:akkumulatorgroesse}
-akkumulatorgroesse = hoehe \cdot breite \cdot radienzahl \cdot bittiefe
-\end{equation}
-
-Zusätzlich hängt der Platzbedarf des Akkumulators, wie in \autoref{eq:akkumulatorgroesse} zu sehen, von der Anzahl der benötigten Bit (Bittiefe) ab. Die maximale Größe, die ein Wert im Akkumulator haben kann, wird von der Anzahl der Pixel bestimmt, die auf dem Kreis mit dem größten zu durchsuchenden Radius liegen. Angenommen ein solcher Kreis ist vollständig in dem Bild enthalten, dann berechnet sich die Anzahl seiner Pixel über die vom Bresenham Algorithmus gegebene Gleichung $4 \cdot \sqrt{2} \cdot r$. Für ein Bild von $400 \cdot 400$ Pixeln ist der größte zu durchsuchende Radius 50, also kann der höchste Wert im Akkumulatorfeld maximal $4 \cdot \sqrt{2} \cdot 50 = 282,84$ sein. Um $283$ darzustellen, genügen 9 Bit. Damit beträgt der für ein $400 \cdot 400$ Pixel großes Bild benötigte Speicherplatz insgesamt $400 \cdot 400 \cdot 7 \cdot 9 \text{ Bit} = 10.080.000$ Bit $\equiv 10,08$ Mb.
-\\
-\\
-Der benötigte \ac{BRAM} für das Eingabefeld berechnet sich aus $hoehe \cdot breite \cdot 8$, da Das Eingabebild 8 Bit breit ist.
+An dieser Stelle muss noch auf eine wichtige Veränderung am Design eingegangen werden. Der Speicherbedarf der \ac{HT} ist so hoch, dass das Akkumulatorfeld für ein Bild der Größe von $800 \cdot 800$ nicht mehr in den \ac{BRAM} des \ac{FPGA} passt. Daher wurde zur besseren Auswertung für alle Bildgrößen ein zweidimensionaler \emph{Memory Window Buffer} \cite[S. 281 - 286]{vivado902ug} implementiert. Dieser reduziert den Speicherbedarf enorm und wurde so gewählt, dass alle zur parallelen Ausführung benötigten Daten innerhalb des Pufferfensters liegen und die zusätzlichen Ladezeiten kaschiert werden. Die Zeit zum einmaligen Füllen des Puffers ist so gering, dass sie vernachlässigt werden kann.
 
 \begin{table}[H]
 	\centering
-	\caption[Benötigter BRAM für das Hardware/Software Codesign]{Benötigter BRAM für das Hardware/Software Codesign. Die prozentualen Angaben sind auf ganze Prozent gerundet.}
+	\caption[Ergebnisse des Hardware/Software Codesigns für verschiedene Bildgrößen]{Ergebnisse des Hardware/Software Codesigns für das \ac{CHT} Modul}
 	\resizebox{\textwidth}{!}{
 		\begin{tabular}{lrrrr}
 			\toprule
 			& \textbf{200x200} & \textbf{400x400} & \textbf{800x800} & \textbf{1.200x1.200} \\
 			\toprule
-			Größe d. Eingabefeld $[$Mb$]$ & 0,32 & 1,28 & 5,12 & 11,52 \\
-			%vom Akk. benötigte Bits & 8 & 9 & 10 & 10 \\
-			Akkumulatorgröße $[$Mb$]$ & 1,28 & 10,08 & 83,2 & 273,6 \\
-			Gesamtgröße $[$Mb$]$ & 1,6 & 11,36 & 88,32 & 285,12 \\
-			Verfügbarer BRAM $[$Mb$]$ & 32,83 & 32,83 & 32,83 & 32,83 \\
-			\textbf{Benötigter BRAM} & 5\% & 35\% & \textbf{269\%} & \textbf{868\%} \\
-			%\textbf{Benötigte Ladezeit $[$ms$]$} & 0,6 & 4,26 & 33,13 & 106,98 \\
-			\bottomrule
-		\end{tabular}
-	}
-	\label{tab:bram_verbrauch}
-\end{table}
-
-\autoref{tab:bram_verbrauch} kann entnommen werden, dass bei einer Bildgröße von $800 \cdot 800$ Pixeln der \ac{BRAM} nicht mehr ausreicht. Das Akkumulatorfeld kann nicht mehr komplett in den \ac{BRAM} geladen werden. Für größere Bilder werden daher Puffer eingesetzt. Für das \ac{CHT} Modul ist ein zweidimensionaler \emph{Memory Window Buffer} \cite[S. 281 - 286]{vivado902ug} ausreichend. Als Dimensionierung wird die doppelte Größe des größten zu durchsuchenden Radius gewählt. Dies ist die maximale Distanz zwischen zwei Pixeln im Akkumulator, auf die gleichzeitig zugegriffen wird. Zusätzlich wird eine Größe von 10\% des Wertes auf die Fenstergröße addiert, um das Pipelining zu ermöglichen und die zusätzlichen Ladezeiten zu kaschieren.
-
-\begin{table}[H]
-	\centering
-	\caption[Vergleich der Akkumulatorgröße und der Puffergröße bei Verwendung von Puffern]{Vergleich der Akkumulatorgröße und der Puffergröße bei Verwendung von Puffern. Die prozentualen Angaben sind auf ganze Prozent gerundet.}
-	\resizebox{\textwidth}{!}{
-		\begin{tabular}{lrrrr}
-			\toprule
-			& \textbf{200x200} & \textbf{400x400} & \textbf{800x800} & \textbf{1.200x1.200} \\
-			\toprule
-			Akkumulatorgröße $[$Mb$]$ & 1,28 & 10,08 & 83,2 & 273,6 \\
-			Puffergröße $[$Mb$]$ & 0,1 & 0,76 & 6,29 & 20,69 \\
-			\bottomrule
-		\end{tabular}
-	}
-	\label{tab:bram_verbrauch_linebuffer}
-\end{table}
-
-Aus \autoref{tab:bram_verbrauch_linebuffer} geht hervor, dass die Größe des Puffers ab einer gewissen Bildgröße oder mehreren zu durchsuchenden Radien verkleinert werden muss, damit das Bild noch in den Puffer passt. Das ist nur möglich, indem Performanceeinbußen in kauf genommen werden. Dann kann beim Pipelining kein \ac{II} von eins mehr erzielt werden und die Ladezeit der Daten aus dem \ac{RAM} können nicht mehr kaschiert werden.
-\\
-Zur Vereinfachung wird im Folgenden als Ladezeit für alle Bildgrößen immer die Zeit angenommen, welche benötigt wird, um das gesamte Bild einmal aus dem \ac{RAM} zu laden, egal ob diese über einen Puffer realisiert wurden.
-
-\begin{table}[H]
-	\centering
-	\caption[Ergebnisse des Hardware/Software Codesigns für verschiedene Bildgrößen]{Ergebnisse des Hardware/Software Codesigns für das \ac{CHT} Modul. In den Spalten stehen die verschiedenen Optimierungsschritte. Die prozentualen Angaben sind auf ganze Prozent gerundet.}
-	\resizebox{\textwidth}{!}{
-		\begin{tabular}{lrrrr}
-			\toprule
-			& \textbf{200x200} & \textbf{400x400} & \textbf{800x800 Buff} & \textbf{1.200x1.200 Buff} \\
-			\toprule
-			%Zieltakt $[$ns$]$ & 5 & 5 & 5 & 5 \\
-			%Erw. Takt $[$ns$]$ & 4,69 & 4,8 & 4,76 & 4,69 \\
-			%Latenz $[$Takte$]$ & 6.961.472 & 24.770.112 & 216.084.169 & 834.527.707 \\
-			Laufzeit $[$ms$]$ & 32 & 123,85 & 1.080,42 & 4.172,64 \\
-			\textbf{Benötigte Ladezeit $[$ms$]$} & 0,6 & 4,26 & 33,13 & 106,98 \\
-			Laufzeit + Ladezeit $[$ms$]$ & 32,6 & 128,11 & 1.113,55 & 4.279,62 \\
-			Laufzeit Software $[$ms$]$ & 94 & 1.044 & 24.759 & 274.957 \\
-			\textbf{Speedup} & 2,88 & 8,15 & 22,23 & 64,25 \\
+			Laufzeit $[$ms$]$ & 32,00 & 123,85 & 1.080,42 & 4.172,64 \\
+			Benötigte Ladezeit $[$ms$]$ & 0,60 & 4,26 & 33,13 & 106,98 \\
+			Laufzeit + Ladezeit $[$ms$]$ & 32,60 & 128,11 & 1.113,55 & 4.279,62 \\
+			Laufzeit Software $[$ms$]$ & 94,00 & 1.044,00 & 24.759,00 & 274.957,00 \\
+			\textbf{Speedup} & 2,88 & 8,15 & \textbf{22,23} & \textbf{64,25} \\
+			FPS & \textbf{30,67} & 7,81 & 0,9 & 0,23 \\
 			\hline
-			BRAM & 118 (6\%) & 686 (37\%) & 518 (28\%) & 1.030 (56\%) \\
-			DSP48E & 19 (1\%) & 19 (1\%) & 32 (1\%) & 32 (1\%) \\
-			FF & 3.233 (1\%) & 3.911 (1\%) & 5.125 (1\%) & 9.815 (2\%) \\
-			LUT & 7.477 (3\%) & 8.764 (3\%) & 9.425 (3\%) & 12.054 (4\%) \\
-			\textbf{FPGA-Ressourcen} & 3\% & 11\% & 8\% & 16\% \\
-			\textbf{Speedup $\div$ FPGA-Ress.} & 96 & 74,09 & 277,88 & 401,56 \\
+			BRAM & 40 (2,19\%) & 141 (7,73\%) & \textbf{545 (29,88\%)} & \textbf{1.091 (59,81\%)} \\
+			DSP48E & 19 (0,75\%) & 19 (0,75\%) & 32 (1,27\%) & 32 (1,27\%) \\
+			FF & 3.233 (0,59\%) & 3.911 (0,71\%) & 5.125 (0,93\%) & 9.815 (1,79\%) \\
+			LUT & 7.477 (2,73\%) & 8.764 (3,20\%) & 9.425 (3,44\%) & 12.054 (4,40\%) \\
+			\textbf{FPGA-Ressourcen} & \textbf{1,57\%} & \textbf{3,10\%} & \textbf{8,88\%} & \textbf{16,82\%} \\
+			\textbf{Speedup $\div$ FPGA-Ress.} & 183,44 & 262,90 & \textbf{250,34} & \textbf{381,99} \\
 			\bottomrule
 		\end{tabular}
 	}
 	\label{tab:evaluation_hwsw_codesign}
 \end{table}
-%TODO: fps in Tab aufnehmen?
-%TODO: BRAM-Größe für Puffer hinzufügen
 
-Hier Evaluation bzgl. Laufzeit!
+Bei Betrachtung der Ergebnisse aus \autoref{tab:evaluation_hwsw_codesign} fällt auf, dass der erzielte Speedup mit wachsender Bildgröße deutlich ansteigt. Das Verhältnis zwischen Speedup und benötigten FPGA-Ressourcen ist für das größte Bild am besten und für das kleinste Bild am schlechtesten. Es kann für größere Bilder also mit weniger zusätzlichem Ressourcenaufwand ein höherer Speedup gegenüber der Softwareimplementierung erzielt werden. Das Hardware/Software Codesign der \ac{HT} lohnt sich für die betrachteten Größen umso mehr, je größer die Bilder sind. Es liegen keine Ergebnisse zur Laufzeit von Bildern vor, für welche Eingabefeld und Puffer nicht mehr in den \ac{BRAM} passen. Daher kann keine konkrete Aussage über den Leistungsabfall für größere Bilder getroffen werden. Nachfolgend werden deshalb nur Bildgrößen von maximal $5.793 \cdot 5.793$ Pixel, also 33,56 Megapixel, diskutiert.
 \\
 \\
-Evaluation der Plattform
+Von den vier Testbildern erreicht nur die \ac{HT} des kleinsten Bildes ausreichend \ac{fps}, um in Echtzeit auf ein Videosignal angewandt werden zu können. Ab einer Bildgröße von $800 \cdot 800$ Pixel kann nicht mal mehr ein Bild pro Sekunde verarbeitet werden. Zur Erkennung von Objekten im Straßenverkehr eignet sich die \ac{HT} daher selbst mit Hardwarebeschleunigung nicht.
+\\
+\\
+Durch die vielen von der \ac{HT} benötigten Parameter kann das Verfahren nur schlecht unter wechselnden Bedingungen, wie bei sich verändernden Lichtverhältnissen, genutzt werden. Mit verschiedenen Kernelgrößen für das Gauß-Filter und verschiedenen Schwellwerten für die Canny Edge Detection werden unterschiedlich gute Ergebnisse erzielt. Die Parameter der \ac{HT} müssen vor der Synthese, z.B. durch a priori Wissen, bestimmt werden. Wenn diese einmal in der \ac{PL} implementiert sind, lassen sie sich erst über eine erneute Synthese wieder verändern. Dadurch ist das Design nicht so flexibel wie die Softwarelösung.
+\\
+Das Hardware/Software Codesign der \ac{HT} eignet sich deshalb auf der Zielplattform nur für einen spezifischen Anwendungsfall. Bei einer festen Bildgröße und festen Parametern kann das Verfahren für diese optimiert werden. Bei wechselnden Bildgrößen oder Anwendungen mit variablen Parametern eignet sich die Implementierung der \ac{HT} in Hardware nicht.
+\\
+\\
+In dem Beispielbild wird jedoch trotz der geringen Ressourcennutzung für alle Bildgrößen ein sehr guter Speedup gegenüber der reinen Softwareimplementierung erzielt. Der Zynq Ultrascale+ MPSoC eignet sich gut, um Teile eines Algorithmus, hier insbesondere das kostenintensive Votingverfahren der \ac{CHT}, auszulagern und zu beschleunigen.

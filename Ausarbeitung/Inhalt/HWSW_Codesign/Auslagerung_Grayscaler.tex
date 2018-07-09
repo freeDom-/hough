@@ -1,4 +1,4 @@
-Die Implementierung des Grayscalers beschränkt sich auf die Verwendung von vier \acp{IP}. Die Zynq UltraScale+ MPSoC \ac{IP} \cite{vivado201pg} enthält das \ac{PS} und die \ac{PL}. Die \ac{AXI4} Interconnect \ac{IP} \cite{vivado059pg} verbindet das Grayscalermodul, welches in der \ac{PL} realisiert wird, über einen Bus mit dem \ac{PS}. Als letzte Komponente wird ein Resetmodul \cite{vivado164pg} benötigt, welches das Reset-Signal für den Grayscaler erzeugt.
+Die Implementierung des Grayscalers beschränkt sich auf die Verwendung von vier \acp{IP}. Das Blockschaltbild in \autoref{img:implementierung_blockschaltbild_grayscaler400x400} zeigt die Verschaltung der \acp{IP}. Die Zynq UltraScale+ MPSoC \ac{IP} \cite{vivado201pg} enthält das \ac{PS} und die \ac{PL}. Die \ac{AXI4} Interconnect \ac{IP} \cite{vivado059pg} verbindet das Grayscalermodul, welches in der \ac{PL} realisiert wird, über einen Bus mit dem \ac{PS}. Als letzte Komponente wird ein Resetmodul \cite{vivado164pg} benötigt, welches das Reset-Signal für den Grayscaler erzeugt.
 \\
 \\
 Das \ac{PS} kann über das von dem \ac{AXI4} Modul generierte \ac{API} angesteuert werden.
@@ -7,11 +7,11 @@ Das \ac{PS} kann über das von dem \ac{AXI4} Modul generierte \ac{API} angesteue
 	\centering
 	\includegraphics[width=\linewidth]{Bilder/implementierung_blockschaltbild_grayscaler400x400.png}
 	\caption[Blockschaltbild für die Implementierung des Grayscalermoduls]{Blockschaltbild für die Implementierung des Grayscalermodul bei einem 400x400 Pixel großen Bild. Erzeugt mit Vivado 2017.4 \cite{vivado902ug}}
-	\label{img:implementierung_timing_grayscaler400x400}
+	\label{img:implementierung_blockschaltbild_grayscaler400x400}
 \end{figure}
 %TODO: Blockschaltbild auf einzelne Seite im Querformat
 
-Aus \autoref{img:implementierung_utilization_grayscaler400x400} geht hervor, dass die von der Synthese in \autoref{sec:synthese-grayscaler} berechneten Werte  bezüglich des Ressourcenverbrauches auch nach der Implementierung eingehalten werden können. Die erwarteten Timing liegen ebenfalls in einem zufriedenstellenden Bereich, sodass eine Taktrate von 200 MHz realisiert werden kann.
+Aus \autoref{img:implementierung_utilization_grayscaler400x400} geht hervor, dass die von der Synthese in \autoref{sec:synthese-grayscaler} berechneten Werte  bezüglich des Ressourcenverbrauches auch nach der Implementierung eingehalten werden können. Die erwarteten Timings liegen ebenfalls in einem zufriedenstellenden Bereich, sodass eine Taktrate von 200 MHz realisiert werden kann.
 
 \begin{figure}[H]
 	\centering

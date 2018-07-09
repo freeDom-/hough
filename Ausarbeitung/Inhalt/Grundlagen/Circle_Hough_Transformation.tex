@@ -17,5 +17,5 @@ Die \ac{CHT} benötigt deshalb einen dreidimensionalen Parameterraum $A(x_0,y_0,
 	\label{img:circle-hough-transformation}
 \end{figure}
 
-Der Akkumulatorraum wird nur nach den höchsten Einträgen durchsucht. Deshalb besteht das Problem, dass kleinere Kreise nicht mehr erkannt werden, weil diese kleinere Werte im Akkumulatorraum haben als große Kreise. Daher ist die Durchführung einer Biaskompensation notwendig. Hierfür wird jeder Wert im Akkumulatorraum normalisiert, indem er durch die maximal mögliche Anzahl an Kantenpixeln geteilt wird.
+Der Akkumulatorraum wird nur nach den höchsten Einträgen durchsucht. Deshalb besteht das Problem, dass kleinere Kreise nicht mehr erkannt werden, weil diese kleinere Werte im Akkumulatorraum haben als große Kreise. Daher ist die Durchführung einer Biaskompensation notwendig. Hierfür wird jeder Wert im Akkumulatorraum normalisiert, indem er durch die maximal mögliche Anzahl an Kantenpixel geteilt wird.
 \cite[S. 171f]{burger_2016dip_java}
