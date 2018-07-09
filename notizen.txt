@@ -1,10 +1,6 @@
 TODO
-   Fazit
-      
 	Optional (low Priority)
       ...-Modul
-		eigene Diagramme für Ressourcennutzung
-		Bilder anordnen
 		Softwareimplementierung ergänzen
 		Line Buffer?
       unrolleds ändern?
