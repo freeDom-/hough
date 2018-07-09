@@ -4,7 +4,7 @@ Zur Evaluierung der Plattform wurden mehrere Messdaten aufgenommen. Die \ac{HT} 
 Bisher wurden nur die Laufzeiten der einzelnen Module mit den Laufzeiten der Softwareimplementierung verglichen. Um realistischere Werte zu erhalten, muss die benötigte Zeit, um die Daten vom \ac{RAM} in den \ac{FPGA} zu laden, berücksichtigt werden. Die theoretisch maximale Performance des Speicherinterfaces der Zielplattform beträgt 2.666 Mb/s \cite{vivado890ds}. Auch, wenn dieser Wert in der Praxis nicht erreicht wird, bietet er einen ersten Anhaltspunkt, um den Vergleich realistischer zu gestalten.
 \\
 \\
-An dieser Stelle muss noch auf eine wichtige Veränderung am Design eingegangen werden. Der Speicherbedarf der \ac{HT} ist so hoch, dass das Akkumulatorfeld für ein Bild der Größe von $800 \cdot 800$ nicht mehr in den \ac{BRAM} des \ac{FPGA} passt. Daher wurde zur besseren Auswertung für alle Bildgrößen ein zweidimensionaler \emph{Memory Window Buffer} \cite[S. 281 - 286]{vivado902ug} implementiert. Dieser reduziert den Speicherbedarf enorm und wurde so gewählt, dass alle zur parallelen Ausführung benötigten Daten innerhalb des Pufferfensters liegen und die zusätzlichen Ladezeiten kaschiert werden. Die Zeit zum einmaligen Füllen des Puffers ist so gering, dass sie vernachlässigt werden kann.
+An dieser Stelle muss noch auf eine wichtige Veränderung am Design eingegangen werden. Der Speicherbedarf der \ac{HT} ist so hoch, dass das Akkumulatorfeld für ein Bild der Größe von $800 \cdot 800$ nicht mehr in den \ac{BRAM} des \ac{FPGA} passt. Daher wurde zur besseren Auswertung für alle Bildgrößen ein zweidimensionaler \emph{Memory Window Buffer} \cite[S. 281 - 286]{vivado902ug} implementiert. Dieser reduziert den Speicherbedarf um mehrere Größenordnungen und wurde so gewählt, dass alle zur parallelen Ausführung benötigten Daten innerhalb des Pufferfensters liegen und die zusätzlichen Ladezeiten kaschiert werden. Die Zeit zum einmaligen Füllen des Puffers ist so gering, dass sie vernachlässigt werden kann.
 
 \begin{table}[!ht]
 	\centering
@@ -19,12 +19,12 @@ An dieser Stelle muss noch auf eine wichtige Veränderung am Design eingegangen 
 			Laufzeit + Ladezeit $[$ms$]$ & 32,60 & 128,11 & 1.113,55 & 4.279,62 \\
 			Laufzeit Software $[$ms$]$ & 94,00 & 1.044,00 & 24.759,00 & 274.957,00 \\
 			\textbf{Speedup} & 2,88 & 8,15 & \textbf{22,23} & \textbf{64,25} \\
-			FPS & \textbf{30,67} & 7,81 & 0,9 & 0,23 \\
+			\acs{fps} & \textbf{30,67} & 7,81 & 0,9 & 0,23 \\
 			\hline
-			BRAM & 40 (2,19\%) & 141 (7,73\%) & \textbf{545 (29,88\%)} & \textbf{1.091 (59,81\%)} \\
-			DSP48E & 19 (0,75\%) & 19 (0,75\%) & 32 (1,27\%) & 32 (1,27\%) \\
-			FF & 3.233 (0,59\%) & 3.911 (0,71\%) & 5.125 (0,93\%) & 9.815 (1,79\%) \\
-			LUT & 7.477 (2,73\%) & 8.764 (3,20\%) & 9.425 (3,44\%) & 12.054 (4,40\%) \\
+			\acs{BRAM} & 40 (2,19\%) & 141 (7,73\%) & \textbf{545 (29,88\%)} & \textbf{1.091 (59,81\%)} \\
+			\acs{DSP}48E & 19 (0,75\%) & 19 (0,75\%) & 32 (1,27\%) & 32 (1,27\%) \\
+			\acs{FF} & 3.233 (0,59\%) & 3.911 (0,71\%) & 5.125 (0,93\%) & 9.815 (1,79\%) \\
+			\acs{LUT} & 7.477 (2,73\%) & 8.764 (3,20\%) & 9.425 (3,44\%) & 12.054 (4,40\%) \\
 			\textbf{FPGA-Ressourcen} & \textbf{1,57\%} & \textbf{3,10\%} & \textbf{8,88\%} & \textbf{16,82\%} \\
 			\textbf{Speedup $\div$ FPGA-Ress.} & 183,44 & 262,90 & \textbf{250,34} & \textbf{381,99} \\
 			\bottomrule
@@ -39,7 +39,7 @@ Bei Betrachtung der Ergebnisse aus \autoref{tab:evaluation_hwsw_codesign} fällt
 Von den vier Testbildern erreicht nur die \ac{HT} des kleinsten Bildes ausreichend \ac{fps}, um in Echtzeit auf ein Videosignal angewandt werden zu können. Ab einer Bildgröße von $800 \cdot 800$ Pixel kann nicht mal mehr ein Bild pro Sekunde verarbeitet werden. Zur Erkennung von Objekten im Straßenverkehr eignet sich die \ac{HT} daher selbst mit Hardwarebeschleunigung nicht.
 \\
 \\
-Durch die vielen von der \ac{HT} benötigten Parameter kann das Verfahren nur schlecht unter wechselnden Bedingungen, wie bei sich verändernden Lichtverhältnissen, genutzt werden. Mit verschiedenen Kernelgrößen für das Gauß-Filter und verschiedenen Schwellwerten für die Canny Edge Detection werden unterschiedlich gute Ergebnisse erzielt. Die Parameter der \ac{HT} müssen vor der Synthese, z.B. durch a priori Wissen, bestimmt werden. Wenn diese einmal in der \ac{PL} implementiert sind, lassen sie sich erst über eine erneute Synthese wieder verändern. Dadurch ist das Design nicht so flexibel wie die Softwarelösung.
+Durch die vielen von der \ac{HT} benötigten Parameter eignet das Verfahren nur schlecht unter wechselnden Bedingungen, wie sich verändernden Lichtverhältnissen. Mit verschiedenen Kernelgrößen für das Gauß-Filter und verschiedenen Schwellwerten für die Canny Edge Detection werden unterschiedlich gute Ergebnisse erzielt. Die Parameter der \ac{HT} müssen vor der Synthese, z.B. durch a priori Wissen, bestimmt werden. Wenn diese einmal in der \ac{PL} implementiert sind, lassen sie sich erst über eine erneute Synthese wieder verändern. Dadurch ist das Design nicht so flexibel wie die Softwarelösung.
 \\
 Das Hardware/Software Codesign der \ac{HT} eignet sich deshalb auf der Zielplattform nur für einen spezifischen Anwendungsfall. Bei einer festen Bildgröße und festen Parametern kann das Verfahren für diese optimiert werden. Bei wechselnden Bildgrößen oder Anwendungen mit variablen Parametern eignet sich die Implementierung der \ac{HT} in Hardware nicht.
 \\

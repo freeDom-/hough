@@ -4,6 +4,21 @@
 
 #include "hough.h"
 
+#ifndef SYSTIME_H_INCLUDED
+#define SYSTIME_H_INCLUDED
+#include <sys/time.h>
+#endif /*SYSTIME_H_INCLUDED*/
+
+/*
+** Returns time in microseconds
+*/
+/*long getTime() {
+    struct timeval timecheck;
+    gettimeofday(&timecheck, NULL);
+    return (long)timecheck.tv_sec * 1000 + (long)timecheck.tv_usec / 1000;
+}*/
+
+long getTime();
 
 void vote(unsigned int* acc, unsigned int w, unsigned int h, unsigned int rc, int x, int y, unsigned int r) {
     if(x >= 0 && x < w && y >= 0 && y < h && r < rc) {
@@ -17,6 +32,12 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     int maxCircles = 8;
     circle *circles = malloc(maxCircles * sizeof(circle));
 
+    long count = 0;
+    long votingTime;
+    long searchingTime;
+    
+    votingTime = getTime();
+
     #ifdef _OPENMP
     #pragma omp parallel for
     #endif
@@ -24,6 +45,7 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
     for(int y0 = 0; y0 < height; y0++) {
         for(int x0 = 0; x0 < width; x0++) {
             if(input[y0 * width + x0] != 0) {
+                count++;
                 for(unsigned int r = radius; r <= radiusUpperBounds; r++) {
                     // Bresenham
                     int dy, dx;
@@ -58,6 +80,12 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
         }
     }
 
+    votingTime = getTime() - votingTime;
+    printf("Voting needed %lu ms.\n", votingTime);
+    printf("Vote inner loop count: %lu\n", count);
+
+    searchingTime = getTime();
+
     // Find biggest values in relation to their radius
     // TODO parallelize???
     for(int y = 0; y < height; y++) {
@@ -87,6 +115,9 @@ circle* hough(uint8_t* input, unsigned int width, unsigned int height, unsigned 
             }
         }
     }
+
+    searchingTime = getTime() - searchingTime;
+    printf("Clearing needed %lu ms.\n", searchingTime);
 
     free(acc);
     return circles;

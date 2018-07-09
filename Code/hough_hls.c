@@ -1,13 +1,13 @@
 #include "include/hough_hls.h"
 
-void vote(uint9 *acc, int x, int y, unsigned int r) {
+void vote(uint10 *acc, int x, int y, unsigned int r) {
     if(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
     	acc[y * WIDTH * RADIICOUNT + x * RADIICOUNT + r] += 1;
     }
 }
 
-void hough(uint8_t input[SIZE], circle output[MAXCIRCLES], unsigned int* circleCount) {
-	uint9 acc[SIZE * RADIICOUNT];
+void hough(uint8_t input[SIZE], circle output[MAXCIRCLES], unsigned int* circleCount, uint10 acc[SIZE * RADIICOUNT]) {
+	//uint10 acc[SIZE * RADIICOUNT];
 
 	// Initialize accumulator
 	acc_init_loop:for(int i=0; i < SIZE * RADIICOUNT; i++) {

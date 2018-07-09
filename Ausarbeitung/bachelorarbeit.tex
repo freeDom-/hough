@@ -14,6 +14,7 @@
 %\usepackage{siunitx} wäre für Einheiten sinnvoll, aber nicht gefunden
 \usepackage{epsfig}
 \usepackage{booktabs}
+\usepackage{multicol} 
 
 %\usepackage{bytefield}
 
@@ -137,13 +138,13 @@
 	\end{minipage}
 	
 	\begin{minipage}[t]{8cm}
-	{\small Betreuer:}\\\large Oliver Knodel\\
+	{\small Betreuer:}\\\large Dr.-Ing. Oliver Knodel\\
 	\end{minipage}
 
 	\vspace{2\baselineskip}
 
 
-	Dresden, Datum
+	Dresden, 10.07.2018
 	
 	
 	\newpage
@@ -191,7 +192,7 @@ Form noch keiner anderen Prüfungsbehörde vorgelegt.
 
 \vspace{3\baselineskip}
 
-Name, Dresden, Datum
+Dominik Weinrich, Dresden, 10.07.2018
 \end{minipage}
 
 \vspace{5\baselineskip}
@@ -241,7 +242,9 @@ keine Empfehlung des Produktes oder der Firma dar.
 	\setstretch{1,2}
 	\chapter*{Abkürzungsverzeichnis}
 	\addcontentsline{toc}{chapter}{Abkürzungsverzeichnis}
+	\begin{multicols}{2}
 	\input{Inhalt/abkv}
+	\end{multicols}
 	
 	\clearscrheadfoot
 	\automark[section]{chapter}
@@ -290,7 +293,7 @@ keine Empfehlung des Produktes oder der Firma dar.
 	\input{Inhalt/HWSW_Codesign/HWSW_Codesign}
 	\section{Softwareimplementierung}
 	\input{Inhalt/HWSW_Codesign/Softwareimplementierung}
-	\subsection{Main}
+	\subsection{Main Modul}
 	\input{Inhalt/HWSW_Codesign/Main}
 	\subsection{Grayscaler}
 	\input{Inhalt/HWSW_Codesign/Grayscaler}
