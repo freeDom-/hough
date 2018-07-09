@@ -12,19 +12,22 @@ Wenn der \ac{BRAM} nicht ausreicht, um das gesamte Akkumulatorfeld zu laden, kan
 \\
 \\
 Zur weiteren Beschleunigung wird geprüft, an welchen Stellen Pipelining angewandt werden kann. Es gibt zwei große verschachtelte Schleifenblöcke, die in den folgenden Abschnitten betrachtet werden.
-\\
-\\
-Der erste Block besteht aus drei verschachtelten For-Schleifen und einer While-Schleife. Dieser Block implementiert das Votingverfahren. Die Softwareimplementierung benötigt für diesen Block am meisten Zeit. Er sollte also auch bei der Optimierung im Vordergrund stehen. Hier kann nur die innerste Schleife, die While-Schleife, gepipelined werden. Sie hat eine variable Anzahl an Iterationen und kann daher nicht unrolled werden. Für das Pipelining einer der äußeren Schleifen wäre das Unrolling aller inneren Schleifen jedoch, wie in \autoref{sec:synthese-und-optimierungen} erwähnt, eine notwendige Bedingung.
+\nowidow
+
+Der erste Block besteht aus drei verschachtelten For-Schleifen und einer While-Schleife. Dieser Block implementiert das Votingverfahren. Die Softwareimplementierung benötigt für diesen Block am meisten Zeit. Er sollte also auch bei der Optimierung im Vordergrund stehen. Hier kann nur die innerste Schleife, die While-Schleife, gepipelined werden. Sie hat eine variable Anzahl an Iterationen und kann daher nicht ausgerollt werden. Für das Pipelining einer der äußeren Schleifen wäre das Ausrollen aller inneren Schleifen jedoch, wie in \autoref{sec:synthese-und-optimierungen} erwähnt, eine notwendige Bedingung.
 \\
 Innerhalb der While-Schleife wird achtmal hintereinander die \emph{vote} Methode aufgerufen. Dort wird das Akkumulatorfeld an den entsprechenden Koordinaten erhöht, sofern sie innerhalb der Bildgrenzen liegen. Vivado HLS erkennt nicht, dass auf verschiedene Indizes des Akkumulators zugegriffen wird und vermutet an dieser Stelle Datenabhängigkeiten. Mit der \emph{DEPENDENCE} Direktive können diese Abhängigkeiten als falsch gekennzeichnet werden. Wenn nun zusätzlich das Akkumulatorfeld partitioniert wird, um die größere Menge an Zugriffen zu realisieren, kann das \ac{II} auf eins gebracht werden. Dazu muss eine zyklische Partitionierung mit dem Faktor acht vorgenommen werden.
 \\
 \\
 Der zweite Block ist in \autoref{lst:hough} dargestellt. Er filtert die höchsten Werte aus dem Akkumulator, erhöht die Anzahl der gefundenen Kreise und fügt die gefundenen Kreise dem Ausgabefeld hinzu. Sobald ein Kreis gefunden wurde, muss der Akkumulator in der näheren Umgebung für alle Radien auf Null gesetzt werden. Diese Funktion wird durch drei For-Schleifen implementiert, welche in \autoref{lst:hough} Z. 9 angedeutet werden.
 \\
-Zum Pipelining der äußersten For-Schleife wird diese mit der mittleren Zusammengefasst, da beide variable Parameter enthalten. Die innerste For-Schleife kann ohne Probleme unrolled werden. Nach dem Unrolling finden sieben Zugriffe auf den Akkumulator statt. Im ersten Block wurde der Akkumulator bereits ausreichend partitioniert, sodass sieben parallele Zugriffe möglich sind. Damit kann auch für diese Schleife ein \ac{II} von eins erreicht werden.
+Zum Pipelining der äußersten For-Schleife wird diese mit der mittleren Zusammengefasst, da beide variable Parameter enthalten. Die innerste For-Schleife kann ohne Probleme ausgerollt werden. Nach dem Unrolling finden sieben Zugriffe auf den Akkumulator statt. Im ersten Block wurde der Akkumulator bereits ausreichend partitioniert, sodass sieben parallele Zugriffe möglich sind. Damit kann auch für diese Schleife ein \ac{II} von eins erreicht werden.
 \\
 \\
-Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen initialisiert, gepipelined werden. Diese hat auch mit den bereits definierten Direktiven ein \ac{II} von eins. Zur schnelleren Verarbeitung kann die Schleife zusätzlich mit einem Faktor von 16 unrolled werden. Damit verringert sich die Anzahl der Iterationen und es werden 16 Akkumulatoreinträge gleichzeitig initialisiert. Wenn die Schleife noch weiter unrolled werden soll, muss auch die Partitionierung des Akkumulatorfeldes vergrößert werden, um mehr parallele Zugriffe zu ermöglichen.
+Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen initialisiert, gepipelined werden. Diese hat auch mit den bereits definierten Direktiven ein \ac{II} von eins. Zur schnelleren Verarbeitung kann die Schleife zusätzlich mit einem Faktor von 16 ausgerollt werden. Damit verringert sich die Anzahl der Iterationen und es werden 16 Akkumulatoreinträge gleichzeitig initialisiert. Wenn die Schleife noch weiter ausgerollt werden soll, muss auch die Partitionierung des Akkumulatorfeldes vergrößert werden, um mehr parallele Zugriffe zu ermöglichen.
+\\
+\\
+Die Softwarelösung benötigt 1.044 ms zur Ausführung des \ac{CHT} Moduls. \autoref{tab:synthese_hough400x400} kann entnommen werden, dass eine Taktrate von 200 MHz realisierbar ist und das Modul damit nach der Synthese eine Laufzeit von 123,85 ms hat. Daraus folgt, dass ein Speedup von 8,43 gegenüber der Softwarelösung erzielt wird. Die Ressourcen des FPGA werden nur zu zehn Prozent genutzt. Dadurch können entweder noch andere Module der \ac{HT} neben diesem Modul beschleunigt werden oder weitere Optimierungen an diesem Modul vorgenommen werden. Dafür müssten jedoch Anpassungen am Code vorgenommen werden, sodass weitere Schleifen ausgerollt werden können.
 
 \begin{table}[H]
 	\centering
@@ -53,5 +56,3 @@ Schließlich kann noch die For-Schleife, welche das Akkumulatorfeld mit Nullen i
 	}
 	\label{tab:synthese_hough400x400}
 \end{table}
-
-Die Softwarelösung benötigt 1.044 ms zur Ausführung des \ac{CHT} Moduls. \autoref{tab:synthese_hough400x400} kann entnommen werden, dass eine Taktrate von 200 MHz realisierbar ist und das Modul damit nach der Synthese eine Laufzeit von 123,85 ms hat. Daraus folgt, dass ein Speedup von 8,43 gegenüber der Softwarelösung erzielt wird. Die Ressourcen des FPGA werden nur zu zehn Prozent genutzt. Dadurch können entweder noch andere Module der \ac{HT} neben diesem Modul beschleunigt werden oder weitere Optimierungen an diesem Modul vorgenommen werden. Dafür müssten jedoch Anpassungen am Code vorgenommen werden, sodass weitere Schleifen unrolled werden können.

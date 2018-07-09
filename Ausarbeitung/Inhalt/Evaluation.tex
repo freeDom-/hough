@@ -34,14 +34,20 @@ An dieser Stelle muss noch auf eine wichtige Veränderung am Design eingegangen 
 \end{table}
 
 Bei Betrachtung der Ergebnisse aus \autoref{tab:evaluation_hwsw_codesign} fällt auf, dass der erzielte Speedup mit wachsender Bildgröße deutlich ansteigt. Das Verhältnis zwischen Speedup und benötigten FPGA-Ressourcen ist für das größte Bild am besten und für das kleinste Bild am schlechtesten. Es kann für größere Bilder also mit weniger zusätzlichem Ressourcenaufwand ein höherer Speedup gegenüber der Softwareimplementierung erzielt werden. Das Hardware/Software Codesign der \ac{HT} lohnt sich für die betrachteten Größen umso mehr, je größer die Bilder sind. Es liegen keine Ergebnisse zur Laufzeit von Bildern vor, für welche Eingabefeld und Puffer nicht mehr in den \ac{BRAM} passen. Daher kann keine konkrete Aussage über den Leistungsabfall für größere Bilder getroffen werden. Nachfolgend werden deshalb nur Bildgrößen von maximal $5.793 \cdot 5.793$ Pixel, also 33,56 Megapixel, diskutiert.
-\\
-\\
-Von den vier Testbildern erreicht nur die \ac{HT} des kleinsten Bildes ausreichend \ac{fps}, um in Echtzeit auf ein Videosignal angewandt werden zu können. Ab einer Bildgröße von $800 \cdot 800$ Pixel kann nicht mal mehr ein Bild pro Sekunde verarbeitet werden. Zur Erkennung von Objekten im Straßenverkehr eignet sich die \ac{HT} daher selbst mit Hardwarebeschleunigung nicht.
-\\
-\\
+\noclub
+
+Wie in \autoref{img:fps} zu sehen, erreicht die Implementierung der \ac{CHT} für die vier Testbilder nur beim kleinsten Bild ausreichend \ac{fps}, um in Echtzeit auf ein Videosignal angewandt werden zu können. Ab einer Bildgröße von $800 \cdot 800$ Pixel kann nicht mal mehr ein Bild pro Sekunde verarbeitet werden. Zur Erkennung von Objekten im Straßenverkehr eignet sich die \ac{HT} daher selbst mit Hardwarebeschleunigung nicht.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{Bilder/fps.pdf}
+	\caption[Leistungsvergleich bezüglich der Echtzeitfähigkeit der \acl{CHT}]{Leistungsvergleich bezüglich der Echtzeitfähigkeit der \ac{CHT}}
+	\label{img:fps}
+\end{figure}
+
 Durch die vielen von der \ac{HT} benötigten Parameter eignet das Verfahren nur schlecht unter wechselnden Bedingungen, wie sich verändernden Lichtverhältnissen. Mit verschiedenen Kernelgrößen für das Gauß-Filter und verschiedenen Schwellwerten für die Canny Edge Detection werden unterschiedlich gute Ergebnisse erzielt. Die Parameter der \ac{HT} müssen vor der Synthese, z.B. durch a priori Wissen, bestimmt werden. Wenn diese einmal in der \ac{PL} implementiert sind, lassen sie sich erst über eine erneute Synthese wieder verändern. Dadurch ist das Design nicht so flexibel wie die Softwarelösung.
 \\
 Das Hardware/Software Codesign der \ac{HT} eignet sich deshalb auf der Zielplattform nur für einen spezifischen Anwendungsfall. Bei einer festen Bildgröße und festen Parametern kann das Verfahren für diese optimiert werden. Bei wechselnden Bildgrößen oder Anwendungen mit variablen Parametern eignet sich die Implementierung der \ac{HT} in Hardware nicht.
 \\
 \\
-In dem Beispielbild wird jedoch trotz der geringen Ressourcennutzung für alle Bildgrößen ein sehr guter Speedup gegenüber der reinen Softwareimplementierung erzielt. Der Zynq Ultrascale+ MPSoC eignet sich gut, um Teile eines Algorithmus, hier insbesondere das kostenintensive Votingverfahren der \ac{CHT}, auszulagern und zu beschleunigen.
+In dem Beispielbild wird jedoch trotz der geringen Ressourcennutzung für alle Bildgrößen ein sehr guter Speedup gegenüber der reinen Softwareimplementierung erzielt. Der Zynq \linebreak Ultrascale+ MPSoC eignet sich gut, um Teile eines Algorithmus, hier insbesondere das kostenintensive Votingverfahren der \ac{CHT}, auszulagern und zu beschleunigen.
