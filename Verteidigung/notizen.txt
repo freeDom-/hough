@@ -42,3 +42,6 @@
     - Für 400 x 400 Pixel großes Bild kommt es auf Anwendungsfall an
     - Ab 800 x 800 Pixel keine Echtzeit mehr gewährleistet
 
+1. Durchlauf: 29:49
+2. Durchlauf: 32:03
+3. Durchlauf: 31:46
