@@ -1,0 +1,44 @@
+(F. 10) 4. Implementierung - Circle Hough Transformation
+    - zwei Verschiedene Schleifenblöcke
+        Voting
+            Bresenham
+        Suche nach Extremstellen
+            Clearing
+    - Optimierungen im Vergleich zur Zwischenpräsentation
+        Verhinderung von Mehrfacherkennung durch Löschen im Houghraum
+        Beschleunigung durch Umschreiben von Codestellen
+(F. 11) 4. Implementierung - Laufzeitvergleich
+    - Grayscaler schnellstes Modul, CHT benötigt die meiste Rechenzeit
+    - Laufzeit bricht für größere Bilder auf Grund der Cachegröße d. ARM ein
+(F. 13) 5. Auslagerung - Grayscaler
+    - Synthese für ein Bild der Größe von 400 x 400 Pixeln durchgeführt
+    - Schritte der HLS aufeinander aufbauend
+(F. 14) 5. Auslagerung - Grayscaler
+    - Tabelle erklären
+        Oben Laufzeit & Speedup
+        Unten Ressourcen
+        Speedup pro verwendeter Ressourcen (hohe Zahl bedeutet hohe Effektivität)
+    - Reduzierter Ressourcenaufwand durch intergebasierte Berechnung
+    - Beschleunigung durch Pipelining d. inneren Schleife
+    - Beschleunigung durch Ausrollen d. inneren Schleife 
+      und Pipelining d. äußeren  Schleife (Abarbeitung in einem Rechenschritt)
+      auf Kosten von BRAM und DSPs
+(F. 16)
+    - uintN Arbitrary Precision Data Type von Vivado bereitgestellt (1 - 1024)
+(F. 17) 5. Auslagerung - CHT
+    Speedup von 8,43 gegenüber der Softwarelösung
+(F. 19) 6. Evaluation
+    - Puffergröße ist abhängig von Bildgröße
+(F. 20) 6. Evaluation
+    - Ladezeiten für Bild und Laden d. gesamten Akkumulators
+    - Ladezeiten Vergleichsweise gering (Faktor 30-50 kleiner)
+    - Für große Bilder größerer Speedup, da BRAM deutlich größer als L2 Cache
+      und durch Puffer Zugriff auf den Speicher optimiert
+(F. 21) 6. Evaluation
+    - Es wird nicht kompletter BRAM genutzt
+        -> Noch Platz für weitere Optimierungen
+(F. 22) 6. Evaluation
+    - 200 x 200 Pixel großes Bild kann in Echtzeit verarbeitet werden
+    - Für 400 x 400 Pixel großes Bild kommt es auf Anwendungsfall an
+    - Ab 800 x 800 Pixel keine Echtzeit mehr gewährleistet
+
